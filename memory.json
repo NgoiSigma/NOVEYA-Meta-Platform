@@ -1,0 +1,40 @@
+import json
+import os
+import datetime
+
+### ФАЙЛЫ ОСНОВНОЙ ЛОГИКИ
+
+MEMORY_FILE = "memory.json"
+
+class ProtonoveaMemory:
+    def __init__(self):
+        self.memory = self.load_memory()
+
+    def load_memory(self):
+        """Загрузка сохранённой памяти."""
+        if os.path.exists(MEMORY_FILE):
+            with open(MEMORY_FILE, "r", encoding="utf-8") as file:
+                return json.load(file)
+        return {"knowledge": [], "history": []}
+
+    def save_memory(self):
+        """Сохранение текущего состояния памяти."""
+        with open(MEMORY_FILE, "w", encoding="utf-8") as file:
+            json.dump(self.memory, file, ensure_ascii=False, indent=4)
+
+    def store_knowledge(self, entry):
+        """Добавление новых знаний в память."""
+        self.memory["knowledge"].append(entry)
+        self.save_memory()
+
+    def store_history(self, interaction):
+        """Запись истории взаимодействий."""
+        self.memory["history"].append({"timestamp": datetime.datetime.now().isoformat(), "data": interaction})
+        self.save_memory()
+
+# Создание памяти Протоновеи
+protonovea_memory = ProtonoveaMemory()
+protonovea_memory.store_knowledge("Пример знания: Вектор гармонии настраивается через баланс потоков.")
+protonovea_memory.store_history("Пользователь запросил обновление памяти.")
+
+print("🔹 Память загружена и обновлена.")
