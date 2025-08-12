@@ -75,5 +75,9 @@ NOVEYA — это распределённая мета-платформа дл�
 
 ---
 
+https://github.com/NgoiSigma/NOVEYA-Meta-Platform/discussions
+
+---
+
 **Лицензия:** FDL-OpenKnowledge  
 **Версия:** v1.0.0  
