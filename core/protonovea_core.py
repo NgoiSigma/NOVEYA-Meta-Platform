@@ -24,7 +24,7 @@ MEMORY_FILE = "memory.json"
 FUND_STORAGE = "funds.json"
 UPDATE_FILE = "update.json"
 CREDENTIALS_FILE = "novea_credentials.json"
-TELEGRAM_API = "https://api.telegram.org/bot7745863926:AAG24scn75MM2Ec7czPr98n8u5L-AxMV7sQ/sendMessage"
+TELEGRAM_API = "https://api.telegram.org/bot-----------/sendMessage"
 TELEGRAM_CHAT_ID = "@Protonoveya_bot"
 
 # Основная информация о системе
