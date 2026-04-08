@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Оболочка СВЕТ — А.Е. Кашеварова | Теоретические основы</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0f1a;--bg2:#0e1625;--bg3:#131d30;
+  --light:#e8f4fd;--muted:#8fb3d4;--stone:#5a7a9a;
+  --blue:#2a6bb5;--blue2:#4a9fd4;--cyan:#00c8e0;
+  --gold:#d4a843;--green:#2ecc71;--red:#e74c3c;
+  --purple:#9b59b6;--amber:#e8a020;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Montserrat',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--light);font-family:var(--serif);font-size:17px;line-height:1.85;overflow-x:hidden;}
+
+/* SIDEBAR */
+#sidebar{width:280px;min-height:100vh;background:var(--bg2);border-right:1px solid rgba(74,159,212,.18);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;transition:transform .3s;}
+.sl-logo{padding:24px 18px 18px;border-bottom:1px solid rgba(74,159,212,.15);text-align:center;}
+.sl-logo .svet-icon{width:56px;height:56px;margin:0 auto 10px;display:block;}
+.sl-logo h2{font-family:var(--serif);font-size:11.5px;font-weight:300;color:var(--blue2);letter-spacing:.15em;text-transform:uppercase;}
+.sl-logo p{font-family:var(--sans);font-size:9px;color:var(--stone);letter-spacing:.08em;margin-top:3px;}
+.toc-part{font-family:var(--sans);font-size:8.5px;font-weight:600;color:var(--blue2);letter-spacing:.2em;text-transform:uppercase;padding:12px 16px 4px;}
+.toc-item{display:block;padding:6px 16px 6px 20px;font-family:var(--sans);font-size:10.5px;color:var(--muted);cursor:pointer;border-left:2px solid transparent;transition:all .18s;line-height:1.35;}
+.toc-item:hover{color:var(--light);background:rgba(74,159,212,.07);}
+.toc-item.active{color:var(--blue2);border-left-color:var(--blue2);background:rgba(74,159,212,.1);}
+.tag-i{font-size:8px;background:rgba(74,159,212,.2);color:var(--cyan);padding:1px 5px;border-radius:2px;margin-left:4px;}
+
+/* MAIN */
+#main{margin-left:280px;flex:1;}
+#prog{position:fixed;top:0;left:280px;right:0;height:2px;background:rgba(74,159,212,.12);z-index:200;}
+#pb{height:2px;background:var(--blue2);transition:width .3s;}
+
+/* SECTIONS */
+.bs{display:none;min-height:100vh;animation:fi .35s ease;}
+.bs.visible{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* COVER */
+#sc{background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:60px 40px;position:relative;overflow:hidden;}
+#sc::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(42,107,181,.35) 0%,transparent 70%);pointer-events:none;}
+.cover-ray{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;border:1px solid rgba(74,159,212,.08);animation:pulse 6s ease-in-out infinite;}
+.cover-ray:nth-child(2){width:400px;height:400px;animation-delay:-2s;}
+.cover-ray:nth-child(3){width:200px;height:200px;animation-delay:-4s;}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.05);opacity:.8}}
+.c-tag{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--blue2);margin-bottom:30px;opacity:.8;position:relative;}
+.c-sveta{font-family:var(--serif);font-size:clamp(52px,9vw,108px);font-weight:300;line-height:1;color:var(--light);letter-spacing:.06em;margin-bottom:6px;position:relative;}
+.c-sveta .s{color:var(--cyan);}
+.c-sub{font-family:var(--sans);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue2);margin-bottom:4px;position:relative;}
+.c-decode{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:36px;line-height:1.7;position:relative;}
+.cdiv{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--blue2),transparent);margin:0 auto 22px;position:relative;}
+.c-author{font-family:var(--sans);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;position:relative;}
+.c-meta{font-family:var(--sans);font-size:10px;color:rgba(143,179,212,.4);letter-spacing:.1em;position:relative;}
+.c-btn{margin-top:50px;padding:12px 36px;border:1px solid var(--blue2);background:transparent;color:var(--blue2);font-family:var(--sans);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .25s;position:relative;}
+.c-btn:hover{background:var(--blue2);color:var(--bg);}
+
+/* PAGE */
+.pi{max-width:800px;margin:0 auto;padding:64px 56px 90px;}
+.ey{font-family:var(--sans);font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--blue2);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.ey::after{content:'';flex:1;height:1px;background:rgba(74,159,212,.2);}
+h1.cht{font-family:var(--serif);font-size:clamp(26px,4vw,46px);font-weight:300;line-height:1.2;color:var(--light);margin-bottom:10px;}
+.chs{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--muted);margin-bottom:38px;}
+.bt{font-family:var(--serif);font-size:17px;line-height:1.9;color:rgba(232,244,253,.82);margin-bottom:1.3em;}
+.bt strong{color:var(--blue2);font-weight:400;}
+.lead{font-size:19px;font-style:italic;color:var(--light);line-height:1.75;margin-bottom:1.8em;padding-left:22px;border-left:2px solid var(--blue2);}
+h3.sh{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue2);margin:2.8em 0 .9em;}
+blockquote.aq{margin:2.2em 0;padding:20px 28px;background:rgba(74,159,212,.05);border-left:3px solid var(--blue2);font-style:italic;font-size:17px;color:var(--muted);line-height:1.8;}
+blockquote.aq cite{display:block;font-style:normal;font-family:var(--sans);font-size:9px;letter-spacing:.1em;color:var(--stone);margin-top:10px;opacity:.65;}
+.fb{background:rgba(42,107,181,.15);border:1px solid rgba(74,159,212,.2);border-left:3px solid var(--blue2);border-radius:4px;padding:18px 26px;margin:1.8em 0;font-family:var(--mono);font-size:13.5px;color:var(--light);line-height:2;}
+.fb .fl{font-family:var(--sans);font-size:8.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);margin-bottom:9px;opacity:.8;}
+
+/* ACRONYM DECODER */
+.acronym-row{display:grid;grid-template-columns:auto 1fr;gap:8px 20px;margin:1.5em 0;}
+.ac-letter{font-family:var(--mono);font-size:32px;font-weight:500;color:var(--cyan);line-height:1;}
+.ac-word{font-family:var(--serif);font-size:17px;color:var(--light);padding-top:6px;}
+.ac-desc{grid-column:2;font-family:var(--sans);font-size:11px;color:var(--muted);margin-top:-4px;margin-bottom:12px;}
+
+/* STEPS (ACT ТВОРЕНИЯ) */
+.steps{margin:2em 0;}
+.step{display:flex;gap:16px;margin-bottom:20px;align-items:flex-start;}
+.step-n{font-family:var(--mono);font-size:12px;color:var(--cyan);min-width:40px;padding-top:3px;opacity:.7;}
+.step-body{flex:1;}
+.step-title{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue2);margin-bottom:5px;}
+.step-text{font-family:var(--serif);font-size:16px;color:rgba(232,244,253,.8);line-height:1.7;}
+
+/* INTERACTIVE DEMO */
+.dp{background:rgba(10,15,30,.6);border:1px solid rgba(74,159,212,.18);border-radius:8px;padding:28px;margin:2.2em 0;position:relative;}
+.dp .dtag{position:absolute;top:-9px;left:22px;background:var(--blue2);color:var(--bg);font-family:var(--sans);font-size:8.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:2px 9px;border-radius:2px;}
+.dc{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px;}
+.db{padding:7px 18px;background:transparent;border:1px solid var(--blue2);color:var(--blue2);font-family:var(--sans);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .18s;}
+.db:hover,.db.active{background:var(--blue2);color:var(--bg);}
+
+/* TABLE */
+.ft{width:100%;border-collapse:collapse;margin:1.8em 0;font-family:var(--sans);font-size:12.5px;}
+.ft th{background:rgba(74,159,212,.1);color:var(--blue2);font-size:8.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:9px 14px;text-align:left;border-bottom:1px solid rgba(74,159,212,.25);}
+.ft td{padding:8px 14px;color:rgba(232,244,253,.8);border-bottom:1px solid rgba(74,159,212,.07);line-height:1.55;}
+.ft tr:hover td{background:rgba(74,159,212,.04);}
+.ft td.hl{color:var(--cyan);}
+
+/* PYRAMID MODEL */
+.pyrtable{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:2em 0;}
+.pyrbox{background:rgba(74,159,212,.07);border:1px solid rgba(74,159,212,.18);border-radius:6px;padding:16px 20px;}
+.pyrbox .pb-label{font-family:var(--sans);font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;}
+.pyrbox .pb-text{font-family:var(--serif);font-size:15px;color:rgba(232,244,253,.8);line-height:1.65;}
+
+/* RESULT HIGHLIGHT */
+.hl{background:rgba(74,159,212,.07);border:1px solid rgba(74,159,212,.2);border-radius:6px;padding:18px 24px;margin:2em 0;}
+.hl p{font-family:var(--serif);font-size:16px;color:var(--light);line-height:1.75;margin:.45em 0;}
+.hl p::before{content:'→ ';color:var(--blue2);}
+
+/* LOGIC TABLE */
+.logic-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:1.8em 0;}
+.lg-item{background:rgba(74,159,212,.06);border:1px solid rgba(74,159,212,.15);border-radius:5px;padding:14px 16px;}
+.lg-title{font-family:var(--sans);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px;}
+.lg-body{font-family:var(--serif);font-size:14.5px;color:rgba(232,244,253,.8);line-height:1.65;}
+
+/* TIMELINE */
+.tl{position:relative;padding-left:30px;margin:2em 0;}
+.tl::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:1px;background:rgba(74,159,212,.25);}
+.tl-item{position:relative;margin-bottom:1.4em;}
+.tl-item::before{content:'';position:absolute;left:-25px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--blue2);border:2px solid var(--bg2);}
+.tl-y{font-family:var(--mono);font-size:11px;color:var(--cyan);margin-bottom:3px;}
+.tl-t{font-family:var(--serif);font-size:16px;color:rgba(232,244,253,.82);line-height:1.7;}
+
+/* OBJECTIVES TABLE */
+.obj-table{overflow-x:auto;margin:1.8em 0;}
+
+/* PAGE NAV */
+.pn{display:flex;justify-content:space-between;align-items:center;padding:28px 56px 44px;max-width:800px;margin:0 auto;border-top:1px solid rgba(74,159,212,.1);}
+.nb{display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);cursor:pointer;background:none;border:none;transition:color .18s;}
+.nb:hover{color:var(--blue2);}
+.nb .ar{font-size:16px;}
+
+#menu-toggle{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--bg2);border:1px solid var(--blue2);color:var(--blue2);width:38px;height:38px;font-size:17px;cursor:pointer;align-items:center;justify-content:center;}
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:none;}
+  #main{margin-left:0;}
+  #menu-toggle{display:flex;}
+  .pi{padding:44px 22px 70px;}
+  .pn{padding:22px 22px 36px;}
+  #prog{left:0;}
+  .logic-grid,.pyrtable{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<div id="prog"><div id="pb" style="width:0%"></div></div>
+
+<div style="display:flex;min-height:100vh;">
+<nav id="sidebar">
+  <div class="sl-logo">
+    <svg class="svet-icon" viewBox="0 0 56 56" fill="none">
+      <circle cx="28" cy="28" r="26" stroke="#2a6bb5" stroke-width="1" stroke-dasharray="5,3" opacity="0.5"/>
+      <circle cx="28" cy="28" r="18" stroke="#4a9fd4" stroke-width="1" opacity="0.6"/>
+      <polygon points="28,8 38,24 18,24" fill="none" stroke="#00c8e0" stroke-width="1.2"/>
+      <polygon points="28,48 38,32 18,32" fill="none" stroke="#2a6bb5" stroke-width="1.2" opacity="0.7"/>
+      <line x1="28" y1="4" x2="28" y2="52" stroke="#4a9fd4" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.4"/>
+      <line x1="4" y1="28" x2="52" y2="28" stroke="#4a9fd4" stroke-width="0.6" stroke-dasharray="3,3" opacity="0.4"/>
+      <text x="28" y="31" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="9" font-weight="600" fill="#00c8e0" letter-spacing="2">СВЕТ</text>
+    </svg>
+    <h2>Оболочка СВЕТ</h2>
+    <p>А. Е. Кашеварова · 2019</p>
+  </div>
+
+  <div style="padding:8px 0 20px;">
+    <div class="toc-part">Начало</div>
+    <span class="toc-item active" onclick="show('cover',0)">Обложка</span>
+    <span class="toc-item" onclick="show('about',1)">О книге · СВЕТ</span>
+    <span class="toc-item" onclick="show('from-author',2)">От автора</span>
+
+    <div class="toc-part">Глава 1 — Системный подход</div>
+    <span class="toc-item" onclick="show('ch1-1',3)">§ 1.1 · Развитие логики <span class="tag-i">★</span></span>
+    <span class="toc-item" onclick="show('ch1-2',4)">§ 1.2 · Акт Творения <span class="tag-i">★</span></span>
+    <span class="toc-item" onclick="show('ch1-3',5)">§ 1.3 · Теория Созидания <span class="tag-i">★</span></span>
+    <span class="toc-item" onclick="show('ch1-4',6)">§ 1.4 · Мышление · Системный подход</span>
+    <span class="toc-item" onclick="show('ch1-5',7)">§ 1.5 · Диалектическая логика</span>
+
+    <div class="toc-part">Глава 2 — Формализация</div>
+    <span class="toc-item" onclick="show('ch2-1',8)">§ 2.1 · Область применения ФДЛ</span>
+    <span class="toc-item" onclick="show('ch2-2',9)">§ 2.2 · График представлений <span class="tag-i">★</span></span>
+    <span class="toc-item" onclick="show('ch2-3',10)">§ 2.3 · Элементы формальной диалогики</span>
+    <span class="toc-item" onclick="show('ch2-4',11)">§ 2.4 · Инструктивная схема <span class="tag-i">★</span></span>
+    <span class="toc-item" onclick="show('ch2-5',12)">§ 2.5 · Деталировка системы</span>
+    <span class="toc-item" onclick="show('ch2-6',13)">§ 2.6 · Объёмный макет связей <span class="tag-i">★</span></span>
+
+    <div class="toc-part">Заключение · Приложение</div>
+    <span class="toc-item" onclick="show('conclusion',14)">Заключение</span>
+    <span class="toc-item" onclick="show('app-met',15)">Прил. · Методические разъяснения</span>
+    <span class="toc-item" onclick="show('app-city',16)">Прил. · Развитие г. Николаева</span>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- 0 COVER -->
+<section id="sc" class="bs visible">
+  <div class="cover-ray"></div><div class="cover-ray"></div><div class="cover-ray"></div>
+  <div class="c-tag">Николаевское городское общество исследователей · Июль 2019</div>
+  <h1 class="c-sveta"><span class="s">С</span>ВЕТ</h1>
+  <p class="c-sub">Теоретические основы «Оболочки СВЕТ»</p>
+  <div class="c-decode">
+    Система · Векторов · Единства · Типологики
+  </div>
+  <div class="cdiv"></div>
+  <p class="c-author">А. Е. Кашеварова</p>
+  <p class="c-meta">Проектирование, сопровождаемое созданием методологии построения системы</p>
+  <button class="c-btn" onclick="show('about',1)">Открыть книгу →</button>
+</section>
+
+<!-- 1 О КНИГЕ -->
+<section id="sabout" class="bs">
+  <div class="pi">
+    <div class="ey">Предисловие</div>
+    <h1 class="cht">Что такое Оболочка СВЕТ</h1>
+    <div class="acronym-row">
+      <div class="ac-letter">С</div><div class="ac-word">Система</div>
+      <div class="ac-desc">«Объективное единство закономерно связанных друг с другом предметов, явлений, а также знаний о природе и обществе» (БСЭ, 1956)</div>
+      <div class="ac-letter">В</div><div class="ac-word">Векторов</div>
+      <div class="ac-desc">«Вектор» = указание направления + смысловая нагрузка (аналог физико-математического понятия «величины»)</div>
+      <div class="ac-letter">Е</div><div class="ac-word">Единства</div>
+      <div class="ac-desc">«Совокупность, самопородившая новые качества, отсутствующие у её частей» — в традициях диалектической логики</div>
+      <div class="ac-letter">Т</div><div class="ac-word">Типологики</div>
+      <div class="ac-desc">Неологизм автора: «типичные способы последовательности мышления в отношении объектов, содержание которых влияет на порядок мышления и вывода»</div>
+    </div>
+    <p class="bt">Понятие «оболочка» в этой работе имеет два смысла: <strong>программный инструмент управления</strong> в персональных компьютерах, а также <strong>комплект типовых форм тексто-таблиц</strong> — проектная основа для построения системы.</p>
+    <p class="bt">Оболочка СВЕТ освещает путь для дисциплины мышления создателям <strong>сложных систем в условиях неопределённости</strong>, когда создание системы выполняется совместно с созданием методологии её построения.</p>
+    <div class="hl">
+      <p>Сложность способа решения задач должна соответствовать сложности задач</p>
+      <p>Иначе — кризис и крах</p>
+      <p>В этом — главная заповедь специалиста по системному подходу</p>
+    </div>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('cover',0)"><span class="ar">←</span> Обложка</button>
+    <button class="nb" onclick="show('from-author',2)">От автора <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 2 ОТ АВТОРА -->
+<section id="sfrom-author" class="bs">
+  <div class="pi">
+    <div class="ey">История работы · 1974–2019</div>
+    <h1 class="cht">От автора</h1>
+    <p class="chs">Три этапа создания — полвека пути</p>
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-y">1973–1974</div>
+        <div class="tl-t"><strong>Первый этап.</strong> Зам. начальника АСУП Черноморского судостроительного завода М.М.Райхман делится разочарованием: «нашел философское обоснование бесперспективности применения вычислительной техники к управлению производством». Автор выявляет ошибку в логике рассуждений В.Н.Садовского о «парадоксах системного мышления» и пишет опровержение.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-y">1974–1979</div>
+        <div class="tl-t">Пять лет борьбы за публикацию статьи в «Системных исследованиях» — журнале, редактируемом самим Садовским. После личной жалобы Д.М.Гвишиани — главному редактору — статья опубликована, <strong>но с искажением</strong> и изъятием ключевого фрагмента: описания схемы практического применения системного подхода.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-y">1994</div>
+        <div class="tl-t"><strong>Второй этап.</strong> Приглашение городского головы: разработать план развития г. Николаева. Создание таблиц деталировки системного подхода, концепций функциональных зависимостей. Методология не нашла поддержки «из-за трудностей восприятия диалектического системного подхода».</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-y">2004</div>
+        <div class="tl-t"><strong>Третий этап.</strong> Появление единомышленников. Доработка геометрической схемы. Государственная регистрация авторских прав. Практическое применение городскими головами малых городов.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-y">2019</div>
+        <div class="tl-t">Окончательное издание под эгидой НГОИ. <strong>Николаев, июль 2019.</strong></div>
+      </div>
+    </div>
+    <blockquote class="aq">«Однажды главный конструктор одного из могучих военных кораблей упрекнул меня, сказав: "Твои трудности возникают потому, что ты решаешь задачу в комплексе". А я-то воображала, что в этом моё преимущество!»<cite>— А.Е. Кашеварова</cite></blockquote>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('about',1)"><span class="ar">←</span> О книге</button>
+    <button class="nb" onclick="show('ch1-1',3)">Глава 1 — Логика <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 3 §1.1 РАЗВИТИЕ ЛОГИКИ -->
+<section id="sch1-1" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 1 · Введение в системный подход</div>
+    <h1 class="cht">§ 1.1. Тезисы о развитии логики</h1>
+    <p class="chs">Важные для пользователей Оболочки СВЕТ</p>
+
+    <div class="dp">
+      <div class="dtag">Интерактив — Четыре вида логики</div>
+      <svg id="logic-svg" width="100%" viewBox="0 0 680 280" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <h3 class="sh">Начала логики</h3>
+    <p class="bt">Исходный пункт субъективный: <strong>деятельность материальная</strong> и <strong>деятельность умственная</strong>. Их связь, порождающая опыт, приводит к понятиям «практика» и «теория». Теории создаются на основе постулатов двух видов:</p>
+    <div class="logic-grid">
+      <div class="lg-item"><div class="lg-title">Аксиома</div><div class="lg-body">Жёсткий договор, неизменяемый. Изменение аксиомы порождает другую теорию. В комплекте аксиом каждая независима от других</div></div>
+      <div class="lg-item"><div class="lg-title">Гипотеза</div><div class="lg-body">Мягкий договор. В процессе создания теории допускается уточнение ради сближения теоретических прогнозов с экспериментом</div></div>
+      <div class="lg-item"><div class="lg-title">Постулат автора</div><div class="lg-body">Мышление — это способность, а не свойство «особым образом организованной материи». Способности развиваются и изменяются</div></div>
+    </div>
+
+    <h3 class="sh">Философия логики</h3>
+    <p class="bt">Автор полагает, что приходится ставить вопрос о пересмотре сложившегося к концу 20-го века представления о логике как науке о мышлении. Получены экспериментальные подтверждения <strong>материальности мысли</strong>. Поэтому науке о мышлении предстоит сместиться в область изучения этой объективной реальности.</p>
+
+    <div class="hl">
+      <p>Логика — не наука о мышлении, а наука о законах высказываний</p>
+      <p>Системная логика (21 в.) = расширение диалектической логики через информационные методы</p>
+      <p>В системной логике правила высказываний распределяются по типам в зависимости от содержания</p>
+    </div>
+
+    <h3 class="sh">Формы мышления — критика традиции</h3>
+    <p class="bt">Классификация суждений по подклассам модальности — неполна. Автор предлагает расширенную схему суждений: существования, необходимости, обнаружения, вероятные, предположения, проектирующие, фантазийные, описательные. <strong>Суждение предположения</strong> (прогноз, надежда) не входит в традиционную классификацию — это ошибочный пробел.</p>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('from-author',2)"><span class="ar">←</span> От автора</button>
+    <button class="nb" onclick="show('ch1-2',4)">Акт Творения ★ <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 4 §1.2 АКТ ТВОРЕНИЯ -->
+<section id="sch1-2" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 1 · § 1.2</div>
+    <h1 class="cht">Акт Творения</h1>
+    <p class="chs">22 шага создания системы при отсутствии прототипа</p>
+    <p class="lead">«Почва для произрастания системы бинарна: должна быть среда (совокупность индивидуумов и всего вокруг них); должен быть творец (индивидуум, продуцирующий идеи)»</p>
+
+    <div class="dp">
+      <div class="dtag">Интерактив — Акт Творения (рис. 1)</div>
+      <canvas id="act-canvas" width="700" height="380" style="max-width:100%;display:block;"></canvas>
+      <div class="dc" style="margin-top:14px;">
+        <button class="db active" onclick="actMode('full')" id="btn-full">Полная схема</button>
+        <button class="db" onclick="actMode('phases')" id="btn-phases">Фазы</button>
+        <button class="db" onclick="actMode('funcs')" id="btn-funcs">Функции</button>
+      </div>
+    </div>
+
+    <h3 class="sh">Ключевые шаги Акта Творения</h3>
+    <div class="steps" id="act-steps"></div>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch1-1',3)"><span class="ar">←</span> § 1.1</button>
+    <button class="nb" onclick="show('ch1-3',5)">Теория Созидания ★ <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 5 §1.3 ТЕОРИЯ СОЗИДАНИЯ -->
+<section id="sch1-3" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 1 · § 1.3</div>
+    <h1 class="cht">Основы теории Созидания</h1>
+    <p class="chs">Лотос Созидания · Пирамиды управления</p>
+
+    <h3 class="sh">1.3.1. Общая модель Созидания</h3>
+    <p class="bt">На правильном октаэдре, вписанном в сферу, обозначены элементы, символизирующие условия общественной жизни:</p>
+    <div class="logic-grid">
+      <div class="lg-item"><div class="lg-title">ось ДТ — работа</div><div class="lg-body">Выше экватора — потенциал умственного труда. Ниже — потенциал физического труда</div></div>
+      <div class="lg-item"><div class="lg-title">Т — Творение</div><div class="lg-body">Энергия созидания, плод деятельности, производство</div></div>
+      <div class="lg-item"><div class="lg-title">С — Сила</div><div class="lg-body">Власть, воля, действие</div></div>
+      <div class="lg-item"><div class="lg-title">В — Вера</div><div class="lg-body">Подчинение авторитету, послушание</div></div>
+      <div class="lg-item"><div class="lg-title">И — Искусство</div><div class="lg-body">Чувственная модель природы</div></div>
+      <div class="lg-item"><div class="lg-title">Н — Наука</div><div class="lg-body">Логическая модель природы</div></div>
+    </div>
+    <p class="bt">Полная урегулированность в движении этих элементов создаёт <strong>белый цвет гармонии</strong> в обществе. Перекосы окрашивают существование в разные тона. Вот круговорот радуги из семи цветов.</p>
+
+    <h3 class="sh">1.3.2. Частная модель — Лотос Созидания</h3>
+    <div class="dp">
+      <div class="dtag">Интерактив — Пирамида созидания (рис. 5)</div>
+      <svg id="lotus-svg" width="100%" viewBox="0 0 680 380" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="pyrtable">
+      <div class="pyrbox"><div class="pb-label" style="color:var(--blue2);">Верхняя пирамида — Созидание</div><div class="pb-text">Уровень поддержки · Уровень созидания · Уровень разумного сопротивления<br>Платформа влияния — традиционный уклад</div></div>
+      <div class="pyrbox"><div class="pb-label" style="color:var(--red);">Нижняя пирамида — Гибель</div><div class="pb-text">Уровень разрушения · Уровень помех · Зона творцов способов разрушения</div></div>
+    </div>
+    <p class="bt">«Диаметр окружностей» разрушительных сил больше, чем созидательных — модель <strong>более мощной энергетики разрушения</strong> по сравнению с созиданием.</p>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch1-2',4)"><span class="ar">←</span> Акт Творения</button>
+    <button class="nb" onclick="show('ch1-4',6)">§ 1.4 Мышление <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 6 §1.4 МЫШЛЕНИЕ -->
+<section id="sch1-4" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 1 · § 1.4</div>
+    <h1 class="cht">§ 1.4. Мышление, системное мышление, системный подход</h1>
+    <p class="chs">Различие между ними · Критика традиционной философии</p>
+
+    <h3 class="sh">1.4.1. Мышление</h3>
+    <p class="bt">К концу 20-го века переводной философский словарь 2000 г. <em>вообще не имеет</em> толкования слова «мышление». Автор предлагает коренную переработку представлений:</p>
+    <div class="hl">
+      <p>Мышление — это <strong>способность</strong>, а не «свойство особым образом организованной материи»</p>
+      <p>Способности у людей разнятся, развиваются и изменяются</p>
+      <p>В мышлении участвует весь организм как целостная система (нейрофизиология)</p>
+    </div>
+
+    <h3 class="sh">17 показателей творческих умственных способностей (по А.Луку, 1973)</h3>
+    <table class="ft">
+      <thead><tr><th>№</th><th>Способность</th><th>Суть</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="hl">Зоркость в поисках проблем</td><td>«Способность увидеть то, что не укладывается в рамки ранее усвоенного»</td></tr>
+        <tr><td>2</td><td>Осознание кода переработки информации</td><td>Соответствие врождённым особенностям мозга: зрительно-пространственный, словесный, акустически-образный, цифровой</td></tr>
+        <tr><td>3</td><td class="hl">Способность к свёртыванию</td><td>Замена нескольких представлений одним, более абстрактным символом</td></tr>
+        <tr><td>4</td><td>Способность к переносу</td><td>Поиски аналогий — выработка обобщающей стратегии</td></tr>
+        <tr><td>5</td><td>Способность к «сцеплению»</td><td>Объединение воспринимаемых раздражителей с имеющимся знанием</td></tr>
+        <tr><td>6</td><td class="hl">Боковое мышление</td><td>Способность увидеть путь, используя «постороннюю» информацию, думать «около»</td></tr>
+        <tr><td>7</td><td>Целостность восприятия</td><td>«Умение оторваться от логического рассмотрения фактов»</td></tr>
+        <tr><td>8</td><td>Готовность памяти</td><td>Сообразительность — быстрое извлечение нужной информации в нужную минуту</td></tr>
+        <tr><td>10</td><td class="hl">Гибкость мышления</td><td>Способность вовремя отказаться от скомпрометированной гипотезы</td></tr>
+        <tr><td>11</td><td>Спонтанная гибкость</td><td>Переключение с одного класса явлений на другой, далёкий по содержанию</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sh">1.4.2. Системное мышление</h3>
+    <p class="bt">Системное мышление — это способность видеть не изолированные факты, а их взаимосвязь, видеть <strong>систему в целом</strong>. Это следующий уровень над обычным мышлением, требующий специальной подготовки.</p>
+
+    <h3 class="sh">1.4.3. Системный подход</h3>
+    <p class="bt">Системный подход как <strong>частный случай формализации диалектической логики</strong>. Главный вывод из разработок 70-х годов: возможности и знания специалистов по системному подходу окажутся невостребованными, если потребители не овладеют элементарными знаниями диалектической логики.</p>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch1-3',5)"><span class="ar">←</span> Теория Созидания</button>
+    <button class="nb" onclick="show('ch1-5',7)">§ 1.5 Диалектическая логика <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 7 §1.5 ДИАЛЕКТИЧЕСКАЯ ЛОГИКА -->
+<section id="sch1-5" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 1 · § 1.5</div>
+    <h1 class="cht">§ 1.5. Системный подход как формализация диалектической логики</h1>
+
+    <h3 class="sh">Законы диалектики (природные и теоретические)</h3>
+    <div class="logic-grid">
+      <div class="lg-item"><div class="lg-title">Тезис</div><div class="lg-body">Исходное утверждение о предмете системы</div></div>
+      <div class="lg-item"><div class="lg-title">Антитезис</div><div class="lg-body">Противоречие, отрицающее тезис</div></div>
+      <div class="lg-item"><div class="lg-title">Синтез</div><div class="lg-body">Единство противоположностей на новом уровне</div></div>
+    </div>
+
+    <h3 class="sh">Термины ФДЛ для разработок системного подхода</h3>
+    <table class="ft">
+      <thead><tr><th>Термин</th><th>Смысл в ФДЛ</th></tr></thead>
+      <tbody>
+        <tr><td class="hl">Целое</td><td>Единство частей, обладающее свойствами, которыми части по отдельности не обладают</td></tr>
+        <tr><td class="hl">Часть</td><td>Элемент, включённый в систему целого; вне системы теряет свои функции</td></tr>
+        <tr><td class="hl">Единство</td><td>Совокупность, самопородившая новые качества — НЕ простая сумма</td></tr>
+        <tr><td>Субъект</td><td>То, о чём высказывается суждение в системном контексте</td></tr>
+        <tr><td>Объект</td><td>Создаваемое превращается в объект после запуска в действие, отчуждаясь от творцов</td></tr>
+        <tr><td class="hl">Противоречие</td><td>По-Библеру: столкновение разных логик мышления — движущая сила развития системы</td></tr>
+        <tr><td>Обратная связь</td><td>Разделяются на прямые/обратные, горизонтальные/вертикальные, положительные/отрицательные</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sh">Позиция о материальности мысли</h3>
+    <blockquote class="aq">«Получены экспериментальные подтверждения материальности мысли. Физики А.-В.И.Вейник, П.Д.Пруссов, А.Е.Акимов единодушно настаивают на материальности мысли. Позиция части философов-материалистов, отстаивавших тезис о материальности мысли, была правильной»<cite>— А.Е. Кашеварова</cite></blockquote>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch1-4',6)"><span class="ar">←</span> § 1.4</button>
+    <button class="nb" onclick="show('ch2-1',8)">Глава 2 — ФДЛ <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 8 §2.1 ОБЛАСТЬ ПРИМЕНЕНИЯ ФДЛ -->
+<section id="sch2-1" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 2 · Введение в формализацию</div>
+    <h1 class="cht">§ 2.1. Область применения формальной диалектической логики</h1>
+
+    <p class="bt">«Формальная диалогика» — термин автора для обозначения инструмента формализации диалектической логики. В отличие от формальной логики Аристотеля, здесь <strong>содержание влияет на форму</strong> вывода суждений.</p>
+
+    <h3 class="sh">Три уровня мышления — область применения</h3>
+    <table class="ft">
+      <thead><tr><th>Уровень</th><th>Характеристика</th><th>Инструмент</th></tr></thead>
+      <tbody>
+        <tr><td class="hl">Мышление</td><td>Индивидуальная способность ориентировки</td><td>Достаточно бытовых навыков</td></tr>
+        <tr><td class="hl">Системное мышление</td><td>Видение целого и взаимосвязей</td><td>Специальная подготовка</td></tr>
+        <tr><td class="hl">Системный подход ФДЛ</td><td>Проектирование в условиях неопределённости</td><td><strong>Оболочка СВЕТ</strong></td></tr>
+      </tbody>
+    </table>
+
+    <p class="bt">Область применения — задачи, где <strong>сложность системы</strong> такова, что формальная (одновалентная) логика неспособна дать адекватные решения. Типичные примеры: управление развитием города, создание новых производств, реформирование государственных институтов.</p>
+
+    <div class="hl">
+      <p>Проекты, лабораторные исследования, натурные эксперименты нуждаются в интерпретации стандартными формами мышления</p>
+      <p>Эти формы способны создавать как истинную, так и искажённую картину мира</p>
+      <p>Поэтому достоверность зависит от честности статистических показателей и степени объективности значения</p>
+    </div>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch1-5',7)"><span class="ar">←</span> § 1.5</button>
+    <button class="nb" onclick="show('ch2-2',9)">§ 2.2 График ★ <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 9 §2.2 ГРАФИК ПРЕДСТАВЛЕНИЙ -->
+<section id="sch2-2" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 2 · § 2.2</div>
+    <h1 class="cht">§ 2.2. График представлений при проектировании систем</h1>
+    <p class="chs">Используемых при проектировании систем с признаками неопределённости</p>
+
+    <div class="dp">
+      <div class="dtag">Интерактив — Кольцевая диаграмма проработки решений</div>
+      <canvas id="ring-canvas" width="700" height="360" style="max-width:100%;display:block;"></canvas>
+      <div class="dc" style="margin-top:14px;">
+        <button class="db active" onclick="ringMode('ring')" id="btn-ring">Кольцевая диаграмма</button>
+        <button class="db" onclick="ringMode('linear')" id="btn-lin">Линейный макет</button>
+        <button class="db" onclick="ringMode('cycle')" id="btn-cyc">Цикл ФДЛ</button>
+      </div>
+    </div>
+
+    <h3 class="sh">Структура графика</h3>
+    <p class="bt">График представляет последовательность перехода от <strong>неизреченного желания</strong> через этапы анализа к <strong>запуску системы</strong>. Каждый этап включает: цели, потребности, средства, показатели, программы.</p>
+    <div class="fb"><div class="fl">Базовые отношения в ФДЛ</div>
+Цели → Потребности → Средства<br>
+Ср(Ц) — ограничения (зависимость средств от целей)<br>
+Зн(П) — критерии (зависимость значимости от потребностей)<br>
+Ср(Уд) — затраты (зависимость использованных средств от начальных условий)<br>
+Эф(П) — признание (зависимость эффективности от потребностей)</div>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch2-1',8)"><span class="ar">←</span> § 2.1</button>
+    <button class="nb" onclick="show('ch2-3',10)">§ 2.3 Элементы <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 10 §2.3 ЭЛЕМЕНТЫ -->
+<section id="sch2-3" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 2 · § 2.3</div>
+    <h1 class="cht">§ 2.3. Элементы и компоненты формальной диалогики</h1>
+
+    <table class="ft">
+      <thead><tr><th>Элемент</th><th>Определение</th><th>Уровень деления</th></tr></thead>
+      <tbody>
+        <tr><td class="hl">Замысел (Концепция проекта)</td><td>Главное осознание. Принимается как Концепция Проекта решения</td><td>0-й уровень</td></tr>
+        <tr><td class="hl">Цели (Ц¹, Ц²)</td><td>1-й уровень: комплект целей по направлениям. 2-й уровень: деление по зонам интересов с кодировкой</td><td>1–2-й уровни</td></tr>
+        <tr><td class="hl">Зоны интересов</td><td>Выявляются в структурах. Род/вид определяется традицией среды</td><td>Структура</td></tr>
+        <tr><td class="hl">Направления развития (НР)</td><td>Подструктуры Общего Замысла, пронумерованные. Основа для формулировки потребностей</td><td>2-й уровень</td></tr>
+        <tr><td class="hl">Потребности (П¹, П²)</td><td>1-й уровень: по каждому НР. 2-й уровень: классификация по зонам интересов с кодировкой</td><td>1–2-й уровни</td></tr>
+        <tr><td class="hl">Средства (Ср¹, Ср²)</td><td>1-й уровень: роды средств с кодировкой. 2-й уровень: виды по каждому НР</td><td>1–2-й уровни</td></tr>
+        <tr><td class="hl">Значимости показателей (Зн)</td><td>Шкалы измерений в относительных величинах. Справочник. Ограниченная экспертиза</td><td>Функции</td></tr>
+        <tr><td class="hl">Целевые функции</td><td>Формулы вычисления показателей А,Б,В,...Я. Отражают подсистемы реальной деятельности</td><td>Функции</td></tr>
+        <tr><td class="hl">Ранговая функция</td><td>Оптимизация совокупности целевых функций с учётом приоритетных коэффициентов</td><td>Функции</td></tr>
+        <tr><td class="hl">Узлы деятельности (УД)</td><td>Внутри НР, на стыках НР и между НР. Координируют и обеспечивают обратную связь</td><td>Координация</td></tr>
+        <tr><td class="hl">Курс приоритетов (КП)</td><td>Утверждённая последовательность важности направлений развития</td><td>Управление</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch2-2',9)"><span class="ar">←</span> § 2.2</button>
+    <button class="nb" onclick="show('ch2-4',11)">§ 2.4 Инструктивная схема ★ <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 11 §2.4 ИНСТРУКТИВНАЯ СХЕМА -->
+<section id="sch2-4" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 2 · § 2.4</div>
+    <h1 class="cht">§ 2.4. Инструктивная схема связей формальной диалогики</h1>
+    <p class="chs">При поиске решения</p>
+
+    <div class="dp">
+      <div class="dtag">Интерактив — Схема связей ФДЛ</div>
+      <svg id="fdl-svg" width="100%" viewBox="0 0 680 460" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <h3 class="sh">Логика связей в схеме</h3>
+    <p class="bt">Инструктивная схема демонстрирует, как от <strong>начальных условий</strong> (Удо) через цепочку «цели → потребности → средства» достигаются <strong>условия после</strong> (Уп) — новое состояние системы после реализации проекта.</p>
+
+    <div class="fb"><div class="fl">Принцип «ограниченной экспертизы»</div>
+Своеволие оценщика деятельности стеснено рамками заранее обозначенного<br>
+интервала его неумышленной или преднамеренной ошибки<br>
+→ существенно повышает объективность оценок<br>
+→ допускает перепроверку в пределах допустимых погрешностей</div>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch2-3',10)"><span class="ar">←</span> § 2.3</button>
+    <button class="nb" onclick="show('ch2-5',12)">§ 2.5 Деталировка <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 12 §2.5 ДЕТАЛИРОВКА -->
+<section id="sch2-5" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 2 · § 2.5</div>
+    <h1 class="cht">§ 2.5. Деталировка элементов и компонентов проектируемой системы</h1>
+
+    <h3 class="sh">2.5.1. Кольцевая диаграмма проработки решений</h3>
+    <p class="bt">Кольцевая диаграмма обеспечивает возможность обратиться к любому ранее пройденному этапу при получении новой информации. Решение не линейно — оно циклически уточняется.</p>
+
+    <h3 class="sh">2.5.2. Линейный макет проработки решений</h3>
+    <p class="bt">Линейный макет фиксирует <strong>последовательность</strong> от замысла до запуска. Используется как пошаговое руководство и как основа для разработки программ по направлениям развития.</p>
+
+    <h3 class="sh">2.5.3. Табличные формы накопления данных</h3>
+    <p class="bt">Типовые формы тексто-таблиц включают:</p>
+    <div class="hl">
+      <p>Таблица целей — с кодировкой по зонам интересов</p>
+      <p>Таблица потребностей — по каждому направлению развития</p>
+      <p>Таблица средств — роды и виды по направлениям</p>
+      <p>Справочник показателей — с формулами и шкалами оценок</p>
+      <p>Программа по каждому направлению — содержание, сроки, ответственные</p>
+    </div>
+
+    <h3 class="sh">Алгоритм создания Справочника показателей</h3>
+    <div class="steps" id="steps-sprav"></div>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch2-4',11)"><span class="ar">←</span> § 2.4</button>
+    <button class="nb" onclick="show('ch2-6',13)">§ 2.6 Объёмный макет ★ <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 13 §2.6 ОБЪЁМНЫЙ МАКЕТ -->
+<section id="sch2-6" class="bs">
+  <div class="pi">
+    <div class="ey">Глава 2 · § 2.6</div>
+    <h1 class="cht">§ 2.6. Объёмный макет связей на примере «Развитие г. Николаева»</h1>
+
+    <div class="dp">
+      <div class="dtag">Интерактив — Разделение осей на папки (§ 2.6.1)</div>
+      <canvas id="vol-canvas" width="700" height="340" style="max-width:100%;display:block;"></canvas>
+      <div class="dc" style="margin-top:14px;">
+        <button class="db active" onclick="volMode('axes')" id="btn-ax">Оси координат</button>
+        <button class="db" onclick="volMode('folders')" id="btn-fold">Папки-таблицы</button>
+        <button class="db" onclick="volMode('full3d')" id="btn-3d">Объёмная модель</button>
+      </div>
+    </div>
+
+    <h3 class="sh">Принцип объёмного макета</h3>
+    <p class="bt">Три оси объёмного макета соответствуют трём измерениям системы:</p>
+    <div class="logic-grid">
+      <div class="lg-item"><div class="lg-title">Ось X — Цели</div><div class="lg-body">Уровни деления целей. «Папки» по зонам интересов</div></div>
+      <div class="lg-item"><div class="lg-title">Ось Y — Потребности</div><div class="lg-body">Направления развития. Классификация потребностей по НР</div></div>
+      <div class="lg-item"><div class="lg-title">Ось Z — Средства</div><div class="lg-body">Роды и виды средств. Затраты и функции эффективности</div></div>
+    </div>
+    <p class="bt">Каждая «папка» в пересечении осей содержит <strong>проектную форму</strong> — таблицу с описанием конкретного компонента системы. Совокупность всех папок образует полную <strong>знаковую модель системы</strong>.</p>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch2-5',12)"><span class="ar">←</span> § 2.5</button>
+    <button class="nb" onclick="show('conclusion',14)">Заключение <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 14 ЗАКЛЮЧЕНИЕ -->
+<section id="sconclusion" class="bs">
+  <div class="pi">
+    <div class="ey">Заключение</div>
+    <h1 class="cht">Заключение</h1>
+    <p class="lead">«Предвижу появление в недалёком будущем новой технологии управления обществом, которую условно называю "инженерной философией". Её предназначение — компьютерное моделирование социальных процессов на уровне сущностных закономерностей»</p>
+    <p class="bt">Оболочка СВЕТ — итог трёх этапов разработки за 50 лет (1974–2019). Она реализует на практике идею, которая была подавлена в советское время: <strong>формализацию диалектической логики</strong> как инструмент управления сложными системами.</p>
+
+    <h3 class="sh">Главные результаты</h3>
+    <div class="hl">
+      <p>Создана формальная схема рассуждений, позволяющая людям, далёким от философии, использовать законы диалектической логики</p>
+      <p>Разработана 22-шаговая методология Акта Творения для создания принципиально новых систем</p>
+      <p>Предложена «Частная модель Созидания» — Лотос Созидания как геометрическая метафора развития систем</p>
+      <p>Создан принцип «ограниченной экспертизы» — снижение субъективности оценок при управлении</p>
+      <p>Практическое применение: городские головы малых городов для планирования развития общины</p>
+    </div>
+
+    <blockquote class="aq">«Специалист по системному подходу обязан помнить заповедь: сложность способа решения задач должна соответствовать сложности задач. Иначе — кризис и крах»<cite>— А.Е. Кашеварова</cite></blockquote>
+    <p class="bt" style="text-align:right;font-style:italic;color:var(--muted);margin-top:3em;">г. Николаев · Июль 2019</p>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('ch2-6',13)"><span class="ar">←</span> § 2.6</button>
+    <button class="nb" onclick="show('app-met',15)">Методические разъяснения <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 15 ПРИЛОЖЕНИЕ — МЕТОДИЧЕСКИЕ РАЗЪЯСНЕНИЯ -->
+<section id="sapp-met" class="bs">
+  <div class="pi">
+    <div class="ey">Приложение</div>
+    <h1 class="cht">Методические разъяснения</h1>
+    <p class="chs">К разделам «Значения показателей» и «Эффективность решений»</p>
+
+    <h3 class="sh">Раздел «Значения показателей»</h3>
+    <blockquote class="aq">«Понятие показателей чаще всего смешивают с понятиями "средства" или "потребности". Например, полагают, что показателем экономии газа является его объём в кубических метрах. На самом деле это выражает сэкономленный ресурс — один из видов "средств", а не "показатель экономии"»</blockquote>
+
+    <div class="fb"><div class="fl">Постулат</div>
+Допускается использование показателей, выраженных<br>
+только в ОТНОСИТЕЛЬНЫХ ФОРМАХ<br>
+и позволяющих разделение на интервалы,<br>
+границы которых могут быть однозначно определены<br>
+или согласованы путём договорённости сторон</div>
+
+    <h3 class="sh">Раздел «Эффективность решений»</h3>
+    <p class="bt">Эффективность решений выясняется на основе предварительных договорённостей о формальной (математической) структуре формул, по которым согласились отслеживать динамику достижений.</p>
+
+    <div class="fb"><div class="fl">Ранговая функция — оптимизация</div>
+Р(А,Б,В,Г,...,Я) → максимум<br>
+<br>
+где Р — ранг достижений,<br>
+А,Б,...,Я — целевые функции по направлениям,<br>
+Р отражает приоритет конкретной подсистемы<br>
+в управлении процессом деятельности в целом<br>
+→ Р является эквивалентом потребительной стоимости достижения</div>
+
+    <h3 class="sh">РЕЗУЛЬТАТ применения принципа ограниченной экспертизы</h3>
+    <div class="hl">
+      <p>Своеволие оценщика стеснено рамками заранее обозначенного интервала его ошибки</p>
+      <p>Существенно повышается объективность оценок</p>
+      <p>Допускается перепроверка в пределах допустимых погрешностей</p>
+    </div>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('conclusion',14)"><span class="ar">←</span> Заключение</button>
+    <button class="nb" onclick="show('app-city',16)">Приложение — г. Николаев <span class="ar">→</span></button>
+  </div>
+</section>
+
+<!-- 16 ПРИЛОЖЕНИЕ — РАЗВИТИЕ НИКОЛАЕВА -->
+<section id="sapp-city" class="bs">
+  <div class="pi">
+    <div class="ey">Приложение — Практический пример</div>
+    <h1 class="cht">Формальная диалогика на конкретном примере</h1>
+    <p class="chs">Проектирование системы управления развитием г. Николаева</p>
+    <p class="lead">«В Приложении 1 приведён практический пример созданного на основе Оболочки СВЕТ комплекта типовых форм для проектирования системы управления развитием города. Заинтересованные читатели могут его использовать по назначению»</p>
+
+    <h3 class="sh">Структура Направлений Развития (8 секторов)</h3>
+    <table class="ft">
+      <thead><tr><th>Сектор</th><th>Направление развития</th><th>Ключевые потребности</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="hl">Экономика и производство</td><td>Занятость, инвестиции, промышленный потенциал</td></tr>
+        <tr><td>2</td><td class="hl">Социальная сфера</td><td>Здравоохранение, образование, культура</td></tr>
+        <tr><td>3</td><td class="hl">Коммунальное хозяйство</td><td>Водоснабжение, энергетика, транспорт</td></tr>
+        <tr><td>4</td><td class="hl">Экология</td><td>Чистота воздуха, воды, почвы, зелёные зоны</td></tr>
+        <tr><td>5</td><td class="hl">Управление и право</td><td>Законность, взаимодействие ветвей власти</td></tr>
+        <tr><td>6</td><td class="hl">Информация и связь</td><td>Открытость управления, СМИ, доступ к знаниям</td></tr>
+        <tr><td>7</td><td class="hl">Безопасность</td><td>Правопорядок, защита от чрезвычайных ситуаций</td></tr>
+        <tr><td>8</td><td class="hl">Внешние связи</td><td>Международное сотрудничество, туризм, имидж</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sh">Пример целевой функции для направления «Экология»</h3>
+    <div class="fb"><div class="fl">Целевая функция — относительные показатели</div>
+Э_эко = П₁ × К₁ + П₂ × К₂ + П₃ × К₃ + П₄ × К₄<br>
+<br>
+где П — значение показателя (0…1),<br>
+     К — приоритетный коэффициент (сумма = 1)<br>
+<br>
+Ранговая функция для системы в целом:<br>
+Р = Σᵢ (Эᵢ × Кᵢ)  →  max при ограничениях по ресурсам</div>
+
+    <p class="bt" style="text-align:center;color:var(--muted);font-style:italic;margin-top:4em;">«Людям для размышлений»<br>— девиз НГОИ и этой книги</p>
+  </div>
+  <div class="pn">
+    <button class="nb" onclick="show('app-met',15)"><span class="ar">←</span> Методические разъяснения</button>
+    <button class="nb" onclick="show('cover',0)">↺ На обложку</button>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+// ─── NAVIGATION ──────────────────────────────────────────────
+const SECS=['cover','about','from-author','ch1-1','ch1-2','ch1-3','ch1-4','ch1-5','ch2-1','ch2-2','ch2-3','ch2-4','ch2-5','ch2-6','conclusion','app-met','app-city'];
+let ci=0;
+function show(id,idx){
+  document.querySelectorAll('.bs').forEach(s=>s.classList.remove('visible'));
+  const el=document.getElementById('s'+id);
+  if(el){el.classList.add('visible');window.scrollTo({top:0,behavior:'smooth'});}
+  document.querySelectorAll('.toc-item').forEach(t=>t.classList.remove('active'));
+  const ti=[...document.querySelectorAll('.toc-item')].find(t=>t.getAttribute('onclick')?.includes("'"+id+"'"));
+  if(ti)ti.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+  ci=idx||0;
+  document.getElementById('pb').style.width=((ci/(SECS.length-1))*100)+'%';
+  // lazy inits
+  if(id==='ch1-1')drawLogic();
+  if(id==='ch1-2'){drawAct('full');buildActSteps();}
+  if(id==='ch1-3')drawLotus();
+  if(id==='ch2-2')drawRing('ring');
+  if(id==='ch2-4')drawFDL();
+  if(id==='ch2-5')buildSpravSteps();
+  if(id==='ch2-6')drawVol('axes');
+}
+
+// ─── LOGIC TREE (§1.1) ──────────────────────────────────────
+function drawLogic(){
+  const svg=document.getElementById('logic-svg');if(!svg)return;
+  const nodes=[
+    {x:340,y:30,w:180,h:36,label:'Диалектическая логика',col:'#2a6bb5'},
+    {x:120,y:120,w:160,h:36,label:'Формальная логика',col:'#4a9fd4'},
+    {x:340,y:120,w:160,h:36,label:'Математическая логика',col:'#4a9fd4'},
+    {x:560,y:120,w:160,h:36,label:'Системная логика',col:'#00c8e0'},
+    {x:80,y:220,w:130,h:36,label:'Аристотель',col:'#2a6bb5'},
+    {x:230,y:220,w:130,h:36,label:'Аналитическая',col:'#2a6bb5'},
+    {x:380,y:220,w:130,h:36,label:'Синтетическая',col:'#4a9fd4'},
+    {x:540,y:220,w:130,h:36,label:'Оболочка СВЕТ',col:'#00c8e0'},
+  ];
+  const edges=[[0,1],[0,2],[0,3],[1,4],[1,5],[2,6],[3,7]];
+  const ls='font-family:Montserrat,sans-serif;font-size:10px;fill:#e8f4fd;text-anchor:middle;dominant-baseline:central;';
+  let h='';
+  edges.forEach(([a,b])=>{
+    const na=nodes[a],nb=nodes[b];
+    h+=`<line x1="${na.x}" y1="${na.y+18}" x2="${nb.x}" y2="${nb.y}" stroke="rgba(74,159,212,.3)" stroke-width="1"/>`;
+  });
+  nodes.forEach(n=>{
+    h+=`<rect x="${n.x-n.w/2}" y="${n.y}" width="${n.w}" height="${n.h}" rx="4" fill="${n.col}" opacity="0.2" stroke="${n.col}" stroke-width="0.8"/>`;
+    h+=`<text x="${n.x}" y="${n.y+18}" ${ls} fill="${n.col}">${n.label}</text>`;
+  });
+  svg.innerHTML=h;
+}
+
+// ─── ACT OF CREATION (§1.2) ─────────────────────────────────
+const ACT_STEPS=[
+  {n:'Шаг 1',t:'Неизреченное Желание',d:'У Творца, окружённого средой, возникает побуждение (а)'},
+  {n:'Шаг 2',t:'Изреченное желание',d:'«Хочу создать то-то» — приблизительный замысел проекта (б)'},
+  {n:'Шаг 3',t:'Формулировка задачи',d:'Рассуждения, приводящие к формулировке задачи (в)'},
+  {n:'Шаг 4',t:'Изучение Среды',d:'Осознание комплектности условий нулевого уровня «Удо» (г)'},
+  {n:'Шаг 5',t:'Концепция проекта',d:'Главное осознание — Общий Замысел, принимаемый как Концепция (д)'},
+  {n:'Шаг 6',t:'1-й уровень Целей (Ц¹)',d:'Формулировка комплекта целей первого уровня деления (е)'},
+  {n:'Шаг 7',t:'Структурирование замысла',d:'С учётом Ц¹ в соответствии с традицией Среды (ё)'},
+  {n:'Шаг 8',t:'Зоны интересов',d:'Выявление зон (род/вид) в структурах замысла (ж)'},
+  {n:'Шаг 9',t:'2-й уровень Целей (Ц²)',d:'Распределение по Зонам интересов и кодировка (з)'},
+  {n:'Шаг 10',t:'Направления развития',d:'Каждая структура разделяется на НР с нумерацией (и)'},
+  {n:'Шаг 11',t:'1-й уровень Потребностей',d:'По каждому НР формулируются Потребности (й)'},
+  {n:'Шаг 12',t:'2-й уровень Потребностей',d:'Классификация по Зонам интересов с кодировкой (к)'},
+  {n:'Шаг 13',t:'Роды Средств (Ср¹)',d:'Формулировка смыслов Родов средств 1-го уровня (л)'},
+  {n:'Шаг 14',t:'Виды Средств (Ср²)',d:'По каждому НР в зависимости от Родов средств (м)'},
+  {n:'Шаг 15',t:'Варианты приоритетов',d:'Анализ приоритетов НР для достижения Замысла (н)'},
+  {n:'Шаг 16',t:'Курс приоритетов (КП)',d:'Утверждение Курса приоритетов (о)'},
+  {n:'Шаг 17',t:'Проект Узлов деятельности',d:'Узлы внутри НР, на стыках и между НР (п)'},
+  {n:'Шаг 18',t:'Проект Программы для каждого НР',d:'Концепция НР, цели, прогноз последствий, мероприятия (р)'},
+  {n:'Шаг 19',t:'Значимости показателей (Зн)',d:'Шкалы измерений, Справочник, функции Ср(Ц) и Зн(П) (с)'},
+  {n:'Шаг 20',t:'Эффективность решений (Эф)',d:'Целевые и ранговые функции, программа (т)'},
+  {n:'Шаг 21',t:'Знаковая Модель системы',d:'Компьютерная модель для учёта, управления, расчётов (у)'},
+  {n:'Шаг 22',t:'Запуск системы',d:'Запуск и отладка в качестве гарантийного сопровождения (ф)'},
+];
+let actM='full';
+function actMode(m){
+  actM=m;
+  ['full','phases','funcs'].forEach(x=>document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+m)?.classList.add('active');
+  drawAct(m);
+}
+function drawAct(m){
+  const c=document.getElementById('act-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='rgba(10,15,30,.9)';ctx.fillRect(0,0,W,H);
+  const blue='#2a6bb5',blue2='#4a9fd4',cyan='#00c8e0',sand='#e8f4fd',muted='#8fb3d4';
+
+  if(m==='full'){
+    // 22 steps in 4 rows
+    const rows=[[0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21]];
+    const colors=[blue,blue2,cyan,'#9b59b6','#2ecc71'];
+    rows.forEach((row,ri)=>{
+      row.forEach((si,ci2)=>{
+        const s=ACT_STEPS[si];
+        const x=50+ci2*(130+8);const y=30+ri*70;
+        const col=colors[ri%colors.length];
+        ctx.fillStyle=col+'33';ctx.strokeStyle=col;ctx.lineWidth=0.8;
+        ctx.beginPath();ctx.roundRect(x,y,130,50,4);ctx.fill();ctx.stroke();
+        ctx.fillStyle=col;ctx.font='500 8px Montserrat,sans-serif';
+        ctx.fillText(s.n,x+8,y+14);
+        ctx.fillStyle=sand;ctx.font='9px Montserrat,sans-serif';
+        const words=s.t.split(' ');let line='';let ly=y+28;
+        words.forEach(w=>{
+          const test=line+w+' ';
+          if(ctx.measureText(test).width>116&&line!=''){
+            ctx.fillText(line.trim(),x+8,ly);ly+=12;line=w+' ';
+          } else line=test;
+        });
+        if(line.trim())ctx.fillText(line.trim(),x+8,ly);
+      });
+    });
+    ctx.fillStyle=cyan;ctx.font='500 12px Montserrat,sans-serif';
+    ctx.fillText('22 шага Акта Творения',20,H-12);
+  } else if(m==='phases'){
+    const phases=[
+      {label:'1. Рождение замысла',steps:'1–5',col:cyan},
+      {label:'2. Структурирование',steps:'6–10',col:blue2},
+      {label:'3. Детализация',steps:'11–16',col:'#9b59b6'},
+      {label:'4. Инструменты',steps:'17–21',col:'#2ecc71'},
+      {label:'5. Запуск',steps:'22',col:'#d4a843'},
+    ];
+    phases.forEach((p,i)=>{
+      const x=60+i*120;const y=80;
+      ctx.fillStyle=p.col+'22';ctx.strokeStyle=p.col;ctx.lineWidth=1;
+      ctx.beginPath();ctx.roundRect(x,y,100,140,6);ctx.fill();ctx.stroke();
+      ctx.fillStyle=p.col;ctx.font='500 9px Montserrat,sans-serif';
+      ctx.fillText('Шаги '+p.steps,x+10,y+22);
+      ctx.fillStyle=sand;ctx.font='9.5px Montserrat,sans-serif';
+      const words=p.label.replace(/^\d\. /,'').split(' ');
+      let ly=y+50,line='';
+      words.forEach(w=>{
+        const t=line+w+' ';
+        if(ctx.measureText(t).width>85&&line!=''){ctx.fillText(line.trim(),x+8,ly);ly+=16;line=w+' ';}
+        else line=t;
+      });
+      if(line.trim())ctx.fillText(line.trim(),x+8,ly);
+      // arrow to next
+      if(i<4){
+        ctx.strokeStyle=p.col;ctx.lineWidth=0.8;ctx.setLineDash([3,3]);
+        ctx.beginPath();ctx.moveTo(x+100,y+70);ctx.lineTo(x+120,y+70);ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    });
+    ctx.fillStyle=cyan;ctx.font='500 12px Montserrat,sans-serif';
+    ctx.fillText('Пять фаз Акта Творения',20,H-12);
+  } else {
+    // functions view
+    const funcs=['Замысел → Концепция','Цели (1–2 уровень)','Зоны интересов','Направления развития','Потребности (1–2 ур.)','Средства (1–2 ур.)','Приоритеты · КП','Узлы деятельности','Программы по НР','Значимости показателей','Эффективность (Эф)','Знаковая Модель'];
+    const cols=['#2a6bb5','#4a9fd4','#00c8e0','#2ecc71','#9b59b6','#d4a843'];
+    funcs.forEach((f,i)=>{
+      const col=cols[i%cols.length];
+      const x=(i%4)*168+20;const y=Math.floor(i/4)*80+30;
+      ctx.fillStyle=col+'22';ctx.strokeStyle=col;ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.roundRect(x,y,155,60,4);ctx.fill();ctx.stroke();
+      ctx.fillStyle=col;ctx.font='500 9px Montserrat,sans-serif';ctx.fillText('Компонент '+(i+1),x+8,y+16);
+      ctx.fillStyle=sand;ctx.font='9px Montserrat,sans-serif';
+      ctx.fillText(f,x+8,y+38);
+    });
+    ctx.fillStyle=cyan;ctx.font='500 12px Montserrat,sans-serif';
+    ctx.fillText('12 компонентов Акта Творения',20,H-12);
+  }
+}
+function buildActSteps(){
+  const cont=document.getElementById('act-steps');if(!cont||cont.children.length)return;
+  const show5=[0,4,9,15,21];
+  show5.forEach(i=>{
+    const s=ACT_STEPS[i];
+    const d=document.createElement('div');d.className='step';
+    d.innerHTML=`<div class="step-n">${s.n}</div><div class="step-body"><div class="step-title">${s.t}</div><div class="step-text">${s.d}</div></div>`;
+    cont.appendChild(d);
+  });
+  const more=document.createElement('p');
+  more.style.cssText='font-family:var(--sans);font-size:11px;color:var(--stone);margin-top:12px;';
+  more.textContent='Полная схема из 22 шагов — на интерактивном холсте выше.';
+  cont.appendChild(more);
+}
+
+// ─── LOTUS (§1.3) ────────────────────────────────────────────
+function drawLotus(){
+  const svg=document.getElementById('lotus-svg');if(!svg)return;
+  const cx=340,h=380;
+  let s='';
+  // upper pyramid
+  s+=`<polygon points="${cx},30 ${cx-140},200 ${cx+140},200" fill="rgba(42,107,181,.15)" stroke="#2a6bb5" stroke-width="1.2"/>`;
+  // platform of influence
+  s+=`<rect x="${cx-160}" y="195" width="320" height="6" fill="rgba(74,159,212,.4)" rx="2"/>`;
+  // lower (anti)pyramid
+  s+=`<polygon points="${cx},350 ${cx-140},200 ${cx+140},200" fill="rgba(231,76,60,.1)" stroke="#e74c3c" stroke-width="1.2" stroke-dasharray="4,3"/>`;
+  // levels upper
+  const ulvl=[{y:80,col:'#2ecc71',label:'Уровень поддержки'},{y:130,col:'#4a9fd4',label:'Уровень созидания'},{y:175,col:'#d4a843',label:'Уровень разумного сопротивления'}];
+  ulvl.forEach(l=>{
+    const hw=(l.y-30)/(200-30)*140;
+    s+=`<line x1="${cx-hw}" y1="${l.y}" x2="${cx+hw}" y2="${l.y}" stroke="${l.col}" stroke-width="0.7" stroke-dasharray="3,3" opacity="0.6"/>`;
+    s+=`<text x="${cx+hw+8}" y="${l.y+4}" font-family="Montserrat,sans-serif" font-size="9" fill="${l.col}" opacity="0.8">${l.label}</text>`;
+  });
+  // levels lower
+  const dlvl=[{y:245,col:'#e74c3c',label:'Уровень разрушения'},{y:295,col:'#c0392b',label:'Уровень помех'}];
+  dlvl.forEach(l=>{
+    const hw=(350-l.y)/(350-200)*140;
+    s+=`<line x1="${cx-hw}" y1="${l.y}" x2="${cx+hw}" y2="${l.y}" stroke="${l.col}" stroke-width="0.7" stroke-dasharray="3,3" opacity="0.5"/>`;
+    s+=`<text x="${cx+hw+8}" y="${l.y+4}" font-family="Montserrat,sans-serif" font-size="9" fill="${l.col}" opacity="0.7">${l.label}</text>`;
+  });
+  // central axis
+  s+=`<line x1="${cx}" y1="25" x2="${cx}" y2="355" stroke="rgba(74,159,212,.3)" stroke-width="0.8" stroke-dasharray="4,3"/>`;
+  s+=`<circle cx="${cx}" cy="25" r="4" fill="#00c8e0" opacity="0.8"/>`;
+  s+=`<circle cx="${cx}" cy="355" r="4" fill="#e74c3c" opacity="0.6"/>`;
+  s+=`<text x="${cx-6}" y="18" font-family="Montserrat,sans-serif" font-size="8" fill="#00c8e0">пирамидон</text>`;
+  s+=`<text x="${cx-8}" y="372" font-family="Montserrat,sans-serif" font-size="8" fill="#e74c3c">антипирамидон</text>`;
+  // platform label
+  s+=`<text x="${cx-65}" y="202" font-family="Montserrat,sans-serif" font-size="8.5" font-weight="600" fill="#4a9fd4">Платформа влияния</text>`;
+  svg.innerHTML=s;
+}
+
+// ─── RING DIAGRAM (§2.2) ─────────────────────────────────────
+function ringMode(m){
+  ['ring','lin','cyc'].forEach(x=>document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+({ring:'ring',linear:'lin',cycle:'cyc'}[m]))?.classList.add('active');
+  drawRing(m);
+}
+function drawRing(m){
+  const c=document.getElementById('ring-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='rgba(10,15,30,.9)';ctx.fillRect(0,0,W,H);
+  const blue='#2a6bb5',blue2='#4a9fd4',cyan='#00c8e0',sand='#e8f4fd';
+  const cx=W/2,cy=H/2;
+
+  if(m==='ring'){
+    const steps=['Замысел','Цели','Зоны','НР','Потребности','Средства','Приоритеты','КП','Узлы','Программы','Показатели','Эффект','Модель','Запуск'];
+    const R=130;
+    steps.forEach((s,i)=>{
+      const a=i/steps.length*Math.PI*2-Math.PI/2;
+      const na=(i+1)/steps.length*Math.PI*2-Math.PI/2;
+      // arc segment
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,a,na);ctx.closePath();
+      ctx.fillStyle=`hsl(${200+i*8},60%,${20+i*1}%)`;ctx.fill();
+      ctx.strokeStyle='rgba(74,159,212,.3)';ctx.lineWidth=1;ctx.stroke();
+      // label
+      const mid=(a+na)/2;
+      const lx=cx+(R*0.65)*Math.cos(mid),ly=cy+(R*0.65)*Math.sin(mid);
+      ctx.fillStyle=sand;ctx.font='9px Montserrat,sans-serif';ctx.textAlign='center';
+      ctx.fillText(s,lx,ly+3);
+    });
+    // center
+    ctx.beginPath();ctx.arc(cx,cy,32,0,Math.PI*2);
+    ctx.fillStyle='rgba(10,15,30,.8)';ctx.fill();
+    ctx.strokeStyle=cyan;ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle=cyan;ctx.font='500 10px Montserrat';ctx.textAlign='center';
+    ctx.fillText('СВЕТ',cx,cy+4);
+    ctx.fillStyle=blue2;ctx.font='500 12px Montserrat';ctx.textAlign='left';
+    ctx.fillText('Кольцевая диаграмма проработки решений',20,H-12);
+  } else if(m==='linear'){
+    const phases=['Начальные условия (Удо)','Замысел / Концепция','Цели 1–2','Зоны / НР','Потребности','Средства','КП','Программы','Показатели','Эффект / Модель','Условия после (Уп)'];
+    const bw=56,gap=4,y0=H/2-22;
+    phases.forEach((p,i)=>{
+      const x=10+i*(bw+gap);
+      const col=i===0||i===phases.length-1?cyan:blue2;
+      ctx.fillStyle=col+'22';ctx.strokeStyle=col;ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.roundRect(x,y0,bw,44,3);ctx.fill();ctx.stroke();
+      ctx.fillStyle=col;ctx.font='7.5px Montserrat,sans-serif';ctx.textAlign='center';
+      const words=p.split(' ');let ly=y0+14,line='';
+      words.forEach(w=>{
+        const t=line+w+' ';
+        if(ctx.measureText(t).width>50&&line!=''){ctx.fillText(line.trim(),x+bw/2,ly);ly+=11;line=w+' ';}
+        else line=t;
+      });
+      if(line.trim())ctx.fillText(line.trim(),x+bw/2,ly);
+      if(i<phases.length-1){
+        ctx.strokeStyle=blue2;ctx.lineWidth=0.8;
+        ctx.beginPath();ctx.moveTo(x+bw,y0+22);ctx.lineTo(x+bw+gap,y0+22);ctx.stroke();
+      }
+    });
+    ctx.fillStyle=blue2;ctx.font='500 12px Montserrat';ctx.textAlign='left';
+    ctx.fillText('Линейный макет проработки решений',20,H-12);
+  } else {
+    // ТАС — Тезис-Антитезис-Синтез cycle
+    const r=90;
+    [['Тезис',cyan,-1],[['Анти-','тезис'],'#e74c3c',1],['Синтез','#2ecc71',0]].forEach(([lbl,col,dir],i)=>{
+      const a=i*2*Math.PI/3-Math.PI/2;
+      const px=cx+r*Math.cos(a),py=cy+r*Math.sin(a);
+      ctx.fillStyle=col+'33';ctx.strokeStyle=col;ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.arc(px,py,45,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle=col;ctx.font='500 11px Montserrat';ctx.textAlign='center';
+      if(Array.isArray(lbl)){lbl.forEach((l,li)=>ctx.fillText(l,px,py-5+li*14));}
+      else ctx.fillText(lbl,px,py+4);
+      // arrow
+      const na=(i+1)*2*Math.PI/3-Math.PI/2;const npx=cx+r*Math.cos(na),npy=cy+r*Math.sin(na);
+      const mx=(px+npx)/2+20*Math.cos(a+Math.PI/3),my=(py+npy)/2+20*Math.sin(a+Math.PI/3);
+      ctx.strokeStyle=col;ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.moveTo(px+38*Math.cos(na-a+a),py+38*Math.sin(na-a+a));ctx.lineTo(npx-38*Math.cos(na-a+a),npy-38*Math.sin(na-a+a));ctx.stroke();
+    });
+    ctx.fillStyle=blue2;ctx.font='500 12px Montserrat';ctx.textAlign='left';
+    ctx.fillText('Диалектический цикл ФДЛ: Тезис → Антитезис → Синтез',20,H-12);
+  }
+}
+
+// ─── FDL SCHEME (§2.4) ───────────────────────────────────────
+function drawFDL(){
+  const svg=document.getElementById('fdl-svg');if(!svg)return;
+  const items=[
+    {x:60,y:30,w:120,h:40,label:'Удо',desc:'Начальные условия',col:'#00c8e0'},
+    {x:260,y:30,w:140,h:40,label:'Замысел',desc:'Концепция проекта',col:'#2a6bb5'},
+    {x:470,y:30,w:120,h:40,label:'Ц¹,Ц²',desc:'Цели уровней',col:'#4a9fd4'},
+    {x:60,y:150,w:120,h:40,label:'НР',desc:'Направления развития',col:'#9b59b6'},
+    {x:260,y:150,w:140,h:40,label:'П¹,П²',desc:'Потребности',col:'#4a9fd4'},
+    {x:470,y:150,w:120,h:40,label:'Ср¹,Ср²',desc:'Средства',col:'#2a6bb5'},
+    {x:60,y:270,w:120,h:40,label:'КП',desc:'Курс приоритетов',col:'#d4a843'},
+    {x:260,y:270,w:140,h:40,label:'Зн,Эф',desc:'Показатели, Эффект',col:'#2ecc71'},
+    {x:470,y:270,w:120,h:40,label:'Уп',desc:'Условия после',col:'#00c8e0'},
+    {x:60,y:390,w:540,h:40,label:'Знаковая Модель системы',desc:'Учёт · Управление · Расчёты эффективности',col:'#2a6bb5'},
+  ];
+  const arrows=[[0,1],[1,2],[2,4],[1,3],[3,4],[4,5],[3,6],[6,7],[7,8],[7,9]];
+  const ls='font-family:Montserrat,sans-serif;font-size:10px;text-anchor:middle;dominant-baseline:central;';
+  let h='';
+  arrows.forEach(([a,b])=>{
+    const na=items[a],nb=items[b];
+    const x1=na.x+na.w,y1=na.y+na.h/2;
+    const x2=nb.x,y2=nb.y+nb.h/2;
+    if(x1<x2)h+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(74,159,212,.4)" stroke-width="1" marker-end="url(#arr2)"/>`;
+    else h+=`<line x1="${na.x+na.w/2}" y1="${na.y+na.h}" x2="${nb.x+nb.w/2}" y2="${nb.y}" stroke="rgba(74,159,212,.4)" stroke-width="1" marker-end="url(#arr2)"/>`;
+  });
+  items.forEach(n=>{
+    h+=`<rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="4" fill="${n.col}22" stroke="${n.col}" stroke-width="0.8"/>`;
+    h+=`<text x="${n.x+n.w/2}" y="${n.y+14}" ${ls} fill="${n.col}" font-weight="600" font-size="11px">${n.label}</text>`;
+    h+=`<text x="${n.x+n.w/2}" y="${n.y+30}" ${ls} fill="rgba(232,244,253,.65)" font-size="9px">${n.desc}</text>`;
+  });
+  svg.innerHTML=`<defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M2 2L8 5L2 8" fill="none" stroke="#4a9fd4" stroke-width="1.5"/></marker></defs>${h}`;
+}
+
+// ─── SPRAV STEPS (§2.5) ──────────────────────────────────────
+function buildSpravSteps(){
+  const cont=document.getElementById('steps-sprav');if(!cont||cont.children.length)return;
+  const steps=[
+    {n:'1',t:'Выбор идеи показателя',d:'На основе приоритета потребностей — направление оценки'},
+    {n:'2',t:'Родо-видовые признаки',d:'Логическое определение «средней» величины показателя или операционные признаки моды'},
+    {n:'3',t:'Допустимые отклонения',d:'Договорённость о плюс/минус от среднего значения'},
+    {n:'4',t:'Разделение интервала',d:'На несколько «значений оценки» (от 2 до 4 частей)'},
+    {n:'5',t:'2-й уровень деления',d:'Части показателя = второй уровень деления содержания'},
+    {n:'6',t:'Наименование оценок',d:'Каждой части приписывается «Наименование оценки» — принцип ограниченной экспертизы'},
+  ];
+  steps.forEach(s=>{
+    const d=document.createElement('div');d.className='step';
+    d.innerHTML=`<div class="step-n">${s.n}</div><div class="step-body"><div class="step-title">${s.t}</div><div class="step-text">${s.d}</div></div>`;
+    cont.appendChild(d);
+  });
+}
+
+// ─── VOL CANVAS (§2.6) ──────────────────────────────────────
+function volMode(m){
+  ['ax','fold','3d'].forEach(x=>document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+({axes:'ax',folders:'fold',full3d:'3d'}[m]))?.classList.add('active');
+  drawVol(m);
+}
+function drawVol(m){
+  const c=document.getElementById('vol-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='rgba(10,15,30,.9)';ctx.fillRect(0,0,W,H);
+  const blue='#2a6bb5',blue2='#4a9fd4',cyan='#00c8e0',sand='#e8f4fd',green='#2ecc71',gold='#d4a843';
+
+  if(m==='axes'){
+    // 3-axis diagram
+    const ox=200,oy=250;
+    const axes=[[1,0,200,blue2,'Ось X — Цели'],[Math.cos(Math.PI/6),-Math.sin(Math.PI/6),200,cyan,'Ось Y — НР'],[0,-1,180,green,'Ось Z — Средства']];
+    axes.forEach(([dx,dy,len,col,lbl])=>{
+      ctx.strokeStyle=col;ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+dx*len,oy+dy*len);ctx.stroke();
+      ctx.fillStyle=col;ctx.beginPath();ctx.arc(ox+dx*len,oy+dy*len,4,0,Math.PI*2);ctx.fill();
+      ctx.font='11px Montserrat';ctx.fillText(lbl,ox+dx*len+8,oy+dy*len+4);
+    });
+    ctx.fillStyle=blue2;ctx.beginPath();ctx.arc(ox,oy,6,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=sand;ctx.font='500 11px Montserrat';ctx.fillText('Начало системы',ox+10,oy-10);
+    ctx.fillStyle=blue2;ctx.font='500 12px Montserrat';ctx.fillText('Трёхосевая система координат Оболочки СВЕТ',20,H-12);
+  } else if(m==='folders'){
+    // folders on axes
+    const folders=[
+      {x:100,y:60,label:'Таблица Целей\nЦ¹,Ц²',col:blue2},
+      {x:300,y:60,label:'Таблица Потребностей\nП¹,П²',col:cyan},
+      {x:500,y:60,label:'Таблица Средств\nСр¹,Ср²',col:green},
+      {x:100,y:180,label:'Курс Приоритетов\nКП',col:gold},
+      {x:300,y:180,label:'Программы по НР',col:blue2},
+      {x:500,y:180,label:'Справочник\nПоказателей',col:cyan},
+      {x:100,y:300,label:'Функции Ограничений\nСр(Ц)',col:green},
+      {x:300,y:300,label:'Функции Критериев\nЗн(П)',col:blue2},
+      {x:500,y:300,label:'Знаковая Модель\nсистемы',col:gold},
+    ];
+    folders.forEach(f=>{
+      ctx.fillStyle=f.col+'22';ctx.strokeStyle=f.col;ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.roundRect(f.x-65,f.y-30,130,55,4);ctx.fill();ctx.stroke();
+      ctx.fillStyle=f.col;ctx.font='9px Montserrat';ctx.textAlign='center';
+      f.label.split('\n').forEach((l,i)=>ctx.fillText(l,f.x,f.y-12+i*16));
+    });
+    ctx.fillStyle=blue2;ctx.textAlign='left';ctx.font='500 12px Montserrat';
+    ctx.fillText('9 типовых папок-таблиц Оболочки СВЕТ',20,H-12);
+  } else {
+    // 3D cube projection
+    const ox=160,oy=160,sz=130;
+    const off=[sz*0.4,sz*0.3];
+    // back faces
+    [[0,0],[off[0],0],[off[0],-off[1]],[0,-off[1]]].forEach((o,i)=>{
+      if(i===1||i===2){
+        ctx.fillStyle='rgba(42,107,181,.08)';
+        ctx.strokeStyle='rgba(74,159,212,.3)';ctx.lineWidth=0.8;
+        const pts=i===1?[[ox+sz,oy],[ox+sz+off[0],oy-off[1]],[ox+sz+off[0],oy-off[1]-sz],[ox+sz,oy-sz]]:[[ox+off[0],oy-off[1]],[ox+sz+off[0],oy-off[1]],[ox+sz+off[0],oy-off[1]-sz],[ox+off[0],oy-off[1]-sz]];
+        ctx.beginPath();pts.forEach((p,pi)=>pi===0?ctx.moveTo(p[0],p[1]):ctx.lineTo(p[0],p[1]));
+        ctx.closePath();ctx.fill();ctx.stroke();
+      }
+    });
+    // front face
+    ctx.fillStyle='rgba(74,159,212,.08)';ctx.strokeStyle=blue2;ctx.lineWidth=1;
+    ctx.beginPath();ctx.rect(ox,oy-sz,sz,sz);ctx.fill();ctx.stroke();
+    // axes labels
+    ctx.fillStyle=blue2;ctx.font='500 10px Montserrat';ctx.textAlign='center';
+    ctx.fillText('Цели (X)',ox+sz/2,oy+16);
+    ctx.fillStyle=cyan;ctx.fillText('НР (Y)',ox+sz+off[0]+20,oy-off[1]+4);
+    ctx.fillStyle=green;ctx.fillText('Средства (Z)',ox-20,oy-sz/2);
+    // intersect point
+    ctx.fillStyle=gold;ctx.beginPath();ctx.arc(ox+sz/2,oy-sz/2,5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=gold;ctx.font='9px Montserrat';ctx.textAlign='center';ctx.fillText('Элемент системы',ox+sz/2,oy-sz/2-12);
+    ctx.fillStyle=blue2;ctx.textAlign='left';ctx.font='500 12px Montserrat';
+    ctx.fillText('Объёмный макет: пересечение осей = проектная форма',20,H-12);
+  }
+}
+
+// ─── INIT ────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  window.addEventListener('scroll',()=>{
+    const d=document.documentElement;
+    const pct=(d.scrollTop/(d.scrollHeight-d.clientHeight))*100;
+    document.getElementById('pb').style.width=Math.max(ci/(SECS.length-1)*100,pct)+'%';
+  });
+});
+</script>
+</body>
+</html>

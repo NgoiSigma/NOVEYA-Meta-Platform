@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вымпел от Фараона — А.Е. Кашеварова</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sand:   #f5ecd7;
+    --papyrus:#e8d5b0;
+    --stone:  #c9b99a;
+    --gold:   #c8953a;
+    --gold2:  #e4a83e;
+    --deep:   #1a1206;
+    --ink:    #2d1f0a;
+    --sky:    #4a7bb5;
+    --nile:   #1a4a7a;
+    --lapis:  #1a3460;
+    --red:    #8b2020;
+    --serif:  'Cormorant Garamond', Georgia, serif;
+    --sans:   'Montserrat', sans-serif;
+    --mono:   'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--deep);
+    color: var(--sand);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* ─── SHELL ─── */
+  #shell {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ─── SIDEBAR ─── */
+  #sidebar {
+    width: 280px;
+    min-height: 100vh;
+    background: var(--lapis);
+    border-right: 1px solid rgba(200,149,58,0.3);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform .3s ease;
+  }
+
+  .sidebar-logo {
+    padding: 28px 20px 20px;
+    border-bottom: 1px solid rgba(200,149,58,0.25);
+  }
+
+  .sidebar-logo .vympel-mini {
+    width: 60px; height: 60px;
+    margin: 0 auto 12px;
+    display: block;
+  }
+
+  .sidebar-logo h2 {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--gold);
+    text-align: center;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-logo p {
+    font-family: var(--sans);
+    font-size: 10px;
+    color: var(--stone);
+    text-align: center;
+    letter-spacing: .08em;
+    margin-top: 4px;
+  }
+
+  .toc-section {
+    padding: 16px 0;
+  }
+
+  .toc-part {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    padding: 10px 20px 4px;
+  }
+
+  .toc-item {
+    display: block;
+    padding: 7px 20px 7px 24px;
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--stone);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all .2s;
+    line-height: 1.4;
+  }
+
+  .toc-item:hover { color: var(--sand); background: rgba(200,149,58,0.08); }
+  .toc-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(200,149,58,0.12); }
+
+  /* ─── MAIN ─── */
+  #main {
+    margin-left: 280px;
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* ─── SECTION BASE ─── */
+  .book-section {
+    display: none;
+    min-height: 100vh;
+    animation: fadeIn .4s ease;
+  }
+  .book-section.visible { display: block; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+
+  /* ─── COVER ─── */
+  #sec-cover {
+    background: var(--deep);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #sec-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(26,52,96,0.6) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cover-ornament {
+    font-size: 11px;
+    font-family: var(--sans);
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 40px;
+    opacity: .8;
+  }
+
+  .cover-title {
+    font-family: var(--serif);
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--sand);
+    letter-spacing: .04em;
+    margin-bottom: 8px;
+  }
+
+  .cover-title span { color: var(--gold); font-style: italic; }
+
+  .cover-subtitle {
+    font-family: var(--serif);
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--stone);
+    margin-bottom: 50px;
+  }
+
+  .cover-divider {
+    width: 120px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 30px;
+  }
+
+  .cover-author {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-bottom: 6px;
+  }
+
+  .cover-meta {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: rgba(201,185,154,.5);
+    letter-spacing: .1em;
+  }
+
+  .cover-start-btn {
+    margin-top: 60px;
+    padding: 14px 40px;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .3s;
+  }
+  .cover-start-btn:hover { background: var(--gold); color: var(--deep); }
+
+  /* ─── CONTENT PAGES ─── */
+  .page-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 70px 60px 100px;
+  }
+
+  .chapter-eyebrow {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .chapter-eyebrow::after { content:''; flex:1; height:1px; background: rgba(200,149,58,.3); }
+
+  .chapter-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--sand);
+    margin-bottom: 12px;
+  }
+
+  .chapter-subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--stone);
+    margin-bottom: 48px;
+  }
+
+  .body-text {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.9;
+    color: var(--papyrus);
+    margin-bottom: 1.4em;
+  }
+
+  .body-text strong { color: var(--gold); font-weight: 400; }
+
+  .lead {
+    font-size: 20px;
+    font-style: italic;
+    color: var(--sand);
+    line-height: 1.7;
+    margin-bottom: 2em;
+    padding-left: 24px;
+    border-left: 2px solid var(--gold);
+  }
+
+  h3.section-head {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 3em 0 1em;
+  }
+
+  /* ─── FORMULA BOX ─── */
+  .formula-box {
+    background: rgba(26,52,96,0.4);
+    border: 1px solid rgba(200,149,58,0.25);
+    border-left: 3px solid var(--gold);
+    border-radius: 4px;
+    padding: 20px 28px;
+    margin: 2em 0;
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--sand);
+    line-height: 2;
+  }
+
+  .formula-box .formula-label {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    opacity: .8;
+  }
+
+  /* ─── INTERACTIVE DEMO PANELS ─── */
+  .demo-panel {
+    background: rgba(26,19,6,0.6);
+    border: 1px solid rgba(200,149,58,0.2);
+    border-radius: 8px;
+    padding: 32px;
+    margin: 2.5em 0;
+    position: relative;
+  }
+
+  .demo-panel .demo-tag {
+    position: absolute;
+    top: -10px; left: 24px;
+    background: var(--gold);
+    color: var(--deep);
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+
+  .demo-canvas { width: 100%; }
+
+  .demo-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .demo-btn {
+    padding: 8px 20px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all .2s;
+  }
+  .demo-btn:hover, .demo-btn.active { background: var(--gold); color: var(--deep); }
+
+  .demo-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--stone);
+    flex: 1;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    height: 2px;
+    background: rgba(200,149,58,.3);
+    border-radius: 1px;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    background: var(--gold);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  /* ─── QUOTE ─── */
+  blockquote.ancient {
+    margin: 2.5em 0;
+    padding: 24px 32px;
+    background: rgba(200,149,58,0.05);
+    border-left: 3px solid var(--gold);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--stone);
+    line-height: 1.8;
+    position: relative;
+  }
+  blockquote.ancient::before {
+    content: '«';
+    font-size: 60px;
+    color: rgba(200,149,58,.2);
+    position: absolute;
+    top: 8px; left: 16px;
+    line-height: 1;
+    font-style: normal;
+  }
+  blockquote.ancient cite {
+    display: block;
+    font-style: normal;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: .1em;
+    color: var(--stone);
+    margin-top: 12px;
+    opacity: .7;
+  }
+
+  /* ─── FRACTION TABLE ─── */
+  .fraction-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2em 0;
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+  .fraction-table th {
+    background: rgba(200,149,58,.15);
+    color: var(--gold);
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(200,149,58,.3);
+  }
+  .fraction-table td {
+    padding: 8px 16px;
+    color: var(--papyrus);
+    border-bottom: 1px solid rgba(200,149,58,.08);
+  }
+  .fraction-table tr:hover td { background: rgba(200,149,58,.06); }
+  .fraction-table td.frac-result { color: var(--gold); }
+
+  /* ─── PAGE NAV ─── */
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 60px 48px;
+    max-width: 780px;
+    margin: 0 auto;
+    border-top: 1px solid rgba(200,149,58,.15);
+  }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--stone);
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color .2s;
+    padding: 0;
+  }
+  .nav-btn:hover { color: var(--gold); }
+  .nav-btn .arrow { font-size: 18px; }
+
+  /* ─── PYRAMID SVG DEMO ─── */
+  #pyramid-svg { cursor: crosshair; }
+
+  /* ─── GOLD RATIO ─── */
+  #phi-canvas { display: block; }
+
+  /* ─── MOBILE TOGGLE ─── */
+  #menu-toggle {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 200;
+    background: var(--lapis);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    width: 40px; height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 900px) {
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: none; }
+    #main { margin-left: 0; }
+    #menu-toggle { display: flex; }
+    .page-inner { padding: 50px 28px 80px; }
+    .page-nav { padding: 24px 28px 40px; }
+  }
+
+  /* ─── CHAPTER 16 SPECIAL ─── */
+  .special-char {
+    display: inline-block;
+    background: rgba(139,32,32,.2);
+    border: 1px solid rgba(139,32,32,.4);
+    border-radius: 3px;
+    padding: 0 4px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: #e57373;
+    margin: 0 1px;
+  }
+
+  .special-note {
+    background: rgba(139,32,32,.1);
+    border-left: 3px solid var(--red);
+    padding: 14px 20px;
+    margin: 1.5em 0;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: #e57373;
+    line-height: 1.6;
+  }
+
+  /* ─── ANNOTATIONS ─── */
+  .anno {
+    position: relative;
+    border-bottom: 1px dashed var(--gold);
+    cursor: help;
+  }
+  .anno-tip {
+    display: none;
+    position: absolute;
+    bottom: 100%; left: 50%;
+    transform: translateX(-50%);
+    background: var(--lapis);
+    border: 1px solid var(--gold);
+    padding: 10px 14px;
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--sand);
+    white-space: nowrap;
+    z-index: 50;
+    border-radius: 4px;
+    pointer-events: none;
+    max-width: 280px;
+    white-space: normal;
+    line-height: 1.5;
+  }
+  .anno:hover .anno-tip { display: block; }
+</style>
+</head>
+<body>
+
+<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<div id="shell">
+<!-- ─── SIDEBAR ─── -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <svg class="vympel-mini" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="5,5 55,5 55,50 30,58 5,50" stroke="#c8953a" stroke-width="1" fill="rgba(26,52,96,0.5)"/>
+      <rect x="18" y="16" width="24" height="24" stroke="#9b59b6" stroke-width="1.2" fill="none"/>
+      <line x1="18" y1="16" x2="22" y2="16" stroke="#9b59b6" stroke-width="1.2"/>
+      <line x1="26" y1="16" x2="42" y2="16" stroke="#9b59b6" stroke-width="1.2"/>
+      <circle cx="30" cy="28" r="13" stroke="#27ae60" stroke-width="1.2" fill="none"/>
+      <path d="M15 24 Q21 20 30 22" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M30 22 Q38 24 44 20" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="30" cy="32" rx="5" ry="6" stroke="#e8c84a" stroke-width="1.2" fill="none"/>
+      <line x1="30" y1="26" x2="30" y2="28" stroke="#e8c84a" stroke-width="1"/>
+      <rect x="8" y="43" width="44" height="8" fill="#1a3a6e" opacity="0.9"/>
+      <path d="M8,43 Q14,38 20,40 Q26,42 30,40 Q36,38 42,40 Q46,42 52,43" fill="none" stroke="#4a9fd4" stroke-width="0.8"/>
+    </svg>
+    <h2>Вымпел от Фараона</h2>
+    <p>А. Е. Кашеварова · 2014</p>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-part">Начало</div>
+    <span class="toc-item active" onclick="show('cover')">Обложка</span>
+    <span class="toc-item" onclick="show('thanks')">Благодарности</span>
+    <span class="toc-item" onclick="show('hemium')">Похвала Хемиуну</span>
+
+    <div class="toc-part">Часть I</div>
+    <span class="toc-item" onclick="show('ch1')">Гл. 1 · Что умели египтяне</span>
+    <span class="toc-item" onclick="show('fractions')">Урок 1 · Аликвотные дроби ★</span>
+
+    <div class="toc-part">Часть II</div>
+    <span class="toc-item" onclick="show('pyramid')">Гл. 3–4 · Пирамида Хуфу ★</span>
+    <span class="toc-item" onclick="show('phi')">Гл. 5 · Золотое отношение ★</span>
+
+    <div class="toc-part">Часть VI</div>
+    <span class="toc-item" onclick="show('ch16')">Гл. 16 · Специальная графика</span>
+
+    <div class="toc-part">Итог</div>
+    <span class="toc-item" onclick="show('conclusion')">Заключение</span>
+    <span class="toc-item" onclick="show('vympel')">Символ НГОИ</span>
+  </div>
+</nav>
+
+<!-- ─── MAIN ─── -->
+<main id="main">
+
+<!-- COVER -->
+<section id="sec-cover" class="book-section visible">
+  <div class="cover-ornament">Николаев · ИЛИОН · 2014</div>
+  <h1 class="cover-title">Вымпел<br><span>от Фараона</span></h1>
+  <p class="cover-subtitle">Научно-популярное исследование</p>
+  <div class="cover-divider"></div>
+  <p class="cover-author">А. Е. Кашеварова</p>
+  <p class="cover-meta">С добавлением В. В. Гриба · 56 табл. · 101 рис. · 4 прилож.</p>
+  <button class="cover-start-btn" onclick="show('thanks')">Открыть книгу →</button>
+</section>
+
+<!-- БЛАГОДАРНОСТИ -->
+<section id="sec-thanks" class="book-section">
+  <div class="page-inner">
+    <div class="chapter-eyebrow">Начало книги</div>
+    <h1 class="chapter-title">Благодарности</h1>
+    <p class="lead">Посвящаю книгу памяти моей матушки — Кашеваровой Ангелины Юлиановны, обеспечившей условия для её создания.</p>
+    <p class="body-text">Я благодарна авторам всех упомянутых мной публикаций — тем, на мнение которых опиралась, желая сделать их достоянием читателей, и тем, суждения которых осмелилась оспорить. Без их эрудиции был бы невозможен мой вклад в обсуждение спорных проблем.</p>
+    <p class="body-text">Огромную помощь в углублении содержания книги я получила от неизвестных деятелей в Интернете, разместивших в ноябре 2012 г. научную литературу о <strong>Бартини, Гуке, Ньютоне</strong>.</p>
+    <p class="body-text">В конце 1995 г. машинопись случайно увидела Е.Г.Селянская и добровольно предложила включиться в работу по выполнению электронной версии книги. Она выполнила основной объём первичного набора текста, таблиц, различных дополнений.</p>
+    <p class="body-text">Директор издательства «ИЛИОН» А.В.Румянцева на льготных условиях оценила стоимость печати сигнального выпуска в 80 экземплярах.</p>
+    <p class="body-text" style="color:var(--stone); font-style:italic; text-align:right; margin-top: 3em;">Спасибо Вам, люди добрые!</p>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="show('cover')"><span class="arrow">←</span> Обложка</button>
+    <button class="nav-btn" onclick="show('hemium')">Похвала Хемиуну <span class="arrow">→</span></button>
+  </div>
+</section>
+
+<!-- ПОХВАЛА ХЕМИУНУ -->
+<section id="sec-hemium" class="book-section">
+  <div class="page-inner">
+    <div class="chapter-eyebrow">Посвящение</div>
+    <h1 class="chapter-title">О, Хемиун!</h1>
+    <p class="lead" style="font-size:22px; line-height:1.9; border-color:var(--gold);">
+      О, Хемиун,<br>
+      создавший пирамиду своему дяде — царю Хуфу!<br>
+      Ты прославил науку своей эпохи<br>
+      и поставил вопросы перед нашей.<br>
+      Имя твоё достойно памяти<br>
+      у всех народов во все времена.
+    </p>
+
+    <div class="formula-box" style="margin-top:3em;">
+      <div class="formula-label">Определение вымпела</div>
+      «Вымпел — специальный предмет, несущий донесение или используемый в качестве условного знака»<br>
+      <span style="font-size:12px; color:var(--stone);">— Словарь иностранных слов</span>
+    </div>
+
+    <p class="body-text" style="margin-top:2em;"><strong>Вымпел — это предметный символ.</strong> Символ состоит из совокупности знаков.</p>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="show('thanks')"><span class="arrow">←</span> Благодарности</button>
+    <button class="nav-btn" onclick="show('ch1')">Глава 1 <span class="arrow">→</span></button>
+  </div>
+</section>
+
+<!-- ГЛАВА 1 -->
+<section id="sec-ch1" class="book-section">
+  <div class="page-inner">
+    <div class="chapter-eyebrow">Часть I · Вести из домашней библиотеки</div>
+    <h1 class="chapter-title">Глава 1</h1>
+    <p class="chapter-subtitle">О том, что умели делать древние египтяне</p>
+
+    <h3 class="section-head">1.1. Современное знание о древнем умении</h3>
+    <p class="body-text">Передо мной лежат работы, написанные историком, археологами, математиками, астрономами, популяризаторами — литература, постепенно собранная ради любопытства, не имевшая отношения к моей профессии и вдруг ставшая такой необходимой в задуманном деле.</p>
+
+    <p class="body-text">В этой главе моя цель — составить список того, что умели и знали строители и учёные во времена возведения <anno class="anno">пирамиды Хеопса<span class="anno-tip">Пирамида Хуфу (Хеопса) — самая большая из пирамид Гизы. Высота ~146 м, сторона основания ~231 м. Построена ок. 2560 г. до н.э.</span></anno>.</p>
+
+    <blockquote class="ancient">
+      «Раскопки, произведённые в Египте и на нагорьях, окаймляющих долину Нила, доказывают, что племена, создавшие самобытную египетскую культуру, населяли Северо-Восточную Африку со времён палеолита»
+      <cite>— В.И. Авдиев, [1, с.137]</cite>
+    </blockquote>
+
+    <p class="body-text">Ф.А.Брокгауз и И.А.Ефрон указывают годы жизни наиболее знаменитых царей IV династии: <strong>Хеопс — около 3730 г. до н.э.</strong>, Хефрен — 3660 г. до н.э., Микерин — 3633 г. до н.э.</p>
+
+    <h3 class="section-head">1.4. Второе математическое отступление</h3>
+    <p class="body-text">Древние египтяне осознали, что <strong>любую длину или очерченную площадь можно принять за единицу</strong>. В процессе вычисления бывает удобно к разным длинам относиться как к «единицам», приписывать им это значение.</p>
+
+    <p class="body-text">Для обозначения аликвотной дроби использовали иероглиф «<strong>ра</strong>», по очертанию напоминающий контур глаза и обозначавший понятие, близкое к понятию «часть». Превосходная мнемоника: <em>глаз видит часть возможного!</em></p>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="show('hemium')"><span class="arrow">←</span> Похвала Хемиуну</button>
+    <button class="nav-btn" onclick="show('fractions')">Урок 1 — Дроби ★ <span class="arrow">→</span></button>
+  </div>
+</section>
+
+<!-- АЛИКВОТНЫЕ ДРОБИ — ИНТЕРАКТИВ -->
+<section id="sec-fractions" class="book-section">
+  <div class="page-inner">
+    <div class="chapter-eyebrow">Часть I · Урок 1 · Интерактивный раздел ★</div>
+    <h1 class="chapter-title">Теория аликвотных дробей</h1>
+    <p class="chapter-subtitle">Реконструкция древнеегипетской арифметики</p>
+
+    <p class="body-text">Из 50 значений разложения <strong>2/n</strong> имеется: 29 двухчленных, 13 трёхчленных и 8 четырёхчленных разложений. А.Е.Раик обнаружила, что табличные разложения являются <strong>наиболее экономными</strong> из возможных вариантов.</p>
+
+    <div class="demo-panel">
+      <div class="demo-tag">Интерактив</div>
+      <p style="font-family:var(--sans); font-size:11px; color:var(--stone); margin-bottom:16px;">Выберите нечётное n — увидите разложение 2/n на аликвотные дроби</p>
+      <div class="demo-controls" style="margin-bottom:20px;">
+        <span class="demo-label">n =</span>
+        <input type="range" id="n-slider" min="3" max="101" step="2" value="7" style="flex:1;" oninput="updateFraction(this.value)">
+        <span id="n-val" style="font-family:var(--mono); color:var(--gold); min-width:32px; text-align:right;">7</span>
+      </div>
+      <div id="fraction-display" style="font-family:var(--mono); font-size:20px; color:var(--sand); text-align:center; padding:20px; background:rgba(0,0,0,.2); border-radius:4px; min-height:60px; display:flex; align-items:center; justify-content:center;"></div>
+      <div id="fraction-check" style="font-family:var(--sans); font-size:11px; color:var(--stone); text-align:center; margin-top:10px;"></div>
+    </div>
+
+    <h3 class="section-head">Таблица разложений 2/n (папирус Ринда, ок. 1650 до н.э.)</h3>
+
+    <table class="fraction-table">
+      <thead><tr>
+        <th>n</th><th>2/n =</th><th>Тип</th><th>Проверка</th>
+      </tr></thead>
+      <tbody id="frac-table-body"></tbody>
+    </table>
+
+    <div class="formula-box">
+      <div class="formula-label">Общий вид — нечётное n = 2m+1</div>
+      2/(2m+1) = 1/(m+1) + 1/((m+1)(2m+1))<br>
+      <span style="color:var(--stone); font-size:12px;">Пример: 2/7 = 1/4 + 1/28, т.к. m=3</span>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="show('ch1')"><span class="arrow">←</span> Глава 1</button>
+    <button class="nav-btn" onclick="show('pyramid')">Пирамида Хуфу ★ <span class="arrow">→</span></button>
+  </div>
+</section>
+
+<!-- ПИРАМИДА — ИНТЕРАКТИВ -->
+<section id="sec-pyramid" class="book-section">
+  <div class="page-inner">
+    <div class="chapter-eyebrow">Часть II · Главы 3–4 · Интерактивный раздел ★</div>
+    <h1 class="chapter-title">Пирамида Хуфу</h1>
+    <p class="chapter-subtitle">Теоретический чертёж. Поиск параметров</p>
+
+    <p class="body-text">Никакие обмеры пирамиды невозможно привести в стройную систему без <strong>реконструкции её теоретического чертежа</strong>. Автор выбирает для моделирования диаметр описанной окружности D = 324 м, что даёт сторону основания Б ≈ 229,1 м и высоту H ≈ 145,89 м.</p>
+
+    <div class="demo-panel">
+      <div class="demo-tag">Интерактив</div>
+      <p style="font-family:var(--sans); font-size:11px; color:var(--stone); margin-bottom:16px;">Измените параметры пирамиды — посмотрите на сечение в масштабе</p>
+      <div class="demo-controls" style="margin-bottom:16px; flex-wrap:wrap; gap:16px;">
+        <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:200px;">
+          <span class="demo-label" style="min-width:110px;">Сторона Б (м):</span>
+          <input type="range" id="base-slider" min="220" max="240" step="0.5" value="229.1" style="flex:1;" oninput="drawPyramid()">
+          <span id="base-val" style="font-family:var(--mono); color:var(--gold); min-width:48px;">229.1</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:200px;">
+          <span class="demo-label" style="min-width:110px;">Высота H (м):</span>
+          <input type="range" id="height-slider" min="137" max="150" step="0.1" value="145.89" style="flex:1;" oninput="drawPyramid()">
+          <span id="height-val" style="font-family:var(--mono); color:var(--gold); min-width:48px;">145.89</span>
+        </div>
+      </div>
+      <svg id="pyramid-svg" class="demo-canvas" viewBox="0 0 640 380" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div id="pyramid-stats" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:16px; font-family:var(--sans); font-size:11px;"></div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-label">Ключевые параметры (теоретический чертёж)</div>
+      D = 324 м  (диаметр описанной окружности)<br>
+      Б = 229,1 м  (сторона основания)<br>
+      H = 145,89 м  (полная высота)<br>
+      R = 162 м  ≈ 100 × φ  (золотое отношение × 100)<br>
+      πе = 256/81 ≈ 3,1605  (египетский π)
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="show('fractions')"><span class="arrow">←</span> Аликвотные дроби</button>
+    <button class="nav-btn" onclick="show('phi')">Золотое отношение ★ <span class="arrow">→</span></button>
+  </div>
+</section>
+
+<!-- ЗОЛОТОЕ ОТНОШЕНИЕ — ИНТЕРАКТИВ -->
+<section id="sec-phi" class="book-section">
+  <div class="page-inner">
+    <div class="chapter-eyebrow">Часть II · Глава 5 · Интерактивный раздел ★</div>
+    <h1 class="chapter-title">Золотое отношение</h1>
+    <p class="chapter-subtitle">φ = 1,61803… и его египетские аппроксимации</p>
+
+    <p class="body-text">Египтяне могли <strong>практически точно</strong> оперировать золотым отношением, применяя простую дробь или её аликвотный вариант: 55/34 = 1,61764… (погрешность &lt; 0,025%). А число 5/3 = 1,6666… — погрешность всего 3,62%, что укладывается в 5%-ю инженерную точность.</p>
+
+    <div class="demo-panel">
+      <div class="demo-tag">Интерактив</div>
+      <p style="font-family:var(--sans); font-size:11px; color:var(--stone); margin-bottom:16px;">Числа Фибоначчи и золотое сечение — египетский путь к φ</p>
+      <canvas id="phi-canvas" class="demo-canvas" width="700" height="320" style="max-width:100%;"></canvas>
+      <div class="demo-controls" style="margin-top:16px;">
+        <button class="demo-btn active" onclick="phiMode('rect')" id="btn-rect">Прямоугольники</button>
+        <button class="demo-btn" onclick="phiMode('spiral')" id="btn-spiral">Спираль</button>
+        <button class="demo-btn" onclick="phiMode('pyramid')" id="btn-pyr">Пирамида φ</button>
+      </div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-label">Аликвотное представление φ ≈ 1,62</div>
+      162/100 = 81/50 = 1 + 31/50<br>
+      = 1 + 1/5 + 2/5 + 1/50<br>
+      = 1 · 1/5 · 1/3 · 1/15 · 1/50<br>
+      <br>
+      55/34 = 34/34 + 21/34 = 1 + 1/2 + 2/17<br>
+      = 1 · 1/2 · 1/9 · 1/91
+    </div>
+
+    <p class="body-text">Назначим с = 2 лт (2 × 0,524 = 1,048 м) — и из простых алгебраических операций немедленно получим сторону пирамиды в единицах <strong>локтя царя</strong>.</p>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="show('pyramid')"><span class="arrow">←</span> Пирамида Хуфу</button>
+    <button class="nav-btn" onclick="show('ch16')">Глава 16 <span class="arrow">→</span></button>
+  </div>
+</section>
+
+<!-- ГЛАВА 16 -->
+<section id="sec-ch16" class="book-section">
+  <div class="page-inner">
+    <div class="chapter-eyebrow">Часть VI · О нравах в среде учёных</div>
+    <h1 class="chapter-title">Глава 16</h1>
+    <p class="chapter-subtitle">Не преклоняйтесь перед знаменитостями!</p>
+
+    <div class="special-note">
+      ⚠️ Внимание! В данной главе экспериментально изменена графика для трёх букв:<br>
+      <span class="special-char">ө</span> = ё (учөный = учёный) &nbsp;·&nbsp;
+      <span class="special-char">[]</span> = йо (сво[] = своё) &nbsp;·&nbsp;
+      <span class="special-char">[]</span> = й (учөны[])
+      <br>Это осознанный авторский приём, а не ошибки. Символы сохранены как есть.
+    </div>
+
+    <h3 class="section-head">16.1. Должны ли быть учөные благороднее не-учөных?</h3>
+
+    <blockquote class="ancient">
+      «Честность, правдивость и порядочность должны развиваться со школьной скамьи. Представления о позорности и аморальности многих антиобщественных поступков должны существовать не только в официальных положениях. Они должны быть присущи в общежитии, всөм и везде — в семье, в рабочих и учебных коллективах»
+      <cite>— Акад. Л.И. Седов, [44б, с.356]</cite>
+    </blockquote>
+
+    <p class="body-text">Созданные учөными под руководством Абалкина и Аганбегяна методики были предписаны к исполнению формально. Это привело к драме. Они имели целью совершенствование отчөтности и обеспечение её правдивости, повышение качества и производительности труда, требовали от руководителей порядочности.</p>
+
+    <h3 class="section-head">16.2. Полюса нравственности: Гук — Ньютон</h3>
+    <p class="body-text">Роберт Гук и Исаак Ньютон — два учёных, чья полемика стала символом конфликта между <strong>истиной и признанием</strong>. Один открыл — другой возвёл в систему и присвоил. История науки знает многих Гуков и многих Ньютонов.</p>
+
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="show('phi')"><span class="arrow">←</span> Золотое отношение</button>
+    <button class="nav-btn" onclick="show('conclusion')">Заключение <span class="arrow">→</span></button>
+  </div>
+</section>
+
+<!-- ЗАКЛЮЧЕНИЕ -->
+<section id="sec-conclusion" class="book-section">
+  <div class="page-inner">
+    <div class="chapter-eyebrow">Заключение</div>
+    <h1 class="chapter-title">Урок, преподанный жрецами</h1>
+    <p class="lead">40 новых результатов в математике, астрономии, механике и философии — вот итог, к которому автор пришла через 20 лет работы.</p>
+
+    <h3 class="section-head">Вывод 1. Новые знания (избранное)</h3>
+    <p class="body-text">1. Показано, что <strong>древние египтяне хорошо разбирались в принципах подобия</strong> — основе их математики и астрономии.</p>
+    <p class="body-text">7. Выполнена реконструкция способов разложения дроби <strong>2/n на аликвотные дроби</strong> для всех 50 членов сохранившейся таблицы.</p>
+    <p class="body-text">10. Показано, что кроме «золотого отношения», существуют <strong>«платиновое»</strong> и <strong>«потрясающее»</strong> отношения.</p>
+    <p class="body-text">18. Реконструированы <strong>параметры теоретического чертежа пирамиды Хуфу</strong>.</p>
+
+    <h3 class="section-head">Вывод 2. Пирамидальное устройство управления</h3>
+    <p class="body-text">Эскизная концепция методологии «<strong>Общей Теории Созидания</strong>» — пирамида как модель самоорганизующейся системы с 24 направлениями оптимизации.</p>
+
+    <p class="body-text" style="color:var(--stone); font-style:italic; text-align:center; margin-top:4em; font-size:19px;">
+      Действительно ли мы правильно интерпретируем Космос?<br>
+      Не ведёт ли человечество к катастрофе наша версия законов природы?
+    </p>
+    <p class="body-text" style="text-align:right; color:var(--stone); margin-top:2em;">
+      Май 1992 — декабрь 2012 · г. Николаев
+    </p>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="show('ch16')"><span class="arrow">←</span> Глава 16</button>
+    <button class="nav-btn" onclick="show('vympel')">Символ НГОИ <span class="arrow">→</span></button>
+  </div>
+</section>
+
+<!-- ВЫМПЕЛ НГОИ -->
+<section id="sec-vympel" class="book-section">
+  <div class="page-inner">
+    <div class="chapter-eyebrow">Символ НГОИ</div>
+    <h1 class="chapter-title">Вымпел</h1>
+    <p class="chapter-subtitle">Николаевского городского общества исследователей</p>
+
+    <p class="body-text"><strong>Вымпел — это предметный символ.</strong> Каждый элемент несёт смысл, каждый разрыв контура — знак диалектического противоречия.</p>
+
+    <div class="demo-panel" style="text-align:center;">
+      <div class="demo-tag">Расшифровка символа</div>
+      <svg id="vympel-full" viewBox="0 0 500 620" width="100%" style="max-height:500px; margin:0 auto; display:block;"></svg>
+      <div id="vympel-legend" style="display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; text-align:left; margin-top:20px; font-family:var(--sans); font-size:11px; color:var(--stone);"></div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="show('conclusion')"><span class="arrow">←</span> Заключение</button>
+    <button class="nav-btn" onclick="show('cover')">↺ На обложку</button>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+// ─── НАВИГАЦИЯ ───────────────────────────────────────────────
+const sections = ['cover','thanks','hemium','ch1','fractions','pyramid','phi','ch16','conclusion','vympel'];
+function show(id){
+  document.querySelectorAll('.book-section').forEach(s=>s.classList.remove('visible'));
+  const el = document.getElementById('sec-'+id);
+  if(el){ el.classList.add('visible'); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  document.querySelectorAll('.toc-item').forEach(t=>t.classList.remove('active'));
+  const match = [...document.querySelectorAll('.toc-item')].find(t=>t.getAttribute('onclick')?.includes("'"+id+"'"));
+  if(match) match.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+  // init demos lazily
+  if(id==='fractions'){ initFractions(); }
+  if(id==='pyramid'){ drawPyramid(); }
+  if(id==='phi'){ drawPhi('rect'); }
+  if(id==='vympel'){ drawVympel(); }
+}
+
+// ─── АЛИКВОТНЫЕ ДРОБИ ────────────────────────────────────────
+const ALIQUOT = {
+  3:[3,1],5:[3,15],7:[4,28],9:[6,18],11:[6,66],13:[7,91],15:[10,15],
+  17:[12,51,68],19:[12,76,114],21:[14,21],23:[12,276],25:[15,75],
+  27:[18,54],29:[24,58,174,232],31:[20,124,155],33:[22,66],
+  35:[30,42],37:[24,111,296],39:[26,78],41:[24,246,328],
+  43:[42,86,129,301],45:[30,90],47:[30,141,470],49:[28,196],
+  51:[34,102],53:[30,318,795],55:[30,330],57:[38,114],
+  59:[36,236,531],61:[40,244,488,610],63:[42,126],
+  65:[39,195],67:[40,335,536],69:[46,138],71:[40,568,710],
+  73:[60,219,292,365],75:[50,150],77:[44,308],79:[60,237,316,790],
+  81:[54,162],83:[60,332,415,498],85:[51,255],87:[58,174],
+  89:[60,356,534,890],91:[70,130],93:[62,186],95:[60,380,570],
+  97:[56,679,776],99:[66,198],101:[101,202,303,606]
+};
+
+let fractionsInited = false;
+function initFractions(){
+  if(fractionsInited) return; fractionsInited = true;
+  populateFracTable();
+  updateFraction(7);
+}
+
+function gcd(a,b){ return b===0?a:gcd(b,a%b); }
+
+function updateFraction(n){
+  n = parseInt(n);
+  document.getElementById('n-val').textContent = n;
+  document.getElementById('n-slider').value = n;
+  const parts = ALIQUOT[n];
+  const disp = document.getElementById('fraction-display');
+  const chk  = document.getElementById('fraction-check');
+  if(!parts){ disp.innerHTML = `<span style="color:var(--stone)">нет данных для n=${n}</span>`; return; }
+  const lhs = `2/${n}`;
+  const rhs = parts.map(d=>`1/${d}`).join(' + ');
+  disp.innerHTML = `<span style="color:var(--gold)">${lhs}</span> &nbsp;=&nbsp; <span style="color:var(--sand)">${rhs}</span>`;
+  // verify
+  let s = 0; parts.forEach(d=>s+=1/d);
+  const err = Math.abs(s - 2/n);
+  chk.textContent = err < 1e-9 ? `✓ Проверка: ${parts.map(d=>'1/'+d).join(' + ')} = ${s.toFixed(8)} ≈ ${(2/n).toFixed(8)}` : `⚠ Ошибка: ${err}`;
+}
+
+function populateFracTable(){
+  const tbody = document.getElementById('frac-table-body');
+  const show_n = [3,5,7,9,11,13,15,21,25,35,55,65,91,101];
+  show_n.forEach(n=>{
+    const parts = ALIQUOT[n]; if(!parts) return;
+    const type = parts.length<=2?'2-член':parts.length===3?'3-член':'4-член';
+    const sum = parts.reduce((acc,d)=>acc+1/d,0);
+    const ok = Math.abs(sum-2/n)<1e-9;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${n}</td><td class="frac-result">${parts.map(d=>'1/'+d).join(' + ')}</td><td>${type}</td><td style="color:${ok?'#4caf50':'#e57373'}">${ok?'✓ верно':'✗'}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ─── ПИРАМИДА ─────────────────────────────────────────────────
+function drawPyramid(){
+  const Bslider = document.getElementById('base-slider');
+  const Hslider = document.getElementById('height-slider');
+  const B = parseFloat(Bslider.value);
+  const H = parseFloat(Hslider.value);
+  document.getElementById('base-val').textContent = B;
+  document.getElementById('height-val').textContent = H;
+
+  const svg = document.getElementById('pyramid-svg');
+  const W=640, SH=380, pad=60;
+  const scale = (SH-pad*2)/H;
+  const sw = B*scale; const sh = H*scale;
+  const cx = W/2; const base_y = SH-pad;
+  const apex_y = base_y-sh;
+
+  // derived
+  const D = Math.sqrt(2)*B;
+  const angle = Math.atan(H/(B/2))*180/Math.PI;
+  const face_h = Math.sqrt(H*H+(B/2)*(B/2));
+  const Pi_e = 256/81;
+  const phi = (1+Math.sqrt(5))/2;
+  const ratio = H/(B/2);
+
+  let html = ``;
+  // sky gradient zone
+  html += `<defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a1828"/><stop offset="100%" stop-color="#1a3060"/></linearGradient><linearGradient id="sandg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9b99a"/><stop offset="100%" stop-color="#8b7355"/></linearGradient></defs>`;
+  html += `<rect x="0" y="0" width="${W}" height="${SH}" fill="url(#skyg)"/>`;
+  // ground
+  html += `<rect x="0" y="${base_y}" width="${W}" height="${SH-base_y}" fill="url(#sandg)" opacity="0.5"/>`;
+  // golden ratio circle
+  const R = B/2/Math.cos(Math.PI/4)*Math.sqrt(phi);
+  const Rscale = (B/2)*scale;
+  html += `<circle cx="${cx}" cy="${base_y}" r="${Rscale*phi/ratio}" fill="none" stroke="#c8953a" stroke-width="0.8" stroke-dasharray="4,4" opacity="0.4"/>`;
+  // pyramid body
+  html += `<polygon points="${cx-sw/2},${base_y} ${cx+sw/2},${base_y} ${cx},${apex_y}" fill="#c9a87c" opacity="0.25" stroke="#c8953a" stroke-width="1.5"/>`;
+  // shading face
+  html += `<polygon points="${cx},${apex_y} ${cx+sw/2},${base_y} ${cx},${base_y}" fill="#8b7355" opacity="0.35"/>`;
+  // center axis
+  html += `<line x1="${cx}" y1="${apex_y}" x2="${cx}" y2="${base_y}" stroke="#c8953a" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.5"/>`;
+  // dimensions
+  const lbl_style = `font-family:'JetBrains Mono',monospace; font-size:11px; fill:#c9b99a;`;
+  html += `<line x1="${cx-sw/2-10}" y1="${base_y}" x2="${cx-sw/2-10}" y2="${apex_y}" stroke="#4a7bb5" stroke-width="0.8" opacity="0.7"/>`;
+  html += `<text x="${cx-sw/2-14}" y="${(base_y+apex_y)/2}" ${lbl_style} text-anchor="end" dominant-baseline="central">H=${H}м</text>`;
+  html += `<line x1="${cx-sw/2}" y1="${base_y+16}" x2="${cx+sw/2}" y2="${base_y+16}" stroke="#4a7bb5" stroke-width="0.8" opacity="0.7"/>`;
+  html += `<text x="${cx}" y="${base_y+28}" ${lbl_style} text-anchor="middle">Б=${B}м</text>`;
+  // angle annotation
+  html += `<text x="${cx+sw/2+8}" y="${base_y-8}" ${lbl_style} text-anchor="start" fill="#c8953a">α=${angle.toFixed(1)}°</text>`;
+  // phi mark
+  html += `<text x="${cx+6}" y="${apex_y+18}" ${lbl_style} fill="rgba(200,149,58,.6)" font-size="10">≈φ×100</text>`;
+
+  svg.innerHTML = html;
+
+  // stats
+  const stats = document.getElementById('pyramid-stats');
+  const item = (label, val) => `<div style="background:rgba(0,0,0,.2); padding:10px; border-radius:4px; border:1px solid rgba(200,149,58,.15);">
+    <div style="font-family:var(--sans); font-size:9px; color:var(--stone); letter-spacing:.1em; text-transform:uppercase; margin-bottom:4px;">${label}</div>
+    <div style="font-family:var(--mono); color:var(--gold); font-size:14px;">${val}</div>
+  </div>`;
+  stats.innerHTML =
+    item('Угол грани α', angle.toFixed(2)+'°') +
+    item('Апофема', face_h.toFixed(1)+' м') +
+    item('H/(Б/2)', ratio.toFixed(4)) +
+    item('πe = 256/81', Pi_e.toFixed(5)) +
+    item('Диагональ D', D.toFixed(1)+' м') +
+    item('R/100 vs φ', ((B/2/Math.sqrt(2)*phi)/100).toFixed(5));
+}
+
+// ─── ЗОЛОТОЕ ОТНОШЕНИЕ ──────────────────────────────────────
+let phiCurrentMode = 'rect';
+function phiMode(mode){
+  phiCurrentMode = mode;
+  ['rect','spiral','pyr'].forEach(m=>{
+    const b = document.getElementById('btn-'+m);
+    if(b) b.classList.toggle('active', m===mode);
+  });
+  drawPhi(mode);
+}
+
+function drawPhi(mode){
+  const canvas = document.getElementById('phi-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  // bg
+  ctx.fillStyle = 'rgba(10,18,40,0.8)';
+  ctx.fillRect(0,0,W,H);
+
+  const phi = (1+Math.sqrt(5))/2;
+  const gold = '#c8953a'; const sand = '#e8d5b0'; const lapis = '#4a7bb5';
+
+  if(mode==='rect'){
+    // Fibonacci rectangles
+    const fibs = [1,1,2,3,5,8,13,21,34,55];
+    const unit = 5;
+    let x=W/2-110, y=H/2-68, w=55*unit, h=34*unit;
+    const colors = ['rgba(200,149,58,0.5)','rgba(74,123,181,0.4)','rgba(39,174,96,0.35)','rgba(139,32,32,0.3)','rgba(155,89,182,0.25)'];
+    const dirs = ['right','up','left','down'];
+    let cx=x, cy=y, cw=w, ch=h;
+    for(let i=0;i<8;i++){
+      const col = colors[i%colors.length];
+      ctx.fillStyle = col; ctx.strokeStyle = gold; ctx.lineWidth = 0.8;
+      const dir = dirs[i%4];
+      const sq = Math.min(cw,ch);
+      ctx.beginPath();
+      if(dir==='right'){ ctx.rect(cx,cy,sq,ch); cx+=sq; cw-=sq; }
+      else if(dir==='up'){ ctx.rect(cx,cy+ch-sq,cw,sq); cy+=ch-sq; ch=ch-sq; }
+      else if(dir==='left'){ ctx.rect(cx+cw-sq,cy,sq,ch); cw-=sq; }
+      else { ctx.rect(cx,cy,cw,sq); ch-=sq; }
+      ctx.fill(); ctx.stroke();
+    }
+    // phi label
+    ctx.fillStyle = gold; ctx.font = '500 13px Montserrat,sans-serif';
+    ctx.fillText(`φ = ${phi.toFixed(8)}`, 20, H-16);
+    ctx.fillStyle = 'rgba(200,149,58,.6)'; ctx.font = '11px JetBrains Mono,monospace';
+    ctx.fillText('55/34 = 1.61764705... (погрешность 0.024%)', 20, H-36);
+
+  } else if(mode==='spiral'){
+    const cx2=W/2, cy2=H/2, R0=120;
+    ctx.strokeStyle = gold; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for(let t=0;t<4*Math.PI;t+=0.01){
+      const r = R0*Math.pow(phi, t/(Math.PI/2));
+      const px = cx2+r*Math.cos(t), py = cy2+r*Math.sin(t);
+      t<0.01?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    // radii
+    for(let k=0;k<6;k++){
+      const ang = k*Math.PI/2; const r=R0*Math.pow(phi,k);
+      ctx.strokeStyle='rgba(200,149,58,0.3)'; ctx.lineWidth=0.5;
+      ctx.beginPath(); ctx.moveTo(cx2,cy2); ctx.lineTo(cx2+r*Math.cos(ang),cy2+r*Math.sin(ang)); ctx.stroke();
+      ctx.fillStyle='rgba(200,149,58,0.7)'; ctx.font='10px JetBrains Mono';
+      ctx.fillText(`r${k}=φ^${k}`,cx2+r*Math.cos(ang)+4,cy2+r*Math.sin(ang)-4);
+    }
+    ctx.fillStyle=gold; ctx.font='500 13px Montserrat';
+    ctx.fillText('Логарифмическая спираль φ — природный архетип', 20, H-16);
+
+  } else { // pyramid
+    const bx=W/2, by=H-40, bw=260, bh=200;
+    ctx.strokeStyle=gold; ctx.lineWidth=1.5; ctx.fillStyle='rgba(200,149,58,0.12)';
+    ctx.beginPath(); ctx.moveTo(bx-bw/2,by); ctx.lineTo(bx+bw/2,by); ctx.lineTo(bx,by-bh); ctx.closePath(); ctx.fill(); ctx.stroke();
+    // phi segments on base
+    const phiSeg = bw/(1+phi);
+    ctx.strokeStyle=lapis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(bx-bw/2+phiSeg,by); ctx.lineTo(bx-bw/2+phiSeg,by-8); ctx.stroke();
+    ctx.fillStyle=lapis; ctx.font='10px JetBrains Mono';
+    ctx.fillText('1',bx-bw/2+2,by+14); ctx.fillText('φ',bx-bw/2+phiSeg+2,by+14);
+    // H and B/2
+    ctx.strokeStyle='rgba(74,123,181,0.6)'; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(bx,by-bh); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=sand; ctx.font='500 12px JetBrains Mono';
+    ctx.fillText(`H ≈ 145.89 м`, bx+8, by-bh/2);
+    ctx.fillText(`Б/2 ≈ 114.6 м`, bx-bw/2, by+28);
+    ctx.fillText(`H/(Б/2) = φ ≈ 1.272?`, bx-80, by-bh-10);
+    ctx.fillStyle=gold; ctx.font='500 13px Montserrat';
+    ctx.fillText('Пирамида Хуфу и золотое отношение', 20, H-16);
+  }
+}
+
+// ─── ВЫМПЕЛ ─────────────────────────────────────────────────
+function drawVympel(){
+  const svg = document.getElementById('vympel-full');
+  if(!svg) return;
+  const elements = [
+    { id:'flag',   color:'#1a3460', desc:'Поле вымпела — знамя исследователей' },
+    { id:'circle', color:'#27ae60', desc:'Окружность — бесконечность познания' },
+    { id:'square', color:'#9b59b6', desc:'Квадрат в окружности — единство конечного и бесконечного' },
+    { id:'compass',color:'#3498db', desc:'Циркуль — знак измерений и точности' },
+    { id:'pencil', color:'#e74c3c', desc:'Карандаш — знак записи и вычислений' },
+    { id:'lamp',   color:'#e8c84a', desc:'Лампа — страсть исследовательского поиска' },
+    { id:'sea',    color:'#1a4a7a', desc:'Море — неисчерпаемость исследований' },
+    { id:'ship',   color:'#8b7355', desc:'Корабль — мощь научно-технического потенциала' },
+  ];
+
+  svg.innerHTML = `
+  <polygon points="10,10 490,10 490,540 250,610 10,540" fill="#0d1e3a" stroke="#c8953a" stroke-width="1.5" stroke-dasharray="8,4" opacity="0.9"/>
+
+  <rect x="50" y="100" width="200" height="200" fill="none" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="50" y1="100" x2="120" y2="100" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="135" y1="100" x2="250" y2="100" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="50" y1="300" x2="118" y2="300" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="132" y1="300" x2="250" y2="300" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="50" y1="100" x2="50" y2="195" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="50" y1="205" x2="50" y2="300" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="250" y1="100" x2="250" y2="193" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="250" y1="207" x2="250" y2="300" stroke="#9b59b6" stroke-width="2"/>
+
+  <circle cx="150" cy="200" r="106" fill="none" stroke="#27ae60" stroke-width="2"/>
+  <line x1="44" y1="200" x2="50" y2="200" stroke="none"/>
+  <path d="M44,200 A106,106 0 0,1 150,94" fill="none" stroke="#27ae60" stroke-width="2"/>
+  <path d="M150,94 A106,106 0 0,1 256,200" fill="none" stroke="#27ae60" stroke-width="2"/>
+  <path d="M256,200 A106,106 0 0,1 150,306" fill="none" stroke="#27ae60" stroke-width="2"/>
+  <line x1="150" y1="306" x2="150" y2="300" stroke="none"/>
+  <path d="M150,306 A106,106 0 0,1 46,202" fill="none" stroke="#27ae60" stroke-width="2"/>
+
+  <line x1="60" y1="320" x2="120" y2="252" stroke="#e74c3c" stroke-width="3" stroke-linecap="round"/>
+  <line x1="120" y1="252" x2="185" y2="195" stroke="#e74c3c" stroke-width="3" stroke-linecap="round" stroke-dasharray="5,5"/>
+  <line x1="185" y1="195" x2="248" y2="140" stroke="#e74c3c" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="248,136 244,144 252,144" fill="#e74c3c"/>
+  <polygon points="60,324 56,316 64,316" fill="#e74c3c"/>
+
+  <path d="M 78,308 Q 90,280 98,252" fill="none" stroke="#3498db" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 120,252 Q 110,278 112,310" fill="none" stroke="#3498db" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="78" cy="308" r="5" fill="#3498db"/>
+  <circle cx="120" cy="252" r="5" fill="#3498db"/>
+
+  <ellipse cx="360" cy="180" rx="36" ry="44" fill="none" stroke="#e8c84a" stroke-width="2.2"/>
+  <line x1="360" y1="136" x2="360" y2="140" stroke="#e8c84a" stroke-width="2"/>
+  <line x1="360" y1="146" x2="360" y2="154" stroke="#e8c84a" stroke-width="1.5" stroke-dasharray="2,3"/>
+  <line x1="325" y1="165" x2="330" y2="168" stroke="#f0d060" stroke-width="1.2" opacity="0.7"/>
+  <line x1="395" y1="165" x2="390" y2="168" stroke="#f0d060" stroke-width="1.2" opacity="0.7"/>
+  <line x1="330" y1="148" x2="334" y2="152" stroke="#f0d060" stroke-width="1.2" opacity="0.6"/>
+  <line x1="390" y1="148" x2="386" y2="152" stroke="#f0d060" stroke-width="1.2" opacity="0.6"/>
+  <ellipse cx="360" cy="200" rx="14" ry="8" fill="none" stroke="#e8c84a" stroke-width="1.8"/>
+  <line x1="351" y1="207" x2="344" y2="228" stroke="#e8c84a" stroke-width="1.8"/>
+  <line x1="369" y1="207" x2="376" y2="228" stroke="#e8c84a" stroke-width="1.8"/>
+  <line x1="344" y1="228" x2="376" y2="228" stroke="#e8c84a" stroke-width="1.8"/>
+
+  <rect x="40" y="420" width="420" height="75" fill="#1a3a6e" rx="2" opacity="0.85"/>
+  <path d="M40,420 Q70,392 110,400 Q150,408 190,395 Q230,382 270,390 Q310,398 350,390 Q390,382 420,395 Q440,402 460,420 Z" fill="#1e5fa8" opacity="0.8"/>
+  <path d="M40,435 Q90,420 140,425 Q190,430 240,420 Q290,410 340,418 Q390,426 440,418 Q455,416 460,420" fill="none" stroke="#4a9fd4" stroke-width="1.2" opacity="0.7"/>
+  <path d="M40,450 Q100,437 160,443 Q220,449 280,437 Q340,425 400,435 Q430,441 460,450" fill="none" stroke="#4a9fd4" stroke-width="1" opacity="0.5"/>
+
+  <path d="M 300,430 L 308,390 L 340,390 L 348,430 Z" fill="#8b7355" stroke="#6b5335" stroke-width="0.8"/>
+  <path d="M 308,390 L 324,338 L 340,390 Z" fill="#c9a87c" stroke="#8b7355" stroke-width="0.8"/>
+  <path d="M 303,395 Q 308,378 316,383 L 324,340 L 332,383 Q 340,378 345,395 L 340,395 Q 332,368 324,350 Q 316,368 308,395 Z" fill="#d4b896" stroke="#8b7355" stroke-width="0.4" opacity="0.6"/>
+  <line x1="320" y1="395" x2="330" y2="395" stroke="#8b7355" stroke-width="1" stroke-dasharray="2,3"/>
+
+  <text x="250" y="590" font-family="Cormorant Garamond,serif" font-size="14" fill="#c8953a" text-anchor="middle" font-style="italic">Разрывы в контурах — знак противоречий непрерывности–прерывности</text>
+  `;
+
+  const legend = document.getElementById('vympel-legend');
+  legend.innerHTML = [
+    ['Циркуль', 'Знак измерений и точности'],
+    ['Карандаш', 'Знак записи наблюдений и вычислений'],
+    ['Перекрестье', 'Знак первопознания, первая буква алфавита'],
+    ['Квадрат в окружности', 'Единство конечного и бесконечного'],
+    ['Лампа + излучение', 'Страсть поиска · свет новых знаний'],
+    ['Море и небо', 'Неисчерпаемость исследований'],
+    ['Даль морская', 'Широкие горизонты для исследований'],
+    ['Корабль', 'Мощь научно-технического потенциала'],
+    ['Разрывы контуров', 'Знак диалектических противоречий'],
+    ['Горизонтальность', 'Преодоление препятствий'],
+  ].map(([t,d])=>`<div><strong style="color:var(--gold); font-family:var(--sans); font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;">${t}</strong><br><span style="font-size:10px;">${d}</span></div>`).join('');
+}
+
+// ─── ИНИЦИАЛИЗАЦИЯ ───────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', ()=>{
+  initFractions();
+  updateFraction(7);
+});
+</script>
+</body>
+</html>

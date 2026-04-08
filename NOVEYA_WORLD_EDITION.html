@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVEYA — Engineering Philosophy for the World</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════
+   НОВЕЯ — WORLD EDITION
+   Цветовая система: Aurora Borealis
+   Тёмный космос + живые неоновые акценты
+══════════════════════════════════════════════════ */
+:root {
+  --void:    #060810;
+  --deep:    #0a0d1a;
+  --surface: #0e1224;
+  --glass:   rgba(255,255,255,.04);
+  --border:  rgba(255,255,255,.07);
+
+  --nova:    #00f5d4;   /* главный — бирюзово-зелёный */
+  --aurora:  #7c3aed;   /* фиолетовый */
+  --pulse:   #f59e0b;   /* золото */
+  --signal:  #ef4444;   /* красный */
+  --lime:    #84cc16;   /* лаймовый */
+  --sky:     #38bdf8;   /* голубой */
+
+  --txt:     #e2e8f0;
+  --muted:   #64748b;
+  --sub:     #94a3b8;
+
+  --serif:   'Syne', sans-serif;
+  --sans:    'Space Grotesk', sans-serif;
+  --mono:    'Space Mono', monospace;
+  --r:       8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--void);
+  color: var(--txt);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* ══════════ ЗВЁЗДНОЕ ПОЛЕ ══════════ */
+#starfield {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(124,58,237,.08) 0%, transparent 60%),
+              radial-gradient(ellipse 80% 60% at 80% 100%, rgba(0,245,212,.05) 0%, transparent 50%);
+}
+.star {
+  position: absolute; border-radius: 50%;
+  background: white; opacity: 0;
+  animation: twinkle var(--d) ease-in-out infinite;
+  animation-delay: var(--dl);
+}
+@keyframes twinkle {
+  0%,100% { opacity: 0; transform: scale(1); }
+  50% { opacity: var(--op); transform: scale(1.5); }
+}
+
+/* ══════════ ПРОГРЕСС ══════════ */
+#progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 2px; z-index: 1000;
+  background: rgba(0,245,212,.12);
+}
+#progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--aurora), var(--nova));
+  transition: width .3s;
+  box-shadow: 0 0 12px var(--nova);
+}
+
+/* ══════════ НАВИГАЦИЯ ══════════ */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 900;
+  padding: 0 32px;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(6,8,16,.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 20px; font-weight: 800;
+  letter-spacing: .08em;
+  background: linear-gradient(135deg, var(--nova), var(--aurora));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links {
+  display: flex; gap: 4px; align-items: center;
+}
+.nav-link {
+  padding: 5px 12px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; border-radius: 4px;
+  transition: all .16s;
+}
+.nav-link:hover { color: var(--nova); background: rgba(0,245,212,.06); }
+.nav-link.active { color: var(--nova); background: rgba(0,245,212,.1); }
+.lang-switcher {
+  display: flex; gap: 2px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px;
+}
+.lang-btn {
+  padding: 3px 8px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; border-radius: 3px;
+  transition: all .16s;
+}
+.lang-btn:hover { color: var(--nova); }
+.lang-btn.active {
+  background: var(--nova); color: var(--void);
+}
+#menu-toggle {
+  display: none;
+  background: none; border: none; color: var(--nova);
+  font-size: 20px; cursor: pointer;
+}
+
+/* ══════════ БОКОВОЕ МЕНЮ ══════════ */
+#sidebar {
+  position: fixed; top: 60px; left: 0; bottom: 0;
+  width: 240px;
+  background: rgba(10,13,26,.95);
+  border-right: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  overflow-y: auto; z-index: 800;
+  padding: 16px 0 40px;
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+}
+.sb-section {
+  font-family: var(--mono); font-size: 8px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--aurora); padding: 14px 18px 5px; opacity: .7;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 18px 7px 16px;
+  font-size: 11.5px; font-weight: 500;
+  color: var(--muted); cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all .14s;
+  line-height: 1.3;
+}
+.sb-item:hover { color: var(--txt); background: rgba(255,255,255,.03); }
+.sb-item.active { color: var(--nova); border-left-color: var(--nova); background: rgba(0,245,212,.06); }
+.sb-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .5; flex-shrink: 0; }
+.sb-badge {
+  margin-left: auto; font-size: 8px; font-weight: 700;
+  background: rgba(0,245,212,.15); color: var(--nova);
+  padding: 1px 6px; border-radius: 8px;
+}
+
+/* ══════════ MAIN ══════════ */
+#main { margin-left: 240px; padding-top: 60px; position: relative; z-index: 1; }
+
+/* ══════════ ЭКРАНЫ ══════════ */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: block; animation: screenIn .35s ease; }
+@keyframes screenIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ══════════ HERO ══════════ */
+#s-hero {
+  display: none;
+  min-height: 100vh;
+  align-items: center; justify-content: center;
+  flex-direction: column; text-align: center;
+  padding: 80px 40px;
+  position: relative;
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 30%, rgba(124,58,237,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(0,245,212,.08) 0%, transparent 50%);
+}
+#s-hero.active { display: flex; }
+
+.hero-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--nova);
+  border: 1px solid rgba(0,245,212,.25);
+  padding: 5px 14px; border-radius: 20px;
+  margin-bottom: 32px;
+}
+.hero-label::before { content: '◎'; font-size: 10px; }
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(56px, 10vw, 130px);
+  font-weight: 800; line-height: .95;
+  letter-spacing: -.02em;
+  color: var(--txt); margin-bottom: 10px;
+}
+.hero-title .n { color: var(--nova); }
+.hero-title .o { color: var(--aurora); }
+.hero-tagline {
+  font-size: clamp(14px, 2vw, 20px);
+  color: var(--sub); margin-bottom: 50px;
+  max-width: 640px;
+  line-height: 1.6;
+}
+.hero-grid {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  justify-content: center; margin-bottom: 56px;
+}
+.hero-chip {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 7px 16px; border-radius: 4px;
+  border: 1px solid; cursor: pointer;
+  transition: all .2s;
+}
+.hero-chip.c1 { border-color: rgba(0,245,212,.3); color: var(--nova); }
+.hero-chip.c2 { border-color: rgba(124,58,237,.3); color: var(--aurora); }
+.hero-chip.c3 { border-color: rgba(245,158,11,.3); color: var(--pulse); }
+.hero-chip.c4 { border-color: rgba(56,189,248,.3); color: var(--sky); }
+.hero-chip.c5 { border-color: rgba(132,204,22,.3); color: var(--lime); }
+.hero-chip:hover { background: rgba(255,255,255,.06); transform: translateY(-2px); }
+.hero-cta {
+  padding: 14px 44px;
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  background: linear-gradient(135deg, var(--nova), var(--aurora));
+  color: var(--void); border: none; border-radius: 4px;
+  cursor: pointer; transition: all .22s;
+  box-shadow: 0 0 30px rgba(0,245,212,.2);
+}
+.hero-cta:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,245,212,.35); }
+
+/* ══════════ PAGE LAYOUT ══════════ */
+.page-wrap { max-width: 860px; margin: 0 auto; padding: 64px 48px 100px; }
+.page-eyebrow {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--nova); margin-bottom: 16px;
+}
+.page-eyebrow::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,245,212,.3), transparent); }
+h1.page-title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 5vw, 54px);
+  font-weight: 800; line-height: 1.1;
+  color: var(--txt); margin-bottom: 12px;
+  letter-spacing: -.01em;
+}
+.page-sub {
+  font-size: 17px; color: var(--sub);
+  margin-bottom: 40px; line-height: 1.65;
+}
+.lead {
+  font-size: 17.5px; line-height: 1.85;
+  color: var(--txt); padding: 20px 26px;
+  background: rgba(0,245,212,.04);
+  border-left: 3px solid var(--nova);
+  border-radius: 0 var(--r) var(--r) 0;
+  margin-bottom: 2em;
+}
+.prose {
+  font-size: 16px; line-height: 1.85;
+  color: rgba(226,232,240,.8); margin-bottom: 1.2em;
+}
+.prose strong { color: var(--nova); font-weight: 500; }
+h3.sh {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--aurora); margin: 3em 0 1em;
+}
+blockquote.bq {
+  margin: 2em 0; padding: 20px 26px;
+  background: rgba(124,58,237,.06);
+  border-left: 3px solid var(--aurora);
+  border-radius: 0 var(--r) var(--r) 0;
+  font-style: italic; font-size: 16.5px;
+  color: var(--sub); line-height: 1.8;
+}
+blockquote.bq cite {
+  display: block; font-style: normal;
+  font-family: var(--mono); font-size: 9px;
+  color: rgba(100,116,139,.6); margin-top: 8px;
+}
+
+/* ══════════ КАРТОЧКИ ══════════ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px; margin: 1.8em 0;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 20px;
+  transition: all .2s;
+  position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--c1, var(--nova)), var(--c2, var(--aurora)));
+}
+.card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,.12); }
+.card .c-label {
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--c1, var(--nova)); margin-bottom: 8px;
+}
+.card .c-val {
+  font-size: 14.5px; color: var(--txt); line-height: 1.55;
+}
+.card.nova { --c1: var(--nova); --c2: #00c4b0; }
+.card.aurora { --c1: var(--aurora); --c2: #9f7bff; }
+.card.pulse { --c1: var(--pulse); --c2: #fbbf24; }
+.card.sky { --c1: var(--sky); --c2: #60c5f0; }
+.card.lime { --c1: var(--lime); --c2: #a3e635; }
+.card.signal { --c1: var(--signal); --c2: #f87171; }
+
+/* ══════════ ТЕЗИСЫ ══════════ */
+.thesis-grid { display: flex; flex-direction: column; gap: 14px; margin: 2em 0; }
+.thesis-item {
+  display: grid; grid-template-columns: 52px 1fr;
+  gap: 0; border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden;
+  background: var(--surface);
+  transition: all .18s; cursor: pointer;
+}
+.thesis-item:hover { border-color: rgba(0,245,212,.25); }
+.thesis-item.open { border-color: rgba(0,245,212,.3); }
+.thesis-num {
+  background: rgba(0,245,212,.08);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 16px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--nova);
+}
+.thesis-body { padding: 14px 18px; }
+.thesis-title {
+  font-size: 13.5px; font-weight: 600; color: var(--txt);
+  margin-bottom: 4px;
+}
+.thesis-sub {
+  font-size: 12px; color: var(--sub); line-height: 1.55;
+}
+.thesis-expand {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--nova); margin-top: 10px;
+  display: none;
+}
+.thesis-item.open .thesis-expand { display: block; }
+.thesis-tool {
+  display: inline-block; margin-top: 6px;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: .08em;
+  background: rgba(0,245,212,.1); color: var(--nova);
+  padding: 2px 8px; border-radius: 3px;
+}
+
+/* ══════════ ДРЕВО ЯЗЫКОВ ══════════ */
+.tree-wrap { margin: 2em 0; }
+.tree-branch {
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden;
+}
+.tree-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 18px; cursor: pointer;
+  background: var(--surface); transition: background .15s;
+}
+.tree-header:hover { background: rgba(255,255,255,.04); }
+.tree-icon { font-size: 16px; }
+.tree-name {
+  font-size: 13px; font-weight: 600; color: var(--txt); flex: 1;
+}
+.tree-scripts {
+  font-family: var(--mono); font-size: 11px; color: var(--sub);
+  letter-spacing: .05em;
+}
+.tree-body {
+  padding: 14px 18px; display: none;
+  border-top: 1px solid var(--border);
+}
+.tree-body.open { display: block; }
+.script-chars {
+  font-family: var(--mono); font-size: 14px;
+  color: var(--aurora); letter-spacing: .1em;
+  line-height: 2; word-break: break-all;
+}
+
+/* ══════════ ТАБЛИЦА ══════════ */
+.data-table { width: 100%; border-collapse: collapse; margin: 1.8em 0; font-size: 13px; }
+.data-table th {
+  background: rgba(0,245,212,.07);
+  color: var(--nova); font-family: var(--mono);
+  font-size: 8.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  padding: 9px 14px; text-align: left;
+  border-bottom: 1px solid rgba(0,245,212,.18);
+}
+.data-table td {
+  padding: 9px 14px; color: rgba(226,232,240,.8);
+  border-bottom: 1px solid var(--border); line-height: 1.5;
+}
+.data-table tr:hover td { background: rgba(255,255,255,.02); }
+.data-table td.accent { color: var(--nova); font-family: var(--mono); }
+
+/* ══════════ ФОРМУЛЫ ══════════ */
+.formula {
+  background: rgba(124,58,237,.08);
+  border: 1px solid rgba(124,58,237,.2);
+  border-left: 3px solid var(--aurora);
+  border-radius: var(--r);
+  padding: 16px 22px; margin: 1.8em 0;
+  font-family: var(--mono); font-size: 13px;
+  color: var(--txt); line-height: 2;
+}
+.formula .f-label {
+  font-size: 8.5px; font-weight: 700; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--aurora); margin-bottom: 8px;
+}
+
+/* ══════════ HIGHLIGHT ══════════ */
+.hl {
+  background: rgba(0,245,212,.05);
+  border: 1px solid rgba(0,245,212,.15);
+  border-radius: var(--r); padding: 16px 22px; margin: 2em 0;
+}
+.hl p { font-size: 15px; color: var(--txt); line-height: 1.7; margin: .4em 0; }
+.hl p::before { content: '◎ '; color: var(--nova); }
+
+/* ══════════ ИНТЕРАКТИВНЫЕ ДЕМО ══════════ */
+.demo {
+  background: rgba(10,13,26,.8);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px; margin: 2em 0;
+  position: relative;
+}
+.demo-tag {
+  position: absolute; top: -9px; left: 18px;
+  background: var(--nova); color: var(--void);
+  font-family: var(--mono); font-size: 8.5px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  padding: 2px 10px; border-radius: 3px;
+}
+.demo-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.demo-btn {
+  padding: 6px 16px; border-radius: 4px;
+  border: 1px solid rgba(0,245,212,.25); background: transparent;
+  color: var(--nova); font-family: var(--mono); font-size: 9.5px;
+  font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer; transition: all .16s;
+}
+.demo-btn:hover, .demo-btn.active {
+  background: var(--nova); color: var(--void);
+}
+
+/* ══════════ NAV FOOTER ══════════ */
+.page-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 28px 48px 50px;
+  max-width: 860px; margin: 0 auto;
+  border-top: 1px solid var(--border);
+}
+.nav-btn-page {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); background: none; border: none;
+  cursor: pointer; transition: color .16s;
+}
+.nav-btn-page:hover { color: var(--nova); }
+
+/* ══════════ RESPONSIVE ══════════ */
+@media (max-width: 960px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: none; }
+  #main { margin-left: 0; }
+  #menu-toggle { display: block; }
+  .page-wrap { padding: 44px 22px 80px; }
+  .page-nav { padding: 22px 22px 36px; }
+  .nav-links { display: none; }
+  .hero-title { font-size: clamp(42px, 8vw, 70px); }
+}
+</style>
+</head>
+<body>
+
+<!-- ЗВЁЗДЫ -->
+<div id="starfield"></div>
+<div id="progress"><div id="progress-bar" style="width:0%"></div></div>
+
+<!-- НАВИГАЦИЯ -->
+<nav id="nav">
+  <div class="nav-logo">NOVEYA</div>
+  <div class="nav-links">
+    <div class="nav-link active" onclick="go('hero',0)">Home</div>
+    <div class="nav-link" onclick="go('manifesto',1)">Manifesto</div>
+    <div class="nav-link" onclick="go('fdl',2)">FDL</div>
+    <div class="nav-link" onclick="go('theses',3)">12 Theses</div>
+    <div class="nav-link" onclick="go('harmony',4)">Harmony</div>
+    <div class="nav-link" onclick="go('languages',5)">Languages</div>
+    <div class="nav-link" onclick="go('community',6)">Community</div>
+    <div class="nav-link" onclick="go('platform',7)">Platform</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="lang-switcher">
+      <div class="lang-btn active" onclick="setLang('ru')">RU</div>
+      <div class="lang-btn" onclick="setLang('ua')">UA</div>
+      <div class="lang-btn" onclick="setLang('en')">EN</div>
+    </div>
+    <button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+  </div>
+</nav>
+
+<!-- БОКОВОЕ МЕНЮ -->
+<nav id="sidebar">
+  <div class="sb-section">Начало</div>
+  <div class="sb-item active" onclick="go('hero',0)"><div class="sb-dot"></div>Главная / Home</div>
+  <div class="sb-item" onclick="go('manifesto',1)"><div class="sb-dot"></div>Манифест</div>
+  <div class="sb-item" onclick="go('mission',2)"><div class="sb-dot"></div>Миссия и Цели</div>
+
+  <div class="sb-section">Методология</div>
+  <div class="sb-item" onclick="go('fdl',3)"><div class="sb-dot"></div>ФДЛ — основа <span class="sb-badge">★</span></div>
+  <div class="sb-item" onclick="go('lotus',4)"><div class="sb-dot"></div>Лотос Созидания</div>
+  <div class="sb-item" onclick="go('creation',5)"><div class="sb-dot"></div>Акт Творения</div>
+
+  <div class="sb-section">12 Тезисов</div>
+  <div class="sb-item" onclick="go('theses',6)"><div class="sb-dot"></div>NOVEYA.UA — тезисы <span class="sb-badge">★</span></div>
+
+  <div class="sb-section">Технология</div>
+  <div class="sb-item" onclick="go('harmony',7)"><div class="sb-dot"></div>Язык «Гармония»</div>
+  <div class="sb-item" onclick="go('platform',8)"><div class="sb-dot"></div>Платформа НОВЕЯ</div>
+  <div class="sb-item" onclick="go('tokens',9)"><div class="sb-dot"></div>NVT — токены</div>
+
+  <div class="sb-section">Язык и Культура</div>
+  <div class="sb-item" onclick="go('languages',10)"><div class="sb-dot"></div>Древо языков <span class="sb-badge">★</span></div>
+  <div class="sb-item" onclick="go('elements',11)"><div class="sb-dot"></div>Элементы и Геополитика</div>
+
+  <div class="sb-section">Сообщество</div>
+  <div class="sb-item" onclick="go('community',12)"><div class="sb-dot"></div>Громада НОВЕЯ</div>
+  <div class="sb-item" onclick="go('eng-phil',13)"><div class="sb-dot"></div>Инженерная философия</div>
+  <div class="sb-item" onclick="go('global',14)"><div class="sb-dot"></div>Для мира / Global</div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- 0 HERO -->
+<section id="s-hero" class="screen active">
+  <div class="hero-label" data-ru="Проект нового мирового порядка" data-ua="Проект нового світового порядку" data-en="A New World Order Project">Проект нового мирового порядка</div>
+  <h1 class="hero-title"><span class="n">N</span><span class="o">O</span>VEYA</h1>
+  <p class="hero-tagline" data-ru="Инженерная философия для человечества. Формально-диалектическая логика как основа нового уклада жизни, технологий и управления." data-ua="Інженерна філософія для людства. Формально-діалектична логіка як основа нового укладу життя, технологій та управління." data-en="Engineering philosophy for humanity. Formal-dialectical logic as the foundation of a new order of life, technology and governance.">Инженерная философия для человечества. Формально-диалектическая логика как основа нового уклада жизни, технологий и управления.</p>
+  <div class="hero-grid">
+    <div class="hero-chip c1" onclick="go('fdl',3)">ФДЛ · Методология</div>
+    <div class="hero-chip c2" onclick="go('harmony',7)">Язык Гармония</div>
+    <div class="hero-chip c3" onclick="go('theses',6)">12 Тезисов</div>
+    <div class="hero-chip c4" onclick="go('languages',10)">Древо языков</div>
+    <div class="hero-chip c5" onclick="go('community',12)">Громада</div>
+  </div>
+  <button class="hero-cta" onclick="go('manifesto',1)" data-ru="Войти в проект →" data-ua="Увійти до проєкту →" data-en="Enter the project →">Войти в проект →</button>
+</section>
+
+<!-- 1 МАНИФЕСТ -->
+<section id="s-manifesto" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Манифест · Архитектура суверенитета</div>
+    <h1 class="page-title">NOVEYA — Манифест</h1>
+    <p class="page-sub">Построить самоорганизующуюся сеть честных, компетентных и ответственных общественных структур</p>
+    <p class="lead">«Наша миссия — построить самоорганизующуюся сеть честных, компетентных и ответственных общественных структур, действующих в правовом и этическом поле. Мы создаём пространство, в котором формируется новая культура управления — не власть над, а <strong>власть среди</strong>»</p>
+    <div class="demo">
+      <div class="demo-tag">Интерактив — Контекст перехода</div>
+      <canvas id="context-canvas" width="780" height="280" style="max-width:100%;display:block;"></canvas>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="contextMode('crisis')" id="btn-crisis">Кризис старых систем</button>
+        <button class="demo-btn" onclick="contextMode('shift')" id="btn-shift">Сдвиг парадигмы</button>
+        <button class="demo-btn" onclick="contextMode('nova')" id="btn-nova">Архитектура НОВЕЯ</button>
+      </div>
+    </div>
+    <h3 class="sh">Почему сейчас?</h3>
+    <div class="card-grid">
+      <div class="card signal"><div class="c-label">Кризис центра</div><div class="c-val">Централизованные системы утратили способность к оперативной адаптации</div></div>
+      <div class="card signal"><div class="c-label">Разрыв ткани</div><div class="c-val">Социальная ткань разрывается между локальными кризисами и глобальными конфликтами</div></div>
+      <div class="card signal"><div class="c-label">Риск ИИ</div><div class="c-val">Технологический скачок грозит стать не инструментом освобождения, а новым механизмом контроля</div></div>
+      <div class="card nova"><div class="c-label">Ответ НОВЕЯ</div><div class="c-val">Инженерно-смысловая архитектура: человек → институция → ИИ-спутник</div></div>
+    </div>
+    <blockquote class="bq">«Нужна не косметическая реформа, а смена логики управления. FDL-модель НОВЕЯ — это не идеологический проект и не утопия, а инженерно-смысловая архитектура»<cite>— Манифест Громады НОВЕЯ</cite></blockquote>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('hero',0)">← Главная</button>
+    <button class="nav-btn-page" onclick="go('mission',2)">Миссия →</button>
+  </div>
+</section>
+
+<!-- 2 МИССИЯ -->
+<section id="s-mission" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Миссия · Цели · Команда</div>
+    <h1 class="page-title">Миссия и Цели</h1>
+    <p class="page-sub">Николаев, май 2025 · Координатор: Ігор Крячков</p>
+    <h3 class="sh">Базовые цели</h3>
+    <div class="card-grid">
+      <div class="card nova"><div class="c-label">Сети НКО</div><div class="c-val">Создание устойчивых неприбыльных организаций в каждом регионе, объединённых во Всеукраинскую ассоциацию</div></div>
+      <div class="card aurora"><div class="c-label">Экспертиза</div><div class="c-val">Независимая юридическая, смысловая и технологическая экспертиза</div></div>
+      <div class="card pulse"><div class="c-label">Критическое мышление</div><div class="c-val">Повышение способности граждан мыслить критически и действовать автономно</div></div>
+    </div>
+    <h3 class="sh">Стратегические цели</h3>
+    <div class="hl">
+      <p>Заложить основу параллельных структур честной власти</p>
+      <p>Формировать методики воспитания метаэтических норм</p>
+      <p>Запускать проекты по справедливому перераспределению ценности труда</p>
+      <p>Подготовка лидеров нового типа</p>
+    </div>
+    <h3 class="sh">Компоненты платформы</h3>
+    <table class="data-table">
+      <thead><tr><th>Компонент</th><th>Описание</th><th>Статус</th></tr></thead>
+      <tbody>
+        <tr><td class="accent">Платформа НОВЕЯ</td><td>Цифровая экосистема с открытыми модулями участия</td><td>Пилот</td></tr>
+        <tr><td class="accent">NVT-токены</td><td>NOVEA Token — учёт добровольного вклада, «трудо-единицы»</td><td>Разработка</td></tr>
+        <tr><td class="accent">Оболочка СВЕТ</td><td>Методологический каркас планирования и самооценивания команд</td><td>Готово</td></tr>
+        <tr><td class="accent">Лотос Созидания</td><td>Визуальная модель поиска решений (7 секторов)</td><td>Готово</td></tr>
+        <tr><td class="accent">Мобильные хабы</td><td>Пункты взаимодействия, просвещения и адаптации</td><td>Планирование</td></tr>
+        <tr><td class="accent">FDL-компилятор</td><td>Автоматическая проверка согласованности решений</td><td>Концепция</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('manifesto',1)">← Манифест</button>
+    <button class="nav-btn-page" onclick="go('fdl',3)">ФДЛ — основа →</button>
+  </div>
+</section>
+
+<!-- 3 ФДЛ -->
+<section id="s-fdl" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Формально-Диалектическая Логика · Кашеварова 1974–2019</div>
+    <h1 class="page-title">ФДЛ — Ядро НОВЕЯ</h1>
+    <p class="page-sub">Первая в мире формализация диалектической логики как инструмент управления</p>
+    <p class="lead">«FDL-модель НОВЕЯ — это место, где человек и община являются носителями культурного кода, инструментом — формально-диалектическая логика, встроенная в цифровые системы, а целью — построение автономных, устойчивых, технологически интегрированных сообществ»</p>
+    <div class="demo">
+      <div class="demo-tag">Интерактив — ТАС-цикл ФДЛ в действии</div>
+      <canvas id="fdl-canvas" width="780" height="300" style="max-width:100%;display:block;"></canvas>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="fdlMode('tas')" id="btn-tas">Тезис·Антитезис·Синтез</button>
+        <button class="demo-btn" onclick="fdlMode('5blocks')" id="btn-5b">5 Блоков</button>
+        <button class="demo-btn" onclick="fdlMode('functions')" id="btn-fn">9 Функций</button>
+      </div>
+    </div>
+    <h3 class="sh">ФДЛ в контексте НОВЕЯ</h3>
+    <div class="card-grid">
+      <div class="card nova"><div class="c-label">Для громады</div><div class="c-val">Трёхступенчатая проверка решений: тезис → антитезис → синтез. Исключает популизм и манипуляции</div></div>
+      <div class="card aurora"><div class="c-label">Для ИИ-систем</div><div class="c-val">FDL-компилятор как ядро ИИ-спутника громады. Логика вместо чёрного ящика</div></div>
+      <div class="card pulse"><div class="c-label">Для государства</div><div class="c-val">FDL-государственность: распределённая сеть общин с токенизированной инфраструктурой</div></div>
+      <div class="card sky"><div class="c-label">Для образования</div><div class="c-val">Персонализированные ИИ-наставники с FDL-ядром. Школа смыслов</div></div>
+    </div>
+    <div class="formula">
+      <div class="f-label">Базовые отношения ФДЛ</div>
+      Ц (Цели) + П (Потребности) + Ср (Средства)<br>
+      ЗАТР: Удо → Ср   |   ОЦРЕ: Ц → Эр<br>
+      ОГПО: П → Ср     |   КРСО: Зн → Ц<br>
+      АЛЬТ: Зн → Удо   |   ВАРЕ: П → М<br>
+      <br>
+      FDL-громада: [Инициатор] ⇄ [Институция] ⇄ [ИИ-Спутник]<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↙<br>
+      &nbsp;&nbsp;&nbsp;[Лотос Созидания — 7 функциональных секторов]
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('mission',2)">← Миссия</button>
+    <button class="nav-btn-page" onclick="go('lotus',4)">Лотос →</button>
+  </div>
+</section>
+
+<!-- 4 ЛОТОС -->
+<section id="s-lotus" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Модель Созидания · 7 секторов</div>
+    <h1 class="page-title">Лотос Созидания</h1>
+    <p class="page-sub">Динамическая семиосфера устойчивого развития</p>
+    <div class="demo">
+      <div class="demo-tag">Интерактив — Лотос Созидания</div>
+      <canvas id="lotus-canvas" width="780" height="380" style="max-width:100%;display:block;"></canvas>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="lotusMode('all')" id="btn-all">Все секторы</button>
+        <button class="demo-btn" onclick="lotusMode('eco')" id="btn-eco">Эко-баланс</button>
+        <button class="demo-btn" onclick="lotusMode('edu')" id="btn-edu">Образование</button>
+        <button class="demo-btn" onclick="lotusMode('tech')" id="btn-tech">Технологии</button>
+      </div>
+    </div>
+    <h3 class="sh">7 функциональных секторов</h3>
+    <div class="card-grid">
+      <div class="card nova"><div class="c-label">1. ФДЛ-ядро</div><div class="c-val">Навигация смыслов — центр принятия решений</div></div>
+      <div class="card lime"><div class="c-label">2. Эко-баланс</div><div class="c-val">Ресурсный и экологический баланс территории</div></div>
+      <div class="card pulse"><div class="c-label">3. Культурный код</div><div class="c-val">Образование и сохранение идентичности</div></div>
+      <div class="card sky"><div class="c-label">4. ИИ-инфраструктура</div><div class="c-val">Технологии и ИИ на службе общины</div></div>
+      <div class="card aurora"><div class="c-label">5. Энергоавтономия</div><div class="c-val">Замкнутые энергетические циклы</div></div>
+      <div class="card signal"><div class="c-label">6. Социальная справедливость</div><div class="c-val">Безопасность и инклюзивность</div></div>
+      <div class="card nova"><div class="c-label">7. Космо-ориентиры</div><div class="c-val">Стратегическая интеграция и перспектива</div></div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('fdl',3)">← ФДЛ</button>
+    <button class="nav-btn-page" onclick="go('creation',5)">Акт Творения →</button>
+  </div>
+</section>
+
+<!-- 5 АКТ ТВОРЕНИЯ -->
+<section id="s-creation" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Протокол · 22 шага</div>
+    <h1 class="page-title">Акт Творения в НОВЕЯ</h1>
+    <p class="page-sub">Четырёхфазная схема принятия решений и развития громады</p>
+    <div class="card-grid">
+      <div class="card nova"><div class="c-label">Фаза 1 — Инициирование</div><div class="c-val">Выявление замысла, постановка задачи. «Неизречённое» → «Изречённое»</div></div>
+      <div class="card aurora"><div class="c-label">Фаза 2 — Резонансная оценка</div><div class="c-val">Сопоставление замысла с текущим состоянием среды через ФДЛ-анализ</div></div>
+      <div class="card pulse"><div class="c-label">Фаза 3 — Воплощение</div><div class="c-val">Создание материальной, цифровой или организационной формы</div></div>
+      <div class="card sky"><div class="c-label">Фаза 4 — Цикл согласования</div><div class="c-val">Обратная связь, корректировка и новое воплощение. Новые условия Уп</div></div>
+    </div>
+    <h3 class="sh">Грантовая архитектура НОВЕЯ</h3>
+    <table class="data-table">
+      <thead><tr><th>Программа</th><th>Модуль НОВЕЯ</th><th>Направление</th></tr></thead>
+      <tbody>
+        <tr><td class="accent">Horizon Europe</td><td>FDL-GROMADA ENGINE</td><td>Громады как ИИ-ориентированные системы</td></tr>
+        <tr><td class="accent">LIFE Programme</td><td>FDL-EcoTech</td><td>Эко-переработка, энерго-коммуны</td></tr>
+        <tr><td class="accent">Erasmus+</td><td>FDL-SCHOOL / НОВЕЯ-Академия</td><td>Образовательный узел</td></tr>
+        <tr><td class="accent">GenAI4EU</td><td>CIVIC ECOLABS</td><td>Промышленные и экологические цепочки</td></tr>
+        <tr><td class="accent">IAFLAG</td><td>Текстильные биотех громады</td><td>Агро- и биосекторы</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('lotus',4)">← Лотос</button>
+    <button class="nav-btn-page" onclick="go('theses',6)">12 Тезисов →</button>
+  </div>
+</section>
+
+<!-- 6 12 ТЕЗИСОВ -->
+<section id="s-theses" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">NOVEYA.UA · Архитектура суверенитета</div>
+    <h1 class="page-title">12 Тезисов НОВЕЯ</h1>
+    <p class="page-sub">Структурная карта перехода: от зависимости — к суверенитету</p>
+    <div class="thesis-grid" id="theses-list"></div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('creation',5)">← Акт Творения</button>
+    <button class="nav-btn-page" onclick="go('harmony',7)">Язык Гармония →</button>
+  </div>
+</section>
+
+<!-- 7 ГАРМОНИЯ -->
+<section id="s-harmony" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Диалогическая парадигма программирования</div>
+    <h1 class="page-title">Язык «Гармония»</h1>
+    <p class="page-sub">Первый язык программирования на основе формально-диалектической логики</p>
+    <p class="lead">«Гармония» — инновационный язык программирования, основанный на принципах ФДЛ и концепции Оболочки СВЕТ. Форма мышления становится формой кода.</p>
+    <div class="demo">
+      <div class="demo-tag">Синтаксис языка Гармония</div>
+      <pre style="font-family:var(--mono);font-size:13px;color:var(--nova);line-height:2;overflow-x:auto;padding:0 4px" id="harmony-code"></pre>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="harmonyShow('elements')" id="btn-he">Элементы</button>
+        <button class="demo-btn" onclick="harmonyShow('goals')" id="btn-hg">Цели и функции</button>
+        <button class="demo-btn" onclick="harmonyShow('control')" id="btn-hc">Управление</button>
+        <button class="demo-btn" onclick="harmonyShow('full')" id="btn-hf">Полный пример</button>
+      </div>
+    </div>
+    <h3 class="sh">Преимущества</h3>
+    <div class="card-grid">
+      <div class="card nova"><div class="c-label">Простота</div><div class="c-val">Синтаксис близок к естественному языку. Порог входа минимален</div></div>
+      <div class="card aurora"><div class="c-label">ФДЛ-основа</div><div class="c-val">Высокая степень абстракции и аналитической гибкости для сложных систем</div></div>
+      <div class="card pulse"><div class="c-label">Совместимость</div><div class="c-val">Интеграция с Python, JavaScript и другими языками экосистемы</div></div>
+      <div class="card sky"><div class="c-label">ИИ-готовность</div><div class="c-val">Нативная поддержка FDL-компилятора и модулей ИИ-анализа</div></div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('theses',6)">← 12 Тезисов</button>
+    <button class="nav-btn-page" onclick="go('platform',8)">Платформа →</button>
+  </div>
+</section>
+
+<!-- 8 ПЛАТФОРМА -->
+<section id="s-platform" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Цифровая экосистема</div>
+    <h1 class="page-title">Платформа НОВЕЯ</h1>
+    <p class="page-sub">Код ПротоНОВЕЯ — архитектура программной системы</p>
+    <div class="demo">
+      <div class="demo-tag">Архитектура ПротоНОВЕЯ</div>
+      <canvas id="arch-canvas" width="780" height="320" style="max-width:100%;display:block;"></canvas>
+    </div>
+    <h3 class="sh">Классы системы</h3>
+    <table class="data-table">
+      <thead><tr><th>Класс</th><th>Функция</th><th>Аналог в ФДЛ</th></tr></thead>
+      <tbody>
+        <tr><td class="accent">Цель</td><td>Представляет цели системы</td><td>Элемент Ц</td></tr>
+        <tr><td class="accent">Показатель</td><td>Оценка эффективности достижения целей</td><td>Элемент Зн</td></tr>
+        <tr><td class="accent">Ограничение</td><td>Ограничения системы</td><td>Функция ОГПО</td></tr>
+        <tr><td class="accent">Альтернатива</td><td>Варианты решений</td><td>Функция АЛЬТ</td></tr>
+        <tr><td class="accent">Затрата</td><td>Деньги, трудоёмкость, материалы</td><td>Функция ЗАТР</td></tr>
+        <tr><td class="accent">ОценкаРешения</td><td>Общественная, экспертная, финансовая</td><td>Функция ОЦРЕ</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('harmony',7)">← Гармония</button>
+    <button class="nav-btn-page" onclick="go('tokens',9)">NVT-токены →</button>
+  </div>
+</section>
+
+<!-- 9 ТОКЕНЫ -->
+<section id="s-tokens" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Экономика смыслов</div>
+    <h1 class="page-title">NVT — NOVEA Token</h1>
+    <p class="page-sub">Токенизация труда, смысла и ценности</p>
+    <div class="card-grid">
+      <div class="card nova"><div class="c-label">NVT — трудо-единица</div><div class="c-val">Учёт добровольного вклада: труд, знания, культурный вклад, экологические действия</div></div>
+      <div class="card aurora"><div class="c-label">NFT-решения</div><div class="c-val">Токенизация решений громады в блокчейне — защита от подделки и манипуляций</div></div>
+      <div class="card pulse"><div class="c-label">Смысловые токены</div><div class="c-val">FDL-ValueMapper: единицы обмена, учитывающие нематериальный вклад</div></div>
+      <div class="card lime"><div class="c-label">FDL-Consensus</div><div class="c-val">Автоматическая синхронизация решений через FDL-Consensus Engine</div></div>
+    </div>
+    <div class="formula">
+      <div class="f-label">Ранговая функция NVT-ценности</div>
+      NVT-вклад = Σ(труд × коэффициент_важности + знания + культура + экология)<br>
+      Ранговая функция Р(А,Б,...,Я) → оптимизация совокупности<br>
+      Р ≠ деньги → Р = потребительная стоимость достижения<br><br>
+      Принцип ограниченной экспертизы:<br>
+      допустимый интервал = ±Δ (договорённость сторон)
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('platform',8)">← Платформа</button>
+    <button class="nav-btn-page" onclick="go('languages',10)">Древо языков →</button>
+  </div>
+</section>
+
+<!-- 10 ЯЗЫКИ -->
+<section id="s-languages" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Живое Древо · Алфавиты планеты</div>
+    <h1 class="page-title">Древо Языковой Матрицы</h1>
+    <p class="page-sub">Живая картина взаимодействия алфавитов, вшитых в тело ПротоНОВЕЯ</p>
+    <p class="lead">Языки — это не просто средство коммуникации. Это <strong>культурный иммунитет народа</strong>. Каждый алфавит несёт в себе архетипы, которые нельзя заменить техно-жаргоном.</p>
+    <div class="demo">
+      <div class="demo-tag">Интерактив — Дерево алфавитов</div>
+      <canvas id="lang-canvas" width="780" height="340" style="max-width:100%;display:block;"></canvas>
+    </div>
+    <div class="tree-wrap" id="lang-tree"></div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('tokens',9)">← Токены</button>
+    <button class="nav-btn-page" onclick="go('elements',11)">Элементы →</button>
+  </div>
+</section>
+
+<!-- 11 ЭЛЕМЕНТЫ -->
+<section id="s-elements" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Геополитика · Таблица Менделеева</div>
+    <h1 class="page-title">Элементы и Власть</h1>
+    <p class="page-sub">Периодическая система как матрица глобального доминирования</p>
+    <p class="lead">«Каждый тяжёлый элемент — след взрыва. Атом золота на твоём перстне мог быть выкован в сердце звезды миллиарды лет назад. Синтез элементов = космогонический акт»</p>
+    <div class="demo">
+      <div class="demo-tag">Интерактив — Геополитическая карта ресурсов</div>
+      <canvas id="elem-canvas" width="780" height="300" style="max-width:100%;display:block;"></canvas>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="elemMode('thesis')" id="btn-et">Тезис: Космогония</button>
+        <button class="demo-btn" onclick="elemMode('antith')" id="btn-ea">Антитезис: Геополитика</button>
+        <button class="demo-btn" onclick="elemMode('synth')" id="btn-es">Синтез: Матрица власти</button>
+      </div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('languages',10)">← Языки</button>
+    <button class="nav-btn-page" onclick="go('community',12)">Громада →</button>
+  </div>
+</section>
+
+<!-- 12 ГРОМАДА -->
+<section id="s-community" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Нормативное определение · Новый субъект права</div>
+    <h1 class="page-title">Громада НОВЕЯ</h1>
+    <p class="page-sub">Форма коллективного субъектного бытия нового типа</p>
+    <div class="card-grid">
+      <div class="card nova"><div class="c-label">Инициатор</div><div class="c-val">Человек как носитель индивидуального вектора смысла и действия</div></div>
+      <div class="card aurora"><div class="c-label">Институция</div><div class="c-val">Юридическая, организационная или культурная структура — форма для функционирования</div></div>
+      <div class="card pulse"><div class="c-label">ИИ-Спутник</div><div class="c-val">Цифровой интеллект в роли координатора, медиатора и логического усилителя</div></div>
+    </div>
+    <div class="hl">
+      <p>Созидательная сопричастность — все участники несут ответственность и смысловую долю</p>
+      <p>Резонансное управление — решения на основе потоков данных и смыслового анализа</p>
+      <p>Световая динамика — развитие согласно законам внутреннего света, истины и добра</p>
+      <p>Системное равновесие — согласование интересов человека, технологии и природы</p>
+    </div>
+    <blockquote class="bq">«Власть — это отражённое резонансом. Каждая громада реализует свою смарт-специализацию через синхронное порождение и воспитание ИИ-сущности, являющейся зеркалом её ядра, потенциала и направленности»<cite>— Нормативное определение Громады НОВЕЯ</cite></blockquote>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('elements',11)">← Элементы</button>
+    <button class="nav-btn-page" onclick="go('eng-phil',13)">Инженерная философия →</button>
+  </div>
+</section>
+
+<!-- 13 ИНЖЕНЕРНАЯ ФИЛОСОФИЯ -->
+<section id="s-eng-phil" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Практика · Примеры применения</div>
+    <h1 class="page-title">Инженерная Философия</h1>
+    <p class="page-sub">Практическая реализация ФДЛ + СВЕТ в реальных задачах</p>
+    <h3 class="sh">Пример 1: Управление водными ресурсами</h3>
+    <div class="card-grid">
+      <div class="card signal"><div class="c-label">Тезис</div><div class="c-val">Вода необходима для здоровья и хозяйства</div></div>
+      <div class="card signal"><div class="c-label">Антитезис</div><div class="c-val">Доступные ресурсы ограничены</div></div>
+      <div class="card nova"><div class="c-label">Синтез</div><div class="c-val">Оптимизация водоснабжения через технологические инновации + БЭФОВ</div></div>
+    </div>
+    <h3 class="sh">Пример 2: Биоцифровой Университет 4.0</h3>
+    <div class="card-grid">
+      <div class="card signal"><div class="c-label">Тезис</div><div class="c-val">Создать доступную образовательную платформу</div></div>
+      <div class="card signal"><div class="c-label">Антитезис</div><div class="c-val">Ограничения в финансировании и технической инфраструктуре</div></div>
+      <div class="card nova"><div class="c-label">Синтез</div><div class="c-val">Интеграция платформы с существующими образовательными системами через NBIC-конвергенцию</div></div>
+    </div>
+    <h3 class="sh">7 принципов инженерной философии</h3>
+    <div class="card-grid">
+      <div class="card nova"><div class="c-label">1. Системный подход</div><div class="c-val">Проблемы в контексте окружения — комплексные решения</div></div>
+      <div class="card aurora"><div class="c-label">2. Инженерное мышление</div><div class="c-val">Постановка целей → выявление требований → проектирование → реализация</div></div>
+      <div class="card pulse"><div class="c-label">3. Интеграция знаний</div><div class="c-val">Философия + наука + технологии + социология + экономика</div></div>
+      <div class="card sky"><div class="c-label">4. Управление сложностью</div><div class="c-val">Методы работы с динамическими системами</div></div>
+      <div class="card lime"><div class="c-label">5. Соучастие</div><div class="c-val">Все заинтересованные стороны в процессе решения</div></div>
+      <div class="card nova"><div class="c-label">6. Этика и устойчивость</div><div class="c-val">Справедливость для всех членов общества</div></div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('community',12)">← Громада</button>
+    <button class="nav-btn-page" onclick="go('global',14)">Для мира →</button>
+  </div>
+</section>
+
+<!-- 14 GLOBAL -->
+<section id="s-global" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Для всего мира · For the World</div>
+    <h1 class="page-title">NOVEYA — Global</h1>
+    <p class="page-sub">От Николаева — ко всему человечеству</p>
+    <p class="lead">НОВЕЯ совместима с международными грантовыми рамками, легко интегрируется в проекты по экологии, образованию, энергетике и цифровому управлению. Громада НОВЕЯ встраивается в экосистему Global UN.</p>
+    <div class="demo">
+      <div class="demo-tag">Масштабирование НОВЕЯ</div>
+      <canvas id="global-canvas" width="780" height="320" style="max-width:100%;display:block;"></canvas>
+    </div>
+    <h3 class="sh">Путь масштабирования</h3>
+    <div class="card-grid">
+      <div class="card nova"><div class="c-label">Локальный</div><div class="c-val">Пилот в г. Николаев. 50+ участников. 3 кейса: экология, образование, цифровизация</div></div>
+      <div class="card aurora"><div class="c-label">Региональный</div><div class="c-val">Масштабирование на уровень области. Мобильные хабы в каждой территориальной громаде</div></div>
+      <div class="card pulse"><div class="c-label">Национальный</div><div class="c-val">Всеукраинская ассоциация НОВЕЯ. Интеграция в законодательную базу Украины</div></div>
+      <div class="card sky"><div class="c-label">Глобальный</div><div class="c-val">Global UN, Horizon Europe, международные меморандумы. NOVEYA.UA как мировая платформа</div></div>
+    </div>
+    <blockquote class="bq">«Создать жизнеспособные, нравственные и технологически зрелые сообщества, способные к самообновлению и глобальному взаимодействию»<cite>— Аннотация Единой Методологии НОВЕЯ</cite></blockquote>
+    <h3 class="sh">Истоки · Корни · Благодарность</h3>
+    <p class="prose">Методологическая основа НОВЕЯ создана <strong>А.Е. Кашеваровой</strong> (НГОИ, Николаев) в 1974–2019 гг. Формальная диалогика, Оболочка СВЕТ, Акт Творения, Лотос Созидания — её пятидесятилетний труд. Настоящее издание выполнено как <em>последняя воля автора и её живое продолжение</em> в новом поколении.</p>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn-page" onclick="go('eng-phil',13)">← Инженерная философия</button>
+    <button class="nav-btn-page" onclick="go('hero',0)">↺ Главная</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ══════════ ЗВЁЗДЫ ══════════
+(function(){
+  const sf = document.getElementById('starfield');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + .5;
+    s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${3+Math.random()*6}s;--dl:${-Math.random()*6}s;--op:${.2+Math.random()*.6}`;
+    sf.appendChild(s);
+  }
+})();
+
+// ══════════ НАВИГАЦИЯ ══════════
+const SCREENS = ['hero','manifesto','mission','fdl','lotus','creation','theses','harmony','platform','tokens','languages','elements','community','eng-phil','global'];
+let curIdx = 0;
+function go(id, idx) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('s-' + id);
+  if (el) { el.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+  document.querySelectorAll('.sb-item, .nav-link').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll(`[onclick*="'${id}'"]`).forEach(i => i.classList.add('active'));
+  document.getElementById('sidebar').classList.remove('open');
+  curIdx = idx || 0;
+  document.getElementById('progress-bar').style.width = (curIdx/(SCREENS.length-1)*100)+'%';
+  // Lazy inits
+  const inits = {manifesto:()=>contextMode('crisis'), fdl:()=>fdlMode('tas'), lotus:()=>drawLotus('all'), theses:buildTheses, harmony:()=>harmonyShow('elements'), platform:drawArch, languages:()=>{drawLangTree();buildLangTree();}, elements:()=>elemMode('thesis'), global:drawGlobal};
+  if (inits[id]) inits[id]();
+}
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  document.getElementById('progress-bar').style.width = Math.max(curIdx/(SCREENS.length-1)*100, (d.scrollTop/(d.scrollHeight-d.clientHeight))*100)+'%';
+});
+
+// ══════════ ЯЗЫК ══════════
+let lang = 'ru';
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn:nth-child(${l==='ru'?1:l==='ua'?2:3})`).classList.add('active');
+  document.querySelectorAll('[data-'+l+']').forEach(el => { el.textContent = el.getAttribute('data-'+l); });
+}
+
+// ══════════ КОНТЕКСТ МАНИФЕСТ ══════════
+function contextMode(m) {
+  ['crisis','shift','nova'].forEach(x => document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+m)?.classList.add('active');
+  const c = document.getElementById('context-canvas'); if (!c) return;
+  const ctx = c.getContext('2d'); const W = c.width, H = c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = 'rgba(6,8,16,.9)'; ctx.fillRect(0,0,W,H);
+  const nova='#00f5d4', aurora='#7c3aed', pulse='#f59e0b', signal='#ef4444', sky='#38bdf8', txt='#e2e8f0';
+
+  if (m === 'crisis') {
+    const systems = [{name:'Централизованная власть',x:130,y:80,decay:.85},{name:'Финансовая система',x:310,y:60,decay:.70},{name:'Медиапространство',x:510,y:90,decay:.90},{name:'Образование',x:680,y:70,decay:.60}];
+    systems.forEach(s => {
+      const h = (1-s.decay)*160;
+      ctx.fillStyle = signal+'33'; ctx.strokeStyle = signal; ctx.lineWidth = .8;
+      ctx.fillRect(s.x-40, H-20-160, 80, 160);
+      ctx.strokeRect(s.x-40, H-20-160, 80, 160);
+      ctx.fillStyle = nova+'cc'; ctx.fillRect(s.x-40, H-20-h, 80, h);
+      ctx.fillStyle = txt; ctx.font = '500 9px Space Grotesk,sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(s.name, s.x, H-24-160); ctx.fillStyle = signal;
+      ctx.font = '600 11px Space Mono,monospace'; ctx.fillText(Math.round(s.decay*100)+'%', s.x, H-6);
+    });
+    ctx.fillStyle = signal; ctx.font = '500 11px Space Grotesk'; ctx.textAlign = 'left';
+    ctx.fillText('Степень деградации существующих систем → НОВЕЯ создаёт альтернативу', 16, H-8);
+  } else if (m === 'shift') {
+    // Волна перехода
+    ctx.strokeStyle = nova; ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    for (let x = 0; x < W; x++) {
+      const t = x/W;
+      const old = H*.3 + Math.sin(t*8)*20 + t*80;
+      const nw = H*.7 - t*100 + Math.sin(t*6+3)*15;
+      if (x === 0) ctx.moveTo(x, old);
+      else if (t < .5) ctx.lineTo(x, old);
+      else ctx.lineTo(x, nw);
+    }
+    ctx.stroke();
+    ctx.fillStyle = sky; ctx.font = '500 11px Space Grotesk'; ctx.textAlign = 'center';
+    ctx.fillText('Старая парадигма', W*.2, H*.3-25);
+    ctx.fillStyle = nova;
+    ctx.fillText('Новая парадигма НОВЕЯ', W*.8, H*.25);
+  } else {
+    // Архитектура
+    const nodes = [{x:W/2,y:50,r:30,label:'НОВЕЯ',col:nova},{x:140,y:170,r:24,label:'Инициатор',col:sky},{x:W/2,y:180,r:24,label:'Институция',col:aurora},{x:W-140,y:170,r:24,label:'ИИ-Спутник',col:pulse},{x:140,y:280,r:20,label:'ФДЛ',col:nova},{x:W/2,y:280,r:20,label:'СВЕТ',col:nova},{x:W-140,y:280,r:20,label:'NVT',col:nova}];
+    [[0,1],[0,2],[0,3],[1,4],[2,5],[3,6]].forEach(([a,b]) => {
+      ctx.strokeStyle = 'rgba(0,245,212,.2)'; ctx.lineWidth = .8;
+      ctx.beginPath(); ctx.moveTo(nodes[a].x,nodes[a].y); ctx.lineTo(nodes[b].x,nodes[b].y); ctx.stroke();
+    });
+    nodes.forEach(n => {
+      ctx.fillStyle = n.col+'22'; ctx.strokeStyle = n.col; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = n.col; ctx.font = `500 ${n.r<24?9:10}px Space Grotesk`; ctx.textAlign = 'center';
+      ctx.fillText(n.label, n.x, n.y+4);
+    });
+  }
+}
+
+// ══════════ ФДЛ ══════════
+function fdlMode(m) {
+  ['tas','5b','fn'].forEach(x => document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+m)?.classList.add('active');
+  const c = document.getElementById('fdl-canvas'); if (!c) return;
+  const ctx = c.getContext('2d'); const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H); ctx.fillStyle='rgba(6,8,16,.9)'; ctx.fillRect(0,0,W,H);
+  const nova='#00f5d4',aurora='#7c3aed',pulse='#f59e0b',txt='#e2e8f0',sky='#38bdf8',lime='#84cc16';
+
+  if (m === 'tas') {
+    [[W*.2,H*.4,'Тезис',nova],[W*.5,H*.2,'Синтез',lime],[W*.8,H*.4,'Антитезис',aurora]].forEach(([x,y,lbl,col]) => {
+      ctx.fillStyle=col+'22';ctx.strokeStyle=col;ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.arc(x,y,55,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle=col;ctx.font='600 13px Space Grotesk';ctx.textAlign='center';ctx.fillText(lbl,x,y+5);
+    });
+    [[W*.2,H*.4,W*.8,H*.4],[W*.2,H*.4,W*.5,H*.2],[W*.8,H*.4,W*.5,H*.2]].forEach(([x1,y1,x2,y2]) => {
+      ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=.7;
+      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    });
+    ctx.fillStyle=txt;ctx.font='500 11px Space Grotesk';ctx.textAlign='left';
+    ctx.fillText('ТАС-цикл: каждое решение громады проходит трёхступенчатую проверку',16,H-12);
+  } else if (m === '5b') {
+    const blocks=[{id:'БМ',name:'Мотиваций',x:60,y:120,col:nova},{id:'БТ',name:'Требований',x:200,y:80,col:aurora},{id:'БИ',name:'Идей',x:340,y:120,col:pulse},{id:'БЦ',name:'Целесообразности',x:200,y:180,col:sky},{id:'БВ',name:'Возможностей',x:480,y:120,col:lime}];
+    const edges=[['БМ','БТ'],['БМ','БЦ'],['БТ','БИ'],['БЦ','БВ'],['БИ','БВ']];
+    const bmap=Object.fromEntries(blocks.map(b=>[b.id,b]));
+    edges.forEach(([a,bb])=>{const ba=bmap[a],bn=bmap[bb];ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(ba.x+55,ba.y+25);ctx.lineTo(bn.x,bn.y+25);ctx.stroke();});
+    blocks.forEach(b=>{ctx.fillStyle=b.col+'22';ctx.strokeStyle=b.col;ctx.lineWidth=.8;ctx.beginPath();ctx.roundRect(b.x,b.y,110,50,4);ctx.fill();ctx.stroke();ctx.fillStyle=b.col;ctx.font='600 13px Space Mono';ctx.textAlign='center';ctx.fillText(b.id,b.x+55,b.y+18);ctx.fillStyle=txt;ctx.font='9px Space Grotesk';ctx.fillText(b.name,b.x+55,b.y+36);});
+  } else {
+    const fns=[['ЗАТР','Удо→Ср',nova,80,60],['ОЦРЕ','Ц→Эр',nova,80,140],['ОГПО','П→Ср',aurora,260,60],['КРСО','Зн→Ц',aurora,260,140],['АЛЬТ','Зн→Удо',pulse,440,60],['ВАРЕ','П→М',pulse,440,140],['Ф.3.1','Ср↔Зн',sky,620,60],['Ф.3.2','Ср↔Эр',sky,620,140],['Ф.3.3','Зн↔М','#84cc16',620,200]];
+    fns.forEach(([name,rel,col,x,y])=>{ctx.fillStyle=col+'18';ctx.strokeStyle=col;ctx.lineWidth=.7;ctx.beginPath();ctx.roundRect(x,y,130,46,4);ctx.fill();ctx.stroke();ctx.fillStyle=col;ctx.font='600 11px Space Mono';ctx.textAlign='center';ctx.fillText(name,x+65,y+16);ctx.fillStyle=txt;ctx.font='9px Space Grotesk';ctx.fillText(rel,x+65,y+34);});
+    ctx.fillStyle=txt;ctx.font='500 11px Space Grotesk';ctx.textAlign='left';ctx.fillText('9 функций саморегулирующейся системы',16,H-12);
+  }
+}
+
+// ══════════ ЛОТОС ══════════
+function drawLotus(activeId) {
+  const c = document.getElementById('lotus-canvas'); if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(6,8,16,.9)';ctx.fillRect(0,0,W,H);
+  const cx=W/2,cy=H/2;
+  const sectors=[{n:'ФДЛ-ядро',col:'#00f5d4'},{n:'Эко-баланс',col:'#84cc16'},{n:'Культурный код',col:'#f59e0b'},{n:'ИИ-инфра',col:'#38bdf8'},{n:'Энергоавтономия',col:'#7c3aed'},{n:'Соц. справедливость',col:'#ef4444'},{n:'Космо-ориентиры',col:'#f472b6'}];
+  const R1=60,R2=145;
+  sectors.forEach((s,i)=>{
+    const a0=i/7*Math.PI*2-Math.PI/2;const a1=(i+1)/7*Math.PI*2-Math.PI/2;const mid=(a0+a1)/2;
+    ctx.fillStyle=s.col+(activeId==='all'||activeId===s.n?'30':'12');
+    ctx.strokeStyle=s.col;ctx.lineWidth=activeId===s.n?1.5:.7;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R2,a0,a1);ctx.closePath();ctx.fill();ctx.stroke();
+    const lx=cx+Math.cos(mid)*(R1+R2)/2*.85,ly=cy+Math.sin(mid)*(R1+R2)/2*.85;
+    ctx.fillStyle=s.col;ctx.font='500 9px Space Grotesk';ctx.textAlign='center';
+    const words=s.n.split(' ');
+    if(words.length>2){ctx.fillText(words.slice(0,Math.ceil(words.length/2)).join(' '),lx,ly-5);ctx.fillText(words.slice(Math.ceil(words.length/2)).join(' '),lx,ly+8);}
+    else ctx.fillText(s.n,lx,ly+4);
+  });
+  ctx.fillStyle='rgba(6,8,16,.9)';ctx.beginPath();ctx.arc(cx,cy,R1,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(0,245,212,.4)';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='#00f5d4';ctx.font='600 11px Space Mono';ctx.textAlign='center';ctx.fillText('НОВЕЯ',cx,cy-4);ctx.fillText('ЦЕНТР',cx,cy+10);
+}
+function lotusMode(m){
+  ['all','eco','edu','tech'].forEach(x=>document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+m)?.classList.add('active');
+  const map={all:'all',eco:'Эко-баланс',edu:'Культурный код',tech:'ИИ-инфра'};
+  drawLotus(map[m]);
+}
+
+// ══════════ 12 ТЕЗИСОВ ══════════
+const THESES=[
+  {n:'01',title:'Народ как субъект',sub:'Носитель культурного кода, прав и воли — не просто население',alt:'Паспорт культурного кода',tool:'FDL-Passport + NFT'},
+  {n:'02',title:'Суверенитет как функция воли',sub:'Утверждается через самоуправление и ответственность граждан',alt:'Резонансные советы — децентрализованные платформы',tool:'FDL-Consensus Engine'},
+  {n:'03',title:'Эксплуатация как системный вирус',sub:'Любая централизованная власть превращает человека в ресурс',alt:'Энерго-смысловой баланс вместо налогов',tool:'Σ-FDL::ΔΨ-Monitoring'},
+  {n:'04',title:'FDL-громада как ядро нового уклада',sub:'Сообщество с трёхступенчатой логикой: тезис → антитезис → синтез',alt:'Концентрическая архитектура управления',tool:'FDL-компилятор + Discord/Notion'},
+  {n:'05',title:'От идеала к практике',sub:'Идеальное общество не утопия, если допускает самокоррекцию',alt:'Живые протоколы с динамическим обновлением норм',tool:'FDL-аналитический модуль'},
+  {n:'06',title:'Технологический уклад как шанс',sub:'Встроить принципы НОВЕЯ в глобальную технологическую инфраструктуру',alt:'Национальная лаборатория технологического уклада',tool:'FDL-EcoTech + FDL-Industry4.0'},
+  {n:'07',title:'Образование как инструмент суверенитета',sub:'Образование — формирование способности мыслить, а не заучивание фактов',alt:'Школа смыслов с FDL-навигацией',tool:'Персональные FDL-наставники с ИИ'},
+  {n:'08',title:'Культура как защита кода народа',sub:'Культура — иммунная система общества против смыслового вторжения',alt:'Платформа «Культурный щит» + токенизация артефактов',tool:'Σ-FDL::HeritageGuard'},
+  {n:'09',title:'Экономика смыслов',sub:'Экономика должна учитывать не только материальные, но и смысловые ресурсы',alt:'Смысловые токены — единицы обмена с нематериальным вкладом',tool:'FDL-ValueMapper + блокчейн'},
+  {n:'10',title:'Международная кооперация без потери идентичности',sub:'Участие в мировых процессах должно усиливать, а не размывать идентичность',alt:'Смысловой дипломатический клуб',tool:'FDL-Bridge для интеграции с мировыми ИИ'},
+  {n:'11',title:'Социальная экотехника',sub:'Общество — экосистема, нарушение одного узла ведёт к дисбалансу всей системы',alt:'Экотехнические громады с замкнутыми циклами',tool:'FDL-экомониторинг + предиктивная аналитика'},
+  {n:'12',title:'Архитектура будущего государства',sub:'Переход к децентрализованным смысловым системам управления',alt:'FDL-государственность — распределённая сеть общин',tool:'FDL-Consensus Engine + распределённые узлы'},
+];
+function buildTheses(){
+  const cont=document.getElementById('theses-list');if(!cont||cont.children.length)return;
+  THESES.forEach(t=>{
+    const d=document.createElement('div');d.className='thesis-item';
+    d.innerHTML=`<div class="thesis-num">${t.n}</div><div class="thesis-body"><div class="thesis-title">${t.title}</div><div class="thesis-sub">${t.sub}</div><div class="thesis-expand">◎ Альтернатива НГОИ: ${t.alt}<br><span class="thesis-tool">${t.tool}</span></div></div>`;
+    d.querySelector('.thesis-body').addEventListener('click',()=>{d.classList.toggle('open');});
+    cont.appendChild(d);
+  });
+}
+
+// ══════════ ГАРМОНИЯ ══════════
+const HARMONY_SNIPPETS={
+  elements:`<span style="color:#7c3aed">// Декларация элементов системы</span>
+<span style="color:#00f5d4">элемент</span> ВодоснабжениеГромады
+<span style="color:#00f5d4">элемент</span> СистемаОчистки
+<span style="color:#00f5d4">связь</span> ВодоснабжениеГромады <span style="color:#f59e0b">с</span> СистемаОчистки
+
+<span style="color:#7c3aed">// Условия и среда</span>
+<span style="color:#84cc16">условие</span> КлиматическиеИзменения { приоритет: высокий }
+<span style="color:#84cc16">условие</span> БюджетОграниченный { тип: внешний }`,
+  goals:`<span style="color:#7c3aed">// Формализация целей и функций</span>
+<span style="color:#00f5d4">цель</span> ОптимизацияВодоснабжения
+<span style="color:#00f5d4">цель</span> ОбразовательнаяПрограмма
+
+<span style="color:#38bdf8">функция</span> ОценкаРешения(вариант) {
+  тезис: вариант.полезность
+  антитезис: вариант.затраты
+  синтез: <span style="color:#f59e0b">оптимизировать</span>(тезис, антитезис)
+}`,
+  control:`<span style="color:#7c3aed">// Управление состоянием</span>
+<span style="color:#38bdf8">управление</span> СистемаВодоснабжения {
+  <span style="color:#84cc16">если</span> дефицит_воды > критический_порог
+  <span style="color:#f59e0b">тогда</span> запустить(ОчисткаВторичная)
+}
+
+<span style="color:#38bdf8">взаимодействие</span> ФДЛ_Ядро <span style="color:#f59e0b">с</span> ИИ_Спутник {
+  передача_данных: резонансный_протокол
+}`,
+  full:`<span style="color:#7c3aed">// НОВЕЯ — полный пример задачи громады</span>
+<span style="color:#00f5d4">система</span> ГромадаНиколаев {
+
+  <span style="color:#00f5d4">элементы</span>: [Власть, Финансы, Экология, Образование]
+  <span style="color:#84cc16">доминанта</span>: ПОТРЕБНОСТЬ
+  <span style="color:#84cc16">состояние</span>: переходный_процесс
+
+  <span style="color:#38bdf8">задача</span> РазвитиеГромады {
+    тезис:    "ресурсы ограничены"
+    антитезис: "потребности громады растут"
+    синтез:   <span style="color:#f59e0b">найти</span>(оптимальный_баланс)
+  }
+
+  <span style="color:#38bdf8">цикл</span> АктТворения {
+    шаг 1: неизреченное → изречённое
+    шаг 4: анализ_среды(УДО)
+    шаг 22: запуск_системы()
+  }
+}`};
+function harmonyShow(key){
+  ['he','hg','hc','hf'].forEach(x=>document.getElementById('btn-'+x)?.classList.remove('active'));
+  const bmap={elements:'he',goals:'hg',control:'hc',full:'hf'};
+  document.getElementById('btn-'+bmap[key])?.classList.add('active');
+  const el=document.getElementById('harmony-code');if(el)el.innerHTML=HARMONY_SNIPPETS[key];
+}
+
+// ══════════ ПЛАТФОРМА - АРХИТЕКТУРА ══════════
+function drawArch(){
+  const c=document.getElementById('arch-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(6,8,16,.9)';ctx.fillRect(0,0,W,H);
+  const nova='#00f5d4',aurora='#7c3aed',pulse='#f59e0b',sky='#38bdf8',lime='#84cc16',txt='#e2e8f0';
+  const modules=[{name:'UI / Интерфейс',x:40,y:30,w:150,col:nova},{name:'ФДЛ-Ядро',x:220,y:30,w:140,col:aurora},{name:'База данных',x:390,y:30,w:140,col:pulse},{name:'NVT-токены',x:560,y:30,w:140,col:lime},{name:'Цель',x:40,y:140,w:90,col:sky},{name:'Показатель',x:150,y:140,w:90,col:sky},{name:'Ограничение',x:260,y:140,w:90,col:sky},{name:'Альтернатива',x:370,y:140,w:90,col:sky},{name:'ОценкаРешения',x:480,y:140,w:110,col:sky},{name:'ИИ-Спутник',x:250,y:240,w:280,col:nova}];
+  modules.forEach(m=>{ctx.fillStyle=m.col+'18';ctx.strokeStyle=m.col;ctx.lineWidth=.8;ctx.beginPath();ctx.roundRect(m.x,m.y,m.w,44,4);ctx.fill();ctx.stroke();ctx.fillStyle=m.col;ctx.font='500 10px Space Grotesk';ctx.textAlign='center';ctx.fillText(m.name,m.x+m.w/2,m.y+26);});
+  ctx.strokeStyle='rgba(0,245,212,.15)';ctx.lineWidth=.6;[[1,4],[1,5],[1,6],[0,4],[2,8],[3,9]].forEach(([a,b])=>{const ma=modules[a],mb=modules[b];ctx.beginPath();ctx.moveTo(ma.x+ma.w/2,ma.y+44);ctx.lineTo(mb.x+mb.w/2,mb.y);ctx.stroke();});
+}
+
+// ══════════ ЯЗЫКИ ══════════
+const LANG_TREE=[{icon:'☀',name:'Крона — Свет',scripts:'Глифы · Мандалы · Цвет · Жест · Звук',chars:'✦ Archetype Code ✦  ⫷ ΣΧΗΜΑ ⫸  ཨོཾ མ ཎི  אֱלֹהִים'},{icon:'🌿',name:'Ветви — Модуляция',scripts:'Latin · Arabic · Runes · Hebrew · Tibetan · Celtic',chars:'A B C D E F G H I J K L M N O P Q R S T U V X Z\nا ب ت ث ج ح خ د ذ ر ز س ش ص ض\nᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᛉ ᛏ ᛗ ᛟ'},{icon:'🪵',name:'Ствол — Архетипы Логоса',scripts:'Глаголица · Буквица · Sanskrit · Greek · Аккадский',chars:'Ⰰ Ⰱ Ⰲ Ⰳ Ⰴ Ⰵ Ⰶ Ⰷ Ⰸ Ⰹ Ⰺ Ⰻ\nА Б В Г Д Є Ж З И І Ї К Л М Н О П Р С Т У\nअ आ इ ई उ ऊ ऋ  Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ'},{icon:'🌱',name:'Корни — Протоязыковая зона',scripts:'Sumerian · Egyptian · Coptic · Gothic · Aramaic',chars:'𒀭 𒀸 𒁲 𒂊 𒂗 𒃻\n𓂀 𓆣 𓂻 𓈖 𓍿 𓎼\nⲀ Ⲃ Ⲅ Ⲇ  𐌰 𐌱 𐌲 𐌳  ܐ ܒ ܓ ܕ ܗ ܘ'}];
+function drawLangTree(){
+  const c=document.getElementById('lang-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(6,8,16,.9)';ctx.fillRect(0,0,W,H);
+  const cols=['#f59e0b','#84cc16','#7c3aed','#ef4444'];
+  const icons=['☀','🌿','🪵','🌱'];
+  const ys=[40,130,220,300];
+  cols.forEach((col,i)=>{ctx.fillStyle=col+'15';ctx.strokeStyle=col;ctx.lineWidth=.6;ctx.beginPath();ctx.roundRect(20,ys[i],W-40,72,4);ctx.fill();ctx.stroke();ctx.fillStyle=col;ctx.font='600 11px Space Grotesk';ctx.textAlign='left';ctx.fillText(LANG_TREE[i].name,52,ys[i]+22);ctx.fillStyle='rgba(226,232,240,.5)';ctx.font='10px Space Grotesk';ctx.fillText(LANG_TREE[i].scripts,52,ys[i]+42);});
+  ctx.fillStyle='rgba(0,245,212,.3)';ctx.font='700 14px Space Grotesk';ctx.textAlign='center';
+  ctx.fillText('🌳 ДРЕВО ЯЗЫКОВОЙ МАТРИЦЫ',W/2,H-8);
+}
+function buildLangTree(){
+  const cont=document.getElementById('lang-tree');if(!cont||cont.children.length)return;
+  LANG_TREE.forEach(l=>{
+    const d=document.createElement('div');d.className='tree-branch';
+    d.innerHTML=`<div class="tree-header" onclick="this.nextSibling.classList.toggle('open');this.querySelector('.bh-arrow').textContent=this.nextSibling.classList.contains('open')?'▲':'▼'"><span class="tree-icon">${l.icon}</span><span class="tree-name">${l.name}</span><span class="tree-scripts">${l.scripts}</span><span class="bh-arrow">▼</span></div><div class="tree-body"><div class="script-chars">${l.chars.replace(/\n/g,'<br>')}</div></div>`;
+    cont.appendChild(d);
+  });
+}
+
+// ══════════ ЭЛЕМЕНТЫ ══════════
+function elemMode(m){
+  ['et','ea','es'].forEach(x=>document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+(m==='thesis'?'et':m==='antith'?'ea':'es'))?.classList.add('active');
+  const c=document.getElementById('elem-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(6,8,16,.9)';ctx.fillRect(0,0,W,H);
+  const nova='#00f5d4',aurora='#7c3aed',pulse='#f59e0b',txt='#e2e8f0',signal='#ef4444';
+  if(m==='thesis'){
+    const els=[{s:'H',n:'Водород',x:60,y:100,col:nova},{s:'He',n:'Гелий',x:130,y:100,col:nova},{s:'Li',n:'Литий',x:200,y:100,col:nova},{s:'Au',n:'Золото',x:320,y:100,col:pulse,star:true},{s:'U',n:'Уран',x:420,y:100,col:signal,star:true},{s:'Ti',n:'Титан',x:520,y:100,col:aurora,star:true},{s:'He3',n:'Гелий-3',x:640,y:100,col:nova,star:true}];
+    els.forEach(e=>{ctx.fillStyle=e.col+'22';ctx.strokeStyle=e.col;ctx.lineWidth=.8;ctx.beginPath();ctx.arc(e.x,e.y,28,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle=e.col;ctx.font='600 12px Space Mono';ctx.textAlign='center';ctx.fillText(e.s,e.x,e.y);ctx.fillStyle=txt;ctx.font='9px Space Grotesk';ctx.fillText(e.n,e.x,e.y+22);if(e.star){ctx.fillStyle=pulse;ctx.font='600 11px Space Grotesk';ctx.fillText('⭐',e.x,e.y-18);}});
+    ctx.fillStyle=txt;ctx.font='500 11px Space Grotesk';ctx.textAlign='left';ctx.fillText('⭐ — ключевые элементы геополитических конфликтов',16,H-12);
+  } else if(m==='antith'){
+    const conflicts=[{el:'Li',region:'Конго → ДРК',reason:'Колтан (ниобий, тантал)',col:signal},{el:'Li',region:'Афганистан',reason:'Литий — "Саудовская Аравия лития"',col:signal},{el:'Ti+U',region:'Украина',reason:'Титан и уран',col:signal},{el:'Li',region:'Латинская Америка',reason:'Литиевый треугольник (Чили/Боливия/Арг)',col:signal},{el:'He3',region:'Луна/Марс',reason:'Будущие "периодические колонии"',col:aurora}];
+    conflicts.forEach((c2,i)=>{const y=35+i*46;ctx.fillStyle=c2.col+'15';ctx.strokeStyle=c2.col;ctx.lineWidth=.6;ctx.beginPath();ctx.roundRect(20,y,W-40,38,3);ctx.fill();ctx.stroke();ctx.fillStyle=c2.col;ctx.font='600 11px Space Mono';ctx.textAlign='left';ctx.fillText(`[${c2.el}]`,30,y+22);ctx.fillStyle=txt;ctx.font='500 11px Space Grotesk';ctx.fillText(c2.region,80,y+22);ctx.fillStyle='rgba(226,232,240,.5)';ctx.font='10px Space Grotesk';ctx.fillText(c2.reason,80,y+36);});
+  } else {
+    ctx.fillStyle=pulse+'22';ctx.strokeStyle=pulse;ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(20,20,W-40,H-40,6);ctx.fill();ctx.stroke();
+    ['◉ Карта ресурсной доминанты: каждому элементу — регион и геополитическая значимость','◉ Сетка конфликтов, наложенная на Периодическую систему','◉ Матрица зависимости: какие страны критически нуждаются в каком элементе','◉ Элементальный контракт: природа → технология → общество','◉ Кто контролирует распределение элементов — контролирует будущее'].forEach((s,i)=>{ctx.fillStyle=pulse;ctx.font='500 11px Space Grotesk';ctx.textAlign='left';ctx.fillText(s,40,55+i*44);});
+  }
+}
+
+// ══════════ GLOBAL ══════════
+function drawGlobal(){
+  const c=document.getElementById('global-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(6,8,16,.9)';ctx.fillRect(0,0,W,H);
+  const nova='#00f5d4',aurora='#7c3aed',pulse='#f59e0b',lime='#84cc16',txt='#e2e8f0';
+  const scales=[{name:'Локальный\nНиколаев',r:40,y:H/2,col:nova},{name:'Регіональний\nОбласть',r:70,y:H/2,col:lime},{name:'Національний\nУкраїна',r:105,y:H/2,col:aurora},{name:'Global\nGlobal UN',r:145,y:H/2,col:pulse}];
+  const cx=W/2;
+  scales.forEach(s=>{ctx.strokeStyle=s.col;ctx.lineWidth=.8;ctx.globalAlpha=.35;ctx.beginPath();ctx.arc(cx,s.y,s.r,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;ctx.fillStyle=s.col;ctx.font='500 9px Space Grotesk';ctx.textAlign='center';const lines=s.name.split('\n');ctx.fillText(lines[0],cx+s.r+8,s.y-4);if(lines[1])ctx.fillText(lines[1],cx+s.r+8,s.y+8);});
+  ctx.fillStyle=nova;ctx.beginPath();ctx.arc(cx,H/2,18,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=nova+'22';ctx.fill();
+  ctx.fillStyle='rgba(6,8,16,.9)';ctx.beginPath();ctx.arc(cx,H/2,16,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=nova;ctx.font='600 9px Space Mono';ctx.textAlign='center';ctx.fillText('NOVA',cx,H/2+4);
+}
+
+// ══════════ INIT ══════════
+document.addEventListener('DOMContentLoaded', () => {
+  harmonyShow('elements');
+  buildTheses();
+  buildLangTree();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Формальная Диалогика — А.Е. Кашеварова</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   ПЕРЕМЕННЫЕ И СБРОС
+═══════════════════════════════════════════ */
+:root {
+  --bg:      #0c0e14;
+  --bg2:     #10141e;
+  --bg3:     #151b2a;
+  --border:  rgba(255,255,255,.07);
+  --sand:    #e8e0d0;
+  --stone:   #8a8278;
+  --gold:    #c8a84b;
+  --gold2:   #e4c46a;
+  --teal:    #2ec4b6;
+  --teal2:   #4de3d5;
+  --violet:  #8b5cf6;
+  --red:     #e05252;
+  --green:   #4ade80;
+  --ink:     rgba(232,224,208,.75);
+  --serif:   'Playfair Display', Georgia, serif;
+  --sans:    'IBM Plex Sans', sans-serif;
+  --mono:    'IBM Plex Mono', monospace;
+  --r:       6px;
+  --sidebar: 260px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--sand);
+  font-family: var(--sans);
+  line-height: 1.7;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+button, input, select, textarea { font-family: inherit; }
+a { color: var(--teal); text-decoration: none; }
+
+/* ═══════════════════════════════════════════
+   БОКОВОЕ МЕНЮ
+═══════════════════════════════════════════ */
+#sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sidebar);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+}
+.sb-logo {
+  padding: 24px 18px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.sb-logo .title {
+  font-family: var(--serif);
+  font-size: 15px; font-weight: 700;
+  color: var(--gold2);
+  letter-spacing: .01em;
+  line-height: 1.3;
+}
+.sb-logo .sub {
+  font-size: 9.5px; font-weight: 500;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--stone);
+  margin-top: 5px;
+}
+.sb-section {
+  font-size: 8px; font-weight: 600;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--gold);
+  padding: 14px 18px 4px;
+  opacity: .7;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 18px;
+  font-size: 11.5px;
+  color: var(--stone);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all .16s;
+  line-height: 1.35;
+}
+.sb-item:hover { color: var(--sand); background: rgba(255,255,255,.03); }
+.sb-item.active { color: var(--teal2); border-left-color: var(--teal); background: rgba(46,196,182,.06); }
+.sb-item .icon { font-size: 13px; opacity: .6; min-width: 16px; }
+.sb-badge {
+  margin-left: auto;
+  font-size: 8px; font-weight: 600;
+  background: rgba(46,196,182,.18);
+  color: var(--teal);
+  padding: 1px 6px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════ */
+#main {
+  margin-left: var(--sidebar);
+  min-height: 100vh;
+}
+#progress-bar {
+  position: fixed; top: 0; left: var(--sidebar); right: 0;
+  height: 2px; background: rgba(46,196,182,.12);
+  z-index: 200;
+}
+#progress-fill {
+  height: 2px; background: var(--teal);
+  transition: width .3s ease;
+  box-shadow: 0 0 8px var(--teal);
+}
+
+/* ═══════════════════════════════════════════
+   ЭКРАНЫ
+═══════════════════════════════════════════ */
+.screen { display: none; min-height: 100vh; }
+.screen.active {
+  display: block;
+  animation: fadeIn .3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Обложка */
+#s-cover {
+  display: none;
+  flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 60px 40px;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(46,196,182,.08) 0%, transparent 60%);
+}
+#s-cover.active { display: flex; }
+.cover-rings {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+.cover-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(46,196,182,.06);
+  transform: translate(-50%,-50%);
+  animation: pulse 7s ease-in-out infinite;
+}
+.cover-ring:nth-child(1) { width: 800px; height: 800px; animation-delay: 0s; }
+.cover-ring:nth-child(2) { width: 560px; height: 560px; animation-delay: -2.5s; }
+.cover-ring:nth-child(3) { width: 340px; height: 340px; animation-delay: -5s; }
+@keyframes pulse {
+  0%,100% { opacity: .4; transform: translate(-50%,-50%) scale(1); }
+  50%      { opacity: .8; transform: translate(-50%,-50%) scale(1.02); }
+}
+.cover-eyebrow {
+  font-size: 9.5px; font-weight: 600; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 28px; position: relative;
+}
+.cover-title {
+  font-family: var(--serif);
+  font-size: clamp(42px, 7vw, 92px);
+  font-weight: 700; line-height: 1.05;
+  color: var(--sand); letter-spacing: .02em;
+  position: relative; margin-bottom: 6px;
+}
+.cover-title em { color: var(--teal); font-style: normal; }
+.cover-sub {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(15px, 2.2vw, 22px);
+  color: var(--stone); margin-bottom: 40px;
+  position: relative;
+}
+.cover-divider {
+  width: 80px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 24px; position: relative;
+}
+.cover-author {
+  font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--stone); margin-bottom: 6px; position: relative;
+}
+.cover-meta {
+  font-size: 10px; color: rgba(138,130,120,.45); letter-spacing: .1em;
+  position: relative;
+}
+.cover-btn {
+  margin-top: 52px; padding: 12px 38px;
+  border: 1px solid var(--teal);
+  background: transparent; color: var(--teal);
+  font-family: var(--sans); font-size: 10.5px;
+  font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+  cursor: pointer; transition: all .22s;
+  position: relative;
+}
+.cover-btn:hover { background: var(--teal); color: var(--bg); }
+
+/* Страница */
+.page-wrap { max-width: 820px; margin: 0 auto; padding: 60px 52px 100px; }
+.page-eyebrow {
+  font-size: 9px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.page-eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+h1.page-title {
+  font-family: var(--serif);
+  font-size: clamp(26px, 4vw, 48px);
+  font-weight: 700; line-height: 1.15;
+  color: var(--sand); margin-bottom: 8px;
+}
+.page-sub {
+  font-family: var(--serif); font-style: italic;
+  font-size: 17px; color: var(--stone); margin-bottom: 36px;
+}
+.prose {
+  font-size: 16.5px; line-height: 1.9;
+  color: var(--ink); margin-bottom: 1.25em;
+}
+.prose strong { color: var(--gold2); font-weight: 500; }
+.lead-quote {
+  font-family: var(--serif); font-style: italic;
+  font-size: 18px; line-height: 1.75;
+  color: var(--sand); padding-left: 22px;
+  border-left: 2px solid var(--teal);
+  margin-bottom: 2em;
+}
+h3.section-h {
+  font-family: var(--sans); font-size: 10px; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--teal); margin: 2.8em 0 .9em;
+}
+blockquote.bq {
+  margin: 2em 0;
+  padding: 18px 24px;
+  background: rgba(46,196,182,.04);
+  border-left: 3px solid var(--teal);
+  font-style: italic;
+  font-size: 16.5px; color: var(--stone); line-height: 1.8;
+}
+blockquote.bq cite {
+  display: block; font-style: normal;
+  font-size: 9.5px; letter-spacing: .1em;
+  color: rgba(138,130,120,.5); margin-top: 8px;
+}
+
+/* ═══════════════════════════════════════════
+   КАРТОЧКИ
+═══════════════════════════════════════════ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px; margin: 1.8em 0;
+}
+.card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+}
+.card .c-label {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.card .c-val {
+  font-size: 15px; line-height: 1.55;
+  color: var(--sand);
+}
+.card.gold .c-label { color: var(--gold); }
+.card.teal .c-label { color: var(--teal); }
+.card.violet .c-label { color: var(--violet); }
+.card.red .c-label { color: var(--red); }
+.card.green .c-label { color: var(--green); }
+
+/* ФОРМУЛА */
+.formula-box {
+  background: rgba(200,168,75,.08);
+  border: 1px solid rgba(200,168,75,.2);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--r);
+  padding: 16px 22px; margin: 1.8em 0;
+  font-family: var(--mono); font-size: 13.5px;
+  color: var(--sand); line-height: 2;
+}
+.formula-box .f-label {
+  font-family: var(--sans); font-size: 8.5px;
+  font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+}
+
+/* HIGHLIGHT */
+.hl-box {
+  background: rgba(46,196,182,.05);
+  border: 1px solid rgba(46,196,182,.18);
+  border-radius: var(--r);
+  padding: 16px 22px; margin: 2em 0;
+}
+.hl-box p { font-size: 15.5px; color: var(--sand); line-height: 1.7; margin: .4em 0; }
+.hl-box p::before { content: '→ '; color: var(--teal); }
+
+/* ТАБЛИЦЫ */
+.data-table { width: 100%; border-collapse: collapse; margin: 1.8em 0; font-size: 13px; }
+.data-table th {
+  background: rgba(255,255,255,.04);
+  color: var(--teal); font-size: 9px;
+  font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  padding: 9px 14px; text-align: left;
+  border-bottom: 1px solid rgba(46,196,182,.2);
+}
+.data-table td {
+  padding: 8px 14px;
+  color: var(--ink); border-bottom: 1px solid var(--border);
+  line-height: 1.55;
+}
+.data-table tr:hover td { background: rgba(255,255,255,.02); }
+.data-table td.accent { color: var(--teal2); font-family: var(--mono); }
+
+/* ТАЙМЛАЙН */
+.timeline { position: relative; padding-left: 28px; margin: 1.8em 0; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+.tl-item { position: relative; margin-bottom: 1.4em; }
+.tl-item::before {
+  content: ''; position: absolute; left: -23px; top: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--teal); border: 2px solid var(--bg2);
+}
+.tl-y { font-family: var(--mono); font-size: 11px; color: var(--teal); margin-bottom: 3px; }
+.tl-t { font-size: 15.5px; color: var(--ink); line-height: 1.65; }
+
+/* ═══════════════════════════════════════════
+   ИНТЕРАКТИВНЫЕ ДЕМО
+═══════════════════════════════════════════ */
+.demo-box {
+  background: rgba(10,12,20,.65);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 2em 0;
+  position: relative;
+}
+.demo-tag {
+  position: absolute; top: -9px; left: 20px;
+  background: var(--teal); color: var(--bg);
+  font-size: 8.5px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  padding: 2px 10px; border-radius: 3px;
+}
+.demo-btns {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 16px;
+}
+.demo-btn {
+  padding: 6px 16px;
+  border: 1px solid var(--teal); border-radius: 3px;
+  background: transparent; color: var(--teal);
+  font-size: 9.5px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer; transition: all .16s;
+}
+.demo-btn:hover, .demo-btn.active { background: var(--teal); color: var(--bg); }
+
+/* СТЕП-СПИСОК */
+.step-list { margin: 1.6em 0; }
+.step-row { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+.step-num { font-family: var(--mono); font-size: 11.5px; color: var(--teal); min-width: 36px; padding-top: 2px; opacity: .65; }
+.step-body { flex: 1; }
+.step-ttl { font-size: 10.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--teal2); margin-bottom: 4px; }
+.step-txt { font-size: 15px; color: var(--ink); line-height: 1.65; }
+
+/* НАВИГАЦИЯ */
+.page-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 28px 52px 44px;
+  max-width: 820px; margin: 0 auto;
+  border-top: 1px solid var(--border);
+}
+.nav-btn {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--stone); background: none; border: none;
+  cursor: pointer; transition: color .16s;
+}
+.nav-btn:hover { color: var(--teal); }
+
+/* БЛОКИ СИСТЕМЫ */
+.block-visual { margin: 2em 0; }
+.block-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 18px;
+  border-radius: var(--r) var(--r) 0 0;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  transition: background .15s;
+}
+.block-header:hover { background: rgba(255,255,255,.04); }
+.block-header .bh-id {
+  font-family: var(--mono); font-size: 13px;
+  color: var(--teal); min-width: 34px;
+}
+.block-header .bh-name {
+  font-size: 13.5px; font-weight: 500; color: var(--sand); flex: 1;
+}
+.block-header .bh-tag {
+  font-size: 9px; letter-spacing: .1em;
+  background: rgba(46,196,182,.12); color: var(--teal);
+  padding: 2px 8px; border-radius: 10px;
+}
+.block-header .bh-arrow {
+  font-size: 12px; color: var(--stone);
+  transition: transform .2s;
+}
+.block-body {
+  border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 var(--r) var(--r);
+  padding: 18px 18px;
+  display: none;
+}
+.block-body.open { display: block; }
+
+/* ЗАДАЧА — ЗАПОЛНЕНИЕ */
+.task-form { margin: 1.8em 0; }
+.task-label {
+  display: block; font-size: 9.5px; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--stone); margin-bottom: 6px;
+}
+.task-input {
+  width: 100%; padding: 10px 14px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r); color: var(--sand); font-size: 14px;
+  outline: none; transition: border-color .16s;
+  margin-bottom: 14px;
+}
+.task-input:focus { border-color: var(--teal); }
+textarea.task-input { min-height: 80px; resize: vertical; line-height: 1.6; }
+select.task-input {
+  cursor: pointer;
+  appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%238a8278' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+  padding-right: 38px;
+}
+.task-btn {
+  padding: 10px 28px;
+  background: var(--teal); color: var(--bg);
+  border: none; border-radius: var(--r);
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  cursor: pointer; transition: opacity .16s;
+}
+.task-btn:hover { opacity: .85; }
+.task-result {
+  margin-top: 16px; padding: 16px 18px;
+  background: rgba(46,196,182,.06);
+  border: 1px solid rgba(46,196,182,.2);
+  border-radius: var(--r);
+  font-size: 14.5px; color: var(--sand); line-height: 1.75;
+  display: none;
+}
+.task-result.show { display: block; }
+
+/* ═══════════════════════════════════════════
+   МАТРИЦА-ТАБЛИЦА
+═══════════════════════════════════════════ */
+.matrix-wrap { overflow-x: auto; margin: 1.8em 0; }
+.matrix-table {
+  min-width: 560px; border-collapse: collapse;
+  font-size: 12.5px;
+}
+.matrix-table th {
+  background: rgba(200,168,75,.1); color: var(--gold);
+  font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  padding: 8px 12px; border: 1px solid rgba(200,168,75,.15);
+  text-align: center;
+}
+.matrix-table td {
+  padding: 7px 12px; color: var(--ink);
+  border: 1px solid var(--border); line-height: 1.5; text-align: center;
+}
+.matrix-table td.row-h { text-align: left; color: var(--teal2); font-weight: 500; }
+.matrix-table td.marker { color: var(--gold); font-family: var(--mono); }
+.matrix-table tr:hover td { background: rgba(255,255,255,.02); }
+
+/* МОБИЛЬНОСТЬ */
+#menu-toggle {
+  display: none; position: fixed; top: 14px; left: 14px; z-index: 300;
+  background: var(--bg2); border: 1px solid var(--teal);
+  color: var(--teal); width: 38px; height: 38px;
+  font-size: 17px; cursor: pointer;
+  align-items: center; justify-content: center; border-radius: 4px;
+}
+@media (max-width: 900px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: none; }
+  #main { margin-left: 0; }
+  #menu-toggle { display: flex; }
+  .page-wrap { padding: 44px 22px 80px; }
+  .page-nav { padding: 22px 22px 36px; }
+  #progress-bar { left: 0; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<button id="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+
+<!-- ═══════════════ БОКОВОЕ МЕНЮ ═══════════════ -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="title">Формальная<br>Диалогика</div>
+    <div class="sub">А.Е. Кашеварова · 1994–2019</div>
+  </div>
+
+  <div style="padding:6px 0 20px">
+    <div class="sb-section">Начало</div>
+    <div class="sb-item active" onclick="go('cover',0)"><span class="icon">◎</span>Обложка</div>
+    <div class="sb-item" onclick="go('intro',1)"><span class="icon">✦</span>Введение · Термины</div>
+    <div class="sb-item" onclick="go('axioms',2)"><span class="icon">⊢</span>Аксиомы и Постулаты</div>
+
+    <div class="sb-section">Теория систем</div>
+    <div class="sb-item" onclick="go('systems',3)"><span class="icon">⬡</span>Три типа систем <span class="sb-badge">ключевое</span></div>
+    <div class="sb-item" onclick="go('systematic',4)"><span class="icon">↻</span>Как обнаруживается систематичность</div>
+    <div class="sb-item" onclick="go('task-types',5)"><span class="icon">⇄</span>Типы задач: Коши vs краевые</div>
+
+    <div class="sb-section">5 Блоков ФДЛ</div>
+    <div class="sb-item" onclick="go('blocks',6)"><span class="icon">▦</span>Архитектура 5 блоков <span class="sb-badge">★</span></div>
+    <div class="sb-item" onclick="go('elements',7)"><span class="icon">◈</span>8 Элементов · 9 Функций</div>
+    <div class="sb-item" onclick="go('matrices',8)"><span class="icon">⊞</span>Матрицы Табл.03/04/05 <span class="sb-badge">★</span></div>
+
+    <div class="sb-section">Работа с задачей</div>
+    <div class="sb-item" onclick="go('dominance',9)"><span class="icon">◐</span>Выбор доминанты и состояния</div>
+    <div class="sb-item" onclick="go('algorithm',10)"><span class="icon">▶</span>Алгоритм решения задачи <span class="sb-badge">★</span></div>
+    <div class="sb-item" onclick="go('task-lab',11)"><span class="icon">⌨</span>Лаборатория задачи <span class="sb-badge">интерактив</span></div>
+
+    <div class="sb-section">Прикладное</div>
+    <div class="sb-item" onclick="go('city',12)"><span class="icon">◉</span>Прототип: г. Николаев</div>
+    <div class="sb-item" onclick="go('change-types',13)"><span class="icon">≋</span>Виды изменений системы</div>
+    <div class="sb-item" onclick="go('laws',14)"><span class="icon">⌬</span>Законы диалектики · Геом. модель</div>
+    <div class="sb-item" onclick="go('kdtp',15)"><span class="icon">⬚</span>КДТП · Учёт умственного труда</div>
+    <div class="sb-item" onclick="go('epilogue',16)"><span class="icon">◌</span>Эпилог</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main id="main">
+
+<!-- 0 ОБЛОЖКА -->
+<section id="s-cover" class="screen active">
+  <div class="cover-rings">
+    <div class="cover-ring"></div>
+    <div class="cover-ring"></div>
+    <div class="cover-ring"></div>
+  </div>
+  <div class="cover-eyebrow">Николаевское городское общество исследователей · 1994–2019</div>
+  <h1 class="cover-title">Формальная<br><em>Диалогика</em></h1>
+  <p class="cover-sub">Интерактивная система по материалам А.Е. Кашеваровой</p>
+  <div class="cover-divider"></div>
+  <p class="cover-author">А.Е. Кашеварова · НГОИ · Николаев</p>
+  <p class="cover-meta">Свидетельство об авторском праве № 28036 · Регистрация 16.03.2009</p>
+  <button class="cover-btn" onclick="go('intro',1)">Открыть систему →</button>
+</section>
+
+<!-- 1 ВВЕДЕНИЕ -->
+<section id="s-intro" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Введение · Терминология</div>
+    <h1 class="page-title">Что такое Формальная Диалогика</h1>
+    <p class="page-sub">Первая формализация диалектической логики</p>
+
+    <p class="lead-quote">«Диалогика — термин, обозначающий представление о диалектической логике. "Формальная диалогика" аналогична термину "формальная логика". Предлагаемая работа — первая разработка такого типа»</p>
+
+    <div class="card-grid">
+      <div class="card teal">
+        <div class="c-label">Диалогика</div>
+        <div class="c-val">Представление о диалектической логике — знание о развивающихся понятиях, включающее противоречия</div>
+      </div>
+      <div class="card gold">
+        <div class="c-label">Формальная диалогика</div>
+        <div class="c-val">Система таблиц, инструкций и алгоритмов — <strong>формализованный аппарат</strong> диалектической логики</div>
+      </div>
+      <div class="card violet">
+        <div class="c-label">Типологика</div>
+        <div class="c-val">Неологизм автора: типичные способы мышления, где содержание влияет на порядок мышления и вывода</div>
+      </div>
+    </div>
+
+    <h3 class="section-h">Чем отличается от формальной логики Аристотеля</h3>
+    <div class="card-grid">
+      <div class="card">
+        <div class="c-label" style="color:var(--stone)">Формальная логика</div>
+        <div class="c-val" style="font-size:14px">Снижает неопределённость до нуля. Устраняет противоречия. Работает для статичных, стабильных условий. Слабеет при быстрых изменениях</div>
+      </div>
+      <div class="card">
+        <div class="c-label" style="color:var(--teal)">Диалектическая логика</div>
+        <div class="c-val" style="font-size:14px">Учитывает наличие противоречий. Рассматривает процесс изменения предмета мышления. Предназначена для задач динамического типа</div>
+      </div>
+    </div>
+
+    <h3 class="section-h">Ключевые термины автора</h3>
+    <table class="data-table">
+      <thead><tr><th>Термин</th><th>Определение А.Е. Кашеваровой</th><th>Область</th></tr></thead>
+      <tbody>
+        <tr><td class="accent">Элуз</td><td>Элемент + узел: конечная часть блока, одновременно начало иерархии иного качества</td><td>Теория систем</td></tr>
+        <tr><td class="accent">Неизреченное</td><td>Ощущение неудовлетворённости, не облечённое в слова — исходный пункт всякой задачи</td><td>Методология</td></tr>
+        <tr><td class="accent">Последовательные отдаления</td><td>Противоположность «последовательных приближений» — зондирование возможностей понимания задачи как целого</td><td>Методология</td></tr>
+        <tr><td class="accent">Маркир</td><td>Буквенное обозначение файла/банка данных: У, Ц, П — условия, цели, потребности</td><td>Кодировка</td></tr>
+        <tr><td class="accent">Доминанта</td><td>Главный аргумент системы: либо цель (политика, наука, нравственность), либо потребность (управление, экономика)</td><td>Архитектура</td></tr>
+        <tr><td class="accent">Ограниченная экспертиза</td><td>Своеволие оценщика стеснено рамками заранее обозначенного интервала допустимой ошибки</td><td>Оценка</td></tr>
+      </tbody>
+    </table>
+
+    <blockquote class="bq">«Противоречие есть результат одномерного восприятия явлений. С переходом на двумерное восприятие возникает понимание, что противоположные явления нижнего уровня суть проявления одной сущности верхнего уровня в разных условиях. Поэтому с противоречиями бороться бессмысленно — нужно изменять условия»<cite>— А.Е. Кашеварова, «Основные представления формальной диалогики»</cite></blockquote>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('cover',0)">← Обложка</button>
+    <button class="nav-btn" onclick="go('axioms',2)">Аксиомы →</button>
+  </div>
+</section>
+
+<!-- 2 АКСИОМЫ -->
+<section id="s-axioms" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Основания · Постулаты</div>
+    <h1 class="page-title">Аксиомы и Постулаты</h1>
+    <p class="page-sub">Системного подхода диалектического типа</p>
+
+    <h3 class="section-h">Аксиомы — жёсткие договоры</h3>
+    <div class="step-list">
+      <div class="step-row"><div class="step-num">А.1</div><div class="step-body"><div class="step-ttl">Руководитель</div><div class="step-txt">Ведущий, знающий перспективу, идущий впереди</div></div></div>
+      <div class="step-row"><div class="step-num">А.2</div><div class="step-body"><div class="step-ttl">Управитель</div><div class="step-txt">Находящий управу — объединяющий функции понукателя и надсмотрщика. Это принципиально разные роли!</div></div></div>
+      <div class="step-row"><div class="step-num">А.3</div><div class="step-body"><div class="step-ttl">Замена эффективных механизмов</div><div class="step-txt">Эффективные механизмы управления подменяются упрощёнными схемами, когда налицо не отсутствие знания, а <strong>нежелание знать</strong></div></div></div>
+      <div class="step-row"><div class="step-num">А.4</div><div class="step-body"><div class="step-ttl">Законность</div><div class="step-txt">Законность — основа и результат созидания</div></div></div>
+    </div>
+
+    <h3 class="section-h">Постулаты — мягкие договоры (могут уточняться)</h3>
+    <div class="step-list">
+      <div class="step-row"><div class="step-num">П.1</div><div class="step-body"><div class="step-ttl">Соответствие сложностей</div><div class="step-txt">Сложность метода решения задачи должна соответствовать сложности самой задачи — тогда результат получится правильным и надёжным</div></div></div>
+      <div class="step-row"><div class="step-num">П.2</div><div class="step-body"><div class="step-ttl">Встречное решение</div><div class="step-txt">Системный подход диалектического типа выражается во встречном решении прямой и обратной задач для комплекта из трёх уровней иерархии: <strong>надсистема — система — подсистема</strong> с учётом дифференциальных и интегральных связей</div></div></div>
+      <div class="step-row"><div class="step-num">П.3</div><div class="step-body"><div class="step-ttl">Ошибка АСУПов</div><div class="step-txt">Новые средства производства не должны приспосабливаться под традиционную технологию управления. Наоборот — на их основе должна создаваться <strong>новая технология</strong> не только производства, но и управления</div></div></div>
+      <div class="step-row"><div class="step-num">П.4</div><div class="step-body"><div class="step-ttl">Авторитарное управление</div><div class="step-txt">Авторитарное управление, пренебрегающее наукой, основанное на догадке, не снабжённое конструкторским и технологическим обеспечением, превращает намерения о реформировании в осуществлённую авантюру</div></div></div>
+    </div>
+
+    <h3 class="section-h">Система возможных аксиом — коды промежутков</h3>
+    <p class="prose">Автор разработала особую систему кодировки текстовых элементов с разделением графики йотированных и мягких гласных:</p>
+    <div class="formula-box">
+      <div class="f-label">Коды промежутков (аксиомы 0.1–0.7)</div>
+      0.1 пробел → расстояние между словами<br>
+      0.2 — тире длинное → «это есть» / «является»<br>
+      0.3 – тире короткое → наименование, условное обозначение<br>
+      0.4 - дефис → соединительная черта<br>
+      0.5 - перенос → разделительная черта<br>
+      0.6 _ подчёркивание → ударная гласная<br>
+      0.7 . знаки препинания → стандартные
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('intro',1)">← Введение</button>
+    <button class="nav-btn" onclick="go('systems',3)">Три типа систем →</button>
+  </div>
+</section>
+
+<!-- 3 ТРИ ТИПА СИСТЕМ -->
+<section id="s-systems" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Теория систем · Ключевой раздел</div>
+    <h1 class="page-title">Три типа систем</h1>
+    <p class="page-sub">Центральная классификация формальной диалогики</p>
+
+    <p class="lead-quote">«В природе систем нет. В независимом от людей мире существуют законы и их взаимодействия. Систем порождение ума людей — на основе наблюдательности и самопознания правил мышления»</p>
+
+    <div class="demo-box">
+      <div class="demo-tag">Интерактив — Три типа систем</div>
+      <canvas id="sys-canvas" width="700" height="300" style="max-width:100%;display:block;"></canvas>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="sysMode('para')" id="btn-para">Параметрическая</button>
+        <button class="demo-btn" onclick="sysMode('formal')" id="btn-formal">Формально-логическая</button>
+        <button class="demo-btn" onclick="sysMode('dialec')" id="btn-dialec">Диалектико-логическая</button>
+      </div>
+      <div id="sys-desc" style="font-size:14px;color:var(--ink);margin-top:14px;line-height:1.7;"></div>
+    </div>
+
+    <h3 class="section-h">Определение системы диалектического типа</h3>
+    <div class="hl-box">
+      <p>Совокупность узлов, функций, структуры и связей, обладающая способностью действия</p>
+      <p>Порождающая внутреннюю силу и способная сопротивляться внешней силе</p>
+      <p>Реализующая самосохранение в качестве способа существования</p>
+    </div>
+
+    <h3 class="section-h">Виды функциональных связей</h3>
+    <div class="card-grid">
+      <div class="card teal"><div class="c-label">Направление</div><div class="c-val">Прямые и обратные</div></div>
+      <div class="card teal"><div class="c-label">Знак</div><div class="c-val">Отрицательные и положительные</div></div>
+      <div class="card teal"><div class="c-label">Ориентация</div><div class="c-val">Горизонтальные и вертикальные</div></div>
+      <div class="card teal"><div class="c-label">Множественность</div><div class="c-val">Однонаправленные и многонаправленные</div></div>
+      <div class="card gold"><div class="c-label">Тип передачи</div><div class="c-val">Дифференциальные (пошаговые следствия) и интегральные (суммирование закономерностей)</div></div>
+    </div>
+
+    <h3 class="section-h">Иерархия: надсистема — система — подсистема</h3>
+    <p class="prose">Если узел внутри себя порождает по одному или нескольким разнокачественным направлениям иерархические цепочки подсистем, то такой узел рассматривается в качестве <strong>надсистемы</strong>. Это создаёт трёхуровневую вертикаль, обязательную для диалектического подхода.</p>
+    <div class="demo-box" style="padding:18px">
+      <div class="demo-tag">Пример: ЖЭК</div>
+      <div style="font-family:var(--mono);font-size:13px;color:var(--sand);line-height:2.2;">
+        Начальник ЖЭК → <span style="color:var(--teal)">надсистема</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Мастер-1 → <span style="color:var(--gold)">система</span> (подчинён начальнику И управляет рабочими)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Мастер-2 → <span style="color:var(--gold)">система</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Рабочий А → <span style="color:var(--stone)">подсистема</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Рабочий Б → <span style="color:var(--stone)">подсистема</span>
+      </div>
+      <p style="font-size:13px;color:var(--stone);margin-top:10px;">Мастер не может дать задание рабочему другого мастера — это граница системы</p>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('axioms',2)">← Аксиомы</button>
+    <button class="nav-btn" onclick="go('systematic',4)">Систематичность →</button>
+  </div>
+</section>
+
+<!-- 4 СИСТЕМАТИЧНОСТЬ -->
+<section id="s-systematic" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Теория систем</div>
+    <h1 class="page-title">Как обнаруживается систематичность</h1>
+    <p class="page-sub">Правило трёх повторений</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="c-label" style="color:var(--stone)">1 раз — нечаянное</div>
+        <div class="c-val">Единичное, неожиданное событие. Конкретная величина погрешности в эксперименте</div>
+      </div>
+      <div class="card gold">
+        <div class="c-label">2 раза — случайное</div>
+        <div class="c-val">Редкое, нерегулярное совпадение. Ещё не даёт основания для вывода</div>
+      </div>
+      <div class="card teal">
+        <div class="c-label">3 раза — систематическое</div>
+        <div class="c-val">Заданность, регулярность, организованность повторяемости. <strong>Наличие функции его появления</strong></div>
+      </div>
+    </div>
+
+    <h3 class="section-h">Три вида изменений системы</h3>
+    <div class="step-list">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-ttl">Аналогия</div>
+          <div class="step-txt">Сохранение формы (способа выражения) при <strong>различных содержаниях</strong>. Тот же шаблон — разное наполнение</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-ttl">Модификация</div>
+          <div class="step-txt">Видоизменение формы при <strong>неизменном содержании</strong>. Лат. «установление меры» — уточнение без смены сути</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-ttl">Модернизация</div>
+          <div class="step-txt">Частичное преобразование прежней формы <strong>и</strong> содержания для приспособления к новым условиям. Возможна, если число новых условий меньше критического объёма, разрушающего систему</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-h">Среда и конкретная система — варианты отношений</h3>
+    <div class="card-grid">
+      <div class="card"><div class="c-label" style="color:var(--stone)">а) Терпимость</div><div class="c-val" style="font-size:14px">Среда мирится с самоуправством конкретной системы</div></div>
+      <div class="card red"><div class="c-label">б) Поглощение</div><div class="c-val" style="font-size:14px">Среда полностью поглощает и подчиняет систему, сохраняя её структуру</div></div>
+      <div class="card teal"><div class="c-label">в) Равноправие</div><div class="c-val" style="font-size:14px">Среда устанавливает равноправные отношения с конкретной системой</div></div>
+      <div class="card gold"><div class="c-label">г) Частичная зависимость</div><div class="c-val" style="font-size:14px">Среда признаёт частичную зависимость системы от своих условий</div></div>
+    </div>
+
+    <blockquote class="bq">«Если конкретная система начинает навязывать среде свою волю, возникает бунт, прерывающий мирный, отрегулированный обмен "веществ" между ними»<cite>— А.Е. Кашеварова, «Как обнаруживается систематичность»</cite></blockquote>
+
+    <h3 class="section-h">Многомерность: декартовы оси и угловые координаты</h3>
+    <div class="formula-box">
+      <div class="f-label">Геометрическая модель многомерности</div>
+      Элементы → перемещаются на <strong>3 декартовых координатах</strong> (главные оси)<br>
+      Компоненты → располагаются на плоскостях пар главных осей → <strong>угловые координаты</strong><br><br>
+      Четырёхмерность, пятимерность, шестимерность → моделируется<br>
+      фактом наличия/отсутствия компонентов на пространственных поверхностях
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('systems',3)">← Три типа систем</button>
+    <button class="nav-btn" onclick="go('task-types',5)">Типы задач →</button>
+  </div>
+</section>
+
+<!-- 5 ТИПЫ ЗАДАЧ -->
+<section id="s-task-types" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Методология · Математические основы</div>
+    <h1 class="page-title">Два типа задач</h1>
+    <p class="page-sub">Коши vs краевая задача — применение в ФДЛ</p>
+
+    <div class="card-grid">
+      <div class="card teal">
+        <div class="c-label">Задача Коши (начальные условия)</div>
+        <div class="c-val" style="font-size:14px">Все исходные данные известны в начале. Решение идёт по известным формулам/алгоритму к конечному результату. <strong>Риск:</strong> накопление малых погрешностей даёт разброс</div>
+      </div>
+      <div class="card gold">
+        <div class="c-label">Краевая задача</div>
+        <div class="c-val" style="font-size:14px">Часть данных задана в начале, часть — в конце. Метод проб и ошибок («метод тыка»): варьируют неизвестные, добиваясь совпадения конечных значений с заданными</div>
+      </div>
+    </div>
+
+    <p class="prose">Оба способа находят применение в формализации диалектической логики. Задача с начальными условиями применяется при серийных исходных данных. Краевая задача — при необходимости <strong>качественного изменения</strong> системы или её работы в режиме приспособления.</p>
+
+    <h3 class="section-h">Последовательность устранения неопределённости</h3>
+    <p class="prose">Сложные задачи характерны трудностями формулирования. Первичное наименование обычно основывается на ощущениях неудовлетворённости и бывает предварительным.</p>
+    <div class="step-list">
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><div class="step-ttl">Неизреченное</div><div class="step-txt">Ощущение неудовлетворённости без слов. Древние египтяне называли это «неизреченным»</div></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><div class="step-ttl">Изречение</div><div class="step-txt">Попытка составить формулировку. Зафиксировать в знаках — записать буквами на бумаге и вдуматься в смысл</div></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-body"><div class="step-ttl">Структурирование</div><div class="step-txt">Разделение, основанное на какой-либо закономерности — не хаос частей. «Последовательные отдаления» от неизреченности</div></div></div>
+      <div class="step-row"><div class="step-num">4</div><div class="step-body"><div class="step-ttl">Понимание</div><div class="step-txt">Снижение неопределённости через осознание качеств деления. Выявление границ количественно-качественного перехода</div></div></div>
+    </div>
+
+    <blockquote class="bq">«При решении задач в условиях неопределённости неправильно стремиться к получению точных решений. Правильно — определять область допустимых значений и назначать её границы»<cite>— А.Е. Кашеварова, «Как обнаруживается систематичность»</cite></blockquote>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('systematic',4)">← Систематичность</button>
+    <button class="nav-btn" onclick="go('blocks',6)">5 блоков ФДЛ →</button>
+  </div>
+</section>
+
+<!-- 6 5 БЛОКОВ -->
+<section id="s-blocks" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Архитектура ФДЛ · Ключевой раздел</div>
+    <h1 class="page-title">5 Блоков системы</h1>
+    <p class="page-sub">Архитектура саморегулирующейся системы по Кашеваровой</p>
+
+    <div class="demo-box">
+      <div class="demo-tag">Интерактив — Схема 5 блоков</div>
+      <canvas id="blocks-canvas" width="700" height="300" style="max-width:100%;display:block;"></canvas>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="blocksMode('schema')" id="btn-schema">Схема</button>
+        <button class="demo-btn" onclick="blocksMode('flows')" id="btn-flows">Потоки</button>
+        <button class="demo-btn" onclick="blocksMode('planes')" id="btn-planes">Плоскости</button>
+      </div>
+    </div>
+
+    <div id="blocks-accordion">
+      <!-- БМ -->
+      <div class="block-visual">
+        <div class="block-header" onclick="toggleBlock('bm')">
+          <span class="bh-id">БМ</span>
+          <span class="bh-name">Блок мотиваций</span>
+          <span class="bh-tag">3 элемента</span>
+          <span class="bh-arrow" id="arr-bm">▼</span>
+        </div>
+        <div class="block-body" id="body-bm">
+          <div class="card-grid">
+            <div class="card gold"><div class="c-label">Ц — Цели</div><div class="c-val">Исходный аргумент. Применяется для задач политических, научного поиска, нравственных</div></div>
+            <div class="card teal"><div class="c-label">Удо — Условия до</div><div class="c-val">Компонент. Комплектность условий нулевого уровня перед началом решения</div></div>
+            <div class="card violet"><div class="c-label">П — Потребности</div><div class="c-val">Аргумент для задач управления, экономических, организационных. Маркир: П</div></div>
+          </div>
+          <p class="prose" style="font-size:14px;margin-top:12px;">Условия — всегда компонент, никогда не аргумент. Писатель Аматуни: «Обстоятельства значат мало, характер — всё». Характер системы определяется доминантой: целью или потребностью.</p>
+        </div>
+      </div>
+      <!-- БТ -->
+      <div class="block-visual">
+        <div class="block-header" onclick="toggleBlock('bt')">
+          <span class="bh-id">БТ</span>
+          <span class="bh-name">Блок требований</span>
+          <span class="bh-tag">4 элемента · 2 функции</span>
+          <span class="bh-arrow" id="arr-bt">▼</span>
+        </div>
+        <div class="block-body" id="body-bt">
+          <div class="card-grid">
+            <div class="card teal"><div class="c-label">Цели Ц</div><div class="c-val">Перенесены из БМ</div></div>
+            <div class="card teal"><div class="c-label">Потребности П</div><div class="c-val">Перенесены из БМ</div></div>
+            <div class="card gold"><div class="c-label">Средства Ср</div><div class="c-val">Роды и виды средств 1–2-го уровня</div></div>
+            <div class="card gold"><div class="c-label">Значимость Зн</div><div class="c-val">Показатели в относительных формах — Справочник</div></div>
+          </div>
+          <div class="formula-box" style="margin-top:14px">
+            <div class="f-label">Функции блока БТ</div>
+            Функ. 2.1 — ОГПО: Ограничение (П → Ср)<br>
+            Функ. 2.2 — КРСО: Критерии соответствия (Ц → Зн)
+          </div>
+        </div>
+      </div>
+      <!-- БИ -->
+      <div class="block-visual">
+        <div class="block-header" onclick="toggleBlock('bi')">
+          <span class="bh-id">БИ</span>
+          <span class="bh-name">Блок идей</span>
+          <span class="bh-tag">4 элемента · 3 функции</span>
+          <span class="bh-arrow" id="arr-bi">▼</span>
+        </div>
+        <div class="block-body" id="body-bi">
+          <div class="card-grid">
+            <div class="card teal"><div class="c-label">Ср — Средства</div><div class="c-val">Перенесены из БТ</div></div>
+            <div class="card teal"><div class="c-label">Зн — Значимость</div><div class="c-val">Показатели</div></div>
+            <div class="card gold"><div class="c-label">Эр — Эффективность</div><div class="c-val">Целевые и ранговые функции</div></div>
+            <div class="card gold"><div class="c-label">М — Модель</div><div class="c-val">Знаковая модель системы</div></div>
+          </div>
+          <div class="formula-box" style="margin-top:14px">
+            <div class="f-label">Функции блока БИ (проект решения)</div>
+            Функ. 3.1 — между Ср и Зн (АЛЬТ)<br>
+            Функ. 3.2 — между Ср и Эр<br>
+            Функ. 3.3 — между Зн и М (ВАРЕ)
+          </div>
+        </div>
+      </div>
+      <!-- БЦ -->
+      <div class="block-visual">
+        <div class="block-header" onclick="toggleBlock('bc')">
+          <span class="bh-id">БЦ</span>
+          <span class="bh-name">Блок целесообразности</span>
+          <span class="bh-tag">5 элементов · 2 функции</span>
+          <span class="bh-arrow" id="arr-bc">▼</span>
+        </div>
+        <div class="block-body" id="body-bc">
+          <div class="card-grid">
+            <div class="card teal"><div class="c-label">Удо + П + Зн + М</div><div class="c-val">Элементы из предыдущих блоков</div></div>
+            <div class="card gold"><div class="c-label">Уп — Условия после</div><div class="c-val">Новые условия — результат действия системы после реализации решения</div></div>
+          </div>
+          <div class="formula-box" style="margin-top:14px">
+            <div class="f-label">Функции блока БЦ</div>
+            Функ. 4.1 — Альтернативы (Удо → Зн)<br>
+            Функ. 4.2 — Варианты решений (П → М в составе альтернативы)
+          </div>
+        </div>
+      </div>
+      <!-- БВ -->
+      <div class="block-visual">
+        <div class="block-header" onclick="toggleBlock('bv')">
+          <span class="bh-id">БВ</span>
+          <span class="bh-name">Блок возможностей</span>
+          <span class="bh-tag">4 элемента · 2 функции</span>
+          <span class="bh-arrow" id="arr-bv">▼</span>
+        </div>
+        <div class="block-body" id="body-bv">
+          <div class="card-grid">
+            <div class="card teal"><div class="c-label">Ц + Удо + Ср + Эр</div><div class="c-val">Элементы из предыдущих блоков</div></div>
+          </div>
+          <div class="formula-box" style="margin-top:14px">
+            <div class="f-label">Функции блока БВ</div>
+            Функ. 5.1 — ЗАТР: Затраты (Удо → Ср)<br>
+            Функ. 5.2 — ОЦРЕ: Оценка решений (Ц → Эр)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('task-types',5)">← Типы задач</button>
+    <button class="nav-btn" onclick="go('elements',7)">8 Элементов →</button>
+  </div>
+</section>
+
+<!-- 7 ЭЛЕМЕНТЫ И ФУНКЦИИ -->
+<section id="s-elements" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Структура ФДЛ</div>
+    <h1 class="page-title">8 Элементов · 9 Функций</h1>
+    <p class="page-sub">Инструктивная часть в табличной форме</p>
+
+    <p class="prose"><strong>5 блоков, 8 элементов структуры, 9 функций системы</strong> — полная архитектура саморегулирующейся системы по Кашеваровой.</p>
+
+    <h3 class="section-h">Таблица 1.И — Элементы саморегулирующейся системы</h3>
+    <table class="data-table">
+      <thead><tr><th>Код</th><th>Название</th><th>Тип</th><th>Роль</th></tr></thead>
+      <tbody>
+        <tr><td class="accent">Ц</td><td>Цели</td><td>Исходный (аргумент)</td><td>Доминанта для политики, науки, нравственности</td></tr>
+        <tr><td class="accent">Ср</td><td>Средства</td><td>Исходный (аргумент)</td><td>Роды и виды ресурсов и инструментов</td></tr>
+        <tr><td class="accent">Зн / З</td><td>Значимость показателей</td><td>Исходный (аргумент)</td><td>Шкалы в относительных формах — Справочник</td></tr>
+        <tr><td class="accent">Эр / Э</td><td>Эффективность решения</td><td>Исходный (аргумент)</td><td>Целевые и ранговые функции</td></tr>
+        <tr><td class="accent">Удо</td><td>Условия до решения</td><td>Производный (компонент)</td><td>Комплект начальных условий нулевого уровня</td></tr>
+        <tr><td class="accent">Уп</td><td>Условия после решения</td><td>Производный (компонент)</td><td>Новые условия — результат действия системы</td></tr>
+        <tr><td class="accent">П</td><td>Потребности</td><td>Производный (компонент)</td><td>Доминанта для управления, экономики, организации</td></tr>
+        <tr><td class="accent">М</td><td>Модель</td><td>Производный (компонент)</td><td>Знаковая модель для учёта, управления, расчётов</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-h">Таблица 2.И — Функции системы по плоскостям</h3>
+    <table class="data-table">
+      <thead><tr><th>Плоскость</th><th>Код</th><th>Функция</th><th>Связь</th></tr></thead>
+      <tbody>
+        <tr><td>В. Технические возможности</td><td class="accent">ЗАТР</td><td>Затраты средств</td><td>Удо → Ср</td></tr>
+        <tr><td>В. Технические возможности</td><td class="accent">ОЦРЕ</td><td>Оценка решения</td><td>Ц → Эр</td></tr>
+        <tr><td>Т. Требования</td><td class="accent">ОГПО</td><td>Ограничение показателей</td><td>П → Ср</td></tr>
+        <tr><td>Т. Требования</td><td class="accent">КРСО</td><td>Критерии соответствия</td><td>Зн → Ц</td></tr>
+        <tr><td>ЦС. Целесообразность</td><td class="accent">АЛЬТ</td><td>Альтернативы</td><td>Зн → Удо</td></tr>
+        <tr><td>ЦС. Целесообразность</td><td class="accent">ВАРЕ</td><td>Варианты решений</td><td>П → М</td></tr>
+        <tr><td>И. Идей</td><td class="accent">Ф.3.1</td><td>Ср ↔ Зн</td><td>между средствами и показателями</td></tr>
+        <tr><td>И. Идей</td><td class="accent">Ф.3.2</td><td>Ср ↔ Эр</td><td>между средствами и эффективностью</td></tr>
+        <tr><td>И. Идей</td><td class="accent">Ф.3.3</td><td>Зн ↔ М</td><td>между показателями и моделью</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('blocks',6)">← 5 Блоков</button>
+    <button class="nav-btn" onclick="go('matrices',8)">Матрицы 03/04/05 →</button>
+  </div>
+</section>
+
+<!-- 8 МАТРИЦЫ -->
+<section id="s-matrices" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Инструментарий · Ключевой раздел</div>
+    <h1 class="page-title">Матрицы форм исходных данных</h1>
+    <p class="page-sub">Таблицы 03 · 04 · 05 — абстрактные заготовки банков данных</p>
+
+    <p class="prose">Формы каталогов не зависят от содержания — они зависят только от того, какая составляющая (<strong>цели или потребности</strong>) является доминантой.</p>
+
+    <div class="demo-box">
+      <div class="demo-tag">Интерактив — Выбор матрицы</div>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="showMatrix('03')" id="btn-m03">Табл. 03</button>
+        <button class="demo-btn" onclick="showMatrix('04')" id="btn-m04">Табл. 04</button>
+        <button class="demo-btn" onclick="showMatrix('05')" id="btn-m05">Табл. 05</button>
+      </div>
+      <div id="matrix-content" style="margin-top:18px;"></div>
+    </div>
+
+    <h3 class="section-h">Маркиры уровня (графа 1 табл.03)</h3>
+    <div class="formula-box">
+      <div class="f-label">Три маркира блока мотиваций</div>
+      У — элуз «условия»<br>
+      Ц — элуз «цели»<br>
+      П — элуз «потребности»<br><br>
+      Маркир становится наименованием файла, где накапливается содержание сведений<br>
+      Пример: <span style="color:var(--teal)">П3</span> → «Потребности, устраняемые в зависимости от целей и изменений условий»
+    </div>
+
+    <h3 class="section-h">Зоны интересов — четыре рода</h3>
+    <div class="card-grid">
+      <div class="card teal"><div class="c-label">Всеобщие</div><div class="c-val">Общечеловеческие, государственные интересы</div></div>
+      <div class="card teal"><div class="c-label">Общие</div><div class="c-val">Интересы региона, отрасли, крупной социальной группы</div></div>
+      <div class="card gold"><div class="c-label">Групповые</div><div class="c-val">Интересы конкретного коллектива, профессиональной группы</div></div>
+      <div class="card gold"><div class="c-label">Частные (локальные)</div><div class="c-val">Интересы отдельной личности, малой группы</div></div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('elements',7)">← Элементы</button>
+    <button class="nav-btn" onclick="go('dominance',9)">Доминанта →</button>
+  </div>
+</section>
+
+<!-- 9 ДОМИНАНТА -->
+<section id="s-dominance" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Архитектура ФДЛ · Выбор конфигурации</div>
+    <h1 class="page-title">Выбор доминанты и состояния</h1>
+    <p class="page-sub">Конфигурация схемы проектирования системы</p>
+
+    <h3 class="section-h">Доминанта в виде ЦЕЛИ — применяется для задач:</h3>
+    <div class="card-grid">
+      <div class="card gold"><div class="c-label">Политических</div><div class="c-val">Цель самодостаточна как аргумент</div></div>
+      <div class="card gold"><div class="c-label">Научного поиска</div><div class="c-val">Целеориентированное исследование</div></div>
+      <div class="card gold"><div class="c-label">Нравственных</div><div class="c-val">Ценностно-ориентированные решения</div></div>
+    </div>
+
+    <h3 class="section-h">Доминанта в виде ПОТРЕБНОСТИ — применяется для задач:</h3>
+    <div class="card-grid">
+      <div class="card teal"><div class="c-label">Управления общественными процессами</div><div class="c-val">Потребность как аргумент</div></div>
+      <div class="card teal"><div class="c-label">Экономических, хозяйственных</div><div class="c-val">Материальные потребности</div></div>
+      <div class="card teal"><div class="c-label">Организационных</div><div class="c-val">Структурно-процессные потребности</div></div>
+    </div>
+
+    <h3 class="section-h">Состояние схемы проектирования</h3>
+    <div class="card-grid">
+      <div class="card violet">
+        <div class="c-label">Устойчивый результат</div>
+        <div class="c-val">При использовании <strong>серийных исходных данных</strong>. Система работает в штатном режиме</div>
+      </div>
+      <div class="card red">
+        <div class="c-label">Переходный процесс</div>
+        <div class="c-val">При необходимости <strong>качественного изменения</strong> системы или её существования в режиме приспособления/регулирования</div>
+      </div>
+    </div>
+
+    <div class="demo-box">
+      <div class="demo-tag">Интерактив — Определение доминанты задачи</div>
+      <p style="font-size:13.5px;color:var(--stone);margin-bottom:16px;">Ответьте на вопросы — система определит конфигурацию ФДЛ</p>
+      <label class="task-label">Тип вашей задачи:</label>
+      <select class="task-input" id="dom-type">
+        <option value="">— выберите —</option>
+        <option value="politics">Политика / реформа</option>
+        <option value="science">Научный поиск</option>
+        <option value="ethics">Нравственные ценности</option>
+        <option value="management">Управление / администрирование</option>
+        <option value="economy">Экономика / хозяйство</option>
+        <option value="org">Организация / структура</option>
+      </select>
+      <label class="task-label">Режим работы системы:</label>
+      <select class="task-input" id="dom-state">
+        <option value="">— выберите —</option>
+        <option value="serial">Серийный (данные повторяются)</option>
+        <option value="transition">Переходный (изменение системы)</option>
+      </select>
+      <button class="task-btn" onclick="calcDominance()">Определить конфигурацию</button>
+      <div class="task-result" id="dom-result"></div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('matrices',8)">← Матрицы</button>
+    <button class="nav-btn" onclick="go('algorithm',10)">Алгоритм →</button>
+  </div>
+</section>
+
+<!-- 10 АЛГОРИТМ -->
+<section id="s-algorithm" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Практика ФДЛ · Алгоритм</div>
+    <h1 class="page-title">Алгоритм решения задачи</h1>
+    <p class="page-sub">Методом системного подхода диалектического типа</p>
+
+    <p class="lead-quote">«Сначала разработчик подчиняется заданной схеме мышления, находит проектное решение, затем оно реализуется в действующую систему принятия текущих решений»</p>
+
+    <div class="demo-box">
+      <div class="demo-tag">Интерактив — Шаги алгоритма</div>
+      <canvas id="algo-canvas" width="700" height="260" style="max-width:100%;display:block;"></canvas>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="algoStep(-1)" id="btn-algo-all">Все шаги</button>
+        <button class="demo-btn" onclick="algoStep(0)">Шаг 1</button>
+        <button class="demo-btn" onclick="algoStep(1)">Шаг 2</button>
+        <button class="demo-btn" onclick="algoStep(2)">Шаг 3</button>
+        <button class="demo-btn" onclick="algoStep(3)">Шаг 4</button>
+        <button class="demo-btn" onclick="algoStep(4)">Шаг 5</button>
+      </div>
+    </div>
+
+    <div class="step-list" id="algo-steps">
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><div class="step-ttl">Изречь задачу</div><div class="step-txt">Нарисовать окружность и написать в ней слово «Замысел». Это знак неизреченного. Рядом записать начальную формулировку задачи</div></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><div class="step-ttl">Нарисовать две концентрические окружности</div><div class="step-txt">Первую разделить на 8 секторов (по числу зон интересов), вторую — на 24 (направления развития)</div></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-body"><div class="step-ttl">Выявить влияния среды</div><div class="step-txt">Изречь, от каких важных факторов окружающей среды зависит успех или неуспех решения задачи. Записать эти влияния в 8 секторов</div></div></div>
+      <div class="step-row"><div class="step-num">4</div><div class="step-body"><div class="step-ttl">Выбрать доминанту и состояние</div><div class="step-txt">Определить: цели или потребности являются аргументом. Определить: серийный или переходный режим. Скопировать нужные матрицы Табл.03/04/05</div></div></div>
+      <div class="step-row"><div class="step-num">5</div><div class="step-body"><div class="step-ttl">Заполнить блок мотиваций (БМ)</div><div class="step-txt">Конкретизировать абстрактные формулировки графы 3 табл.03 — добавить указание на предмет направления деления. Присвоить приоритеты</div></div></div>
+      <div class="step-row"><div class="step-num">6</div><div class="step-body"><div class="step-ttl">Заполнить блок требований (БТ)</div><div class="step-txt">Классифицировать потребности по зонам интересов. Сформировать средства 1–2-го уровня. Заполнить функции ОГПО и КРСО</div></div></div>
+      <div class="step-row"><div class="step-num">7</div><div class="step-body"><div class="step-ttl">Блок идей (БИ) — проект решения</div><div class="step-txt">Создать знаковую модель. Определить эффективность. Заполнить функции Ф.3.1, 3.2, 3.3</div></div></div>
+      <div class="step-row"><div class="step-num">8</div><div class="step-body"><div class="step-ttl">Блоки БЦ и БВ — целесообразность и возможности</div><div class="step-txt">Рассчитать альтернативы (АЛЬТ). Сформировать варианты решений (ВАРЕ). Оценить затраты (ЗАТР) и эффективность (ОЦРЕ)</div></div></div>
+      <div class="step-row"><div class="step-num">9</div><div class="step-body"><div class="step-ttl">Получить Уп — условия после</div><div class="step-txt">Новые условия существования системы после реализации решения. Сравнить с Удо. Оценить степень достижения замысла</div></div></div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('dominance',9)">← Доминанта</button>
+    <button class="nav-btn" onclick="go('task-lab',11)">Лаборатория →</button>
+  </div>
+</section>
+
+<!-- 11 ЛАБОРАТОРИЯ -->
+<section id="s-task-lab" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Интерактив · Лаборатория задачи</div>
+    <h1 class="page-title">Лаборатория задачи ФДЛ</h1>
+    <p class="page-sub">Введите свою задачу — система построит структуру по методологии Кашеваровой</p>
+
+    <div class="task-form">
+      <label class="task-label">Исходная формулировка задачи (неизреченное → изречённое):</label>
+      <textarea class="task-input" id="lab-task" placeholder="Например: Перспективы развития г. Николаева"></textarea>
+
+      <label class="task-label">Выберите доминанту:</label>
+      <select class="task-input" id="lab-dom">
+        <option value="target">Доминанта — ЦЕЛИ (политика, наука, нравственность)</option>
+        <option value="need">Доминанта — ПОТРЕБНОСТИ (управление, экономика, организация)</option>
+      </select>
+
+      <label class="task-label">Состояние системы:</label>
+      <select class="task-input" id="lab-state">
+        <option value="stable">Устойчивое (серийные данные)</option>
+        <option value="transition">Переходное (реформирование)</option>
+      </select>
+
+      <label class="task-label">Перечислите до 8 секторов / направлений (через запятую):</label>
+      <textarea class="task-input" id="lab-sectors" placeholder="Местная власть, Финансы, Торговля, Предпринимательство, Промышленность, Наука, Экология, Воспитание"></textarea>
+
+      <button class="task-btn" onclick="runLab()">Построить структуру ФДЛ</button>
+    </div>
+
+    <div class="task-result" id="lab-result"></div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('algorithm',10)">← Алгоритм</button>
+    <button class="nav-btn" onclick="go('city',12)">Прототип Николаев →</button>
+  </div>
+</section>
+
+<!-- 12 НИКОЛАЕВ -->
+<section id="s-city" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Прототип · 1994 г.</div>
+    <h1 class="page-title">Концепция развития г. Николаева</h1>
+    <p class="page-sub">Первое практическое применение системы ФДЛ — 24 направления развития</p>
+
+    <div class="demo-box">
+      <div class="demo-tag">Интерактив — Структурная схема 8 секторов × 3 НР</div>
+      <canvas id="city-canvas" width="700" height="380" style="max-width:100%;display:block;"></canvas>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="cityMode('ring')" id="btn-ring">Кольцевая схема</button>
+        <button class="demo-btn" onclick="cityMode('list')" id="btn-list">Список НР</button>
+        <button class="demo-btn" onclick="cityMode('sr')" id="btn-sr">Средства Ср1–Ср9</button>
+      </div>
+    </div>
+
+    <h3 class="section-h">24 направления развития города</h3>
+    <table class="data-table">
+      <thead><tr><th>Сектор</th><th>№</th><th>Направление развития</th></tr></thead>
+      <tbody id="city-table"></tbody>
+    </table>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('task-lab',11)">← Лаборатория</button>
+    <button class="nav-btn" onclick="go('change-types',13)">Виды изменений →</button>
+  </div>
+</section>
+
+<!-- 13 ВИДЫ ИЗМЕНЕНИЙ -->
+<section id="s-change-types" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Теория изменений</div>
+    <h1 class="page-title">Виды изменений системы</h1>
+    <p class="page-sub">Аналогия · Модификация · Модернизация — в контексте проектирования</p>
+
+    <p class="prose">При проектировании переходного процесса важно понимать глубину изменений. Метки в табл.04: <strong>Д — «до»</strong> и <strong>П — «после»</strong> позволяют отслеживать изменения системы.</p>
+
+    <div class="card-grid">
+      <div class="card teal">
+        <div class="c-label">Аналогия</div>
+        <div class="c-val" style="font-size:14px"><strong>Форма сохраняется</strong>, содержания различны. Тактика «делай, как я» — перенос формы решения на другое содержание. Матрицы ФДЛ сами являются примером аналогии</div>
+      </div>
+      <div class="card gold">
+        <div class="c-label">Модификация</div>
+        <div class="c-val" style="font-size:14px"><strong>Форма изменяется</strong>, содержание то же. Видоизменение представления при сохранении сути. Уточнение без смены сущности</div>
+      </div>
+      <div class="card violet">
+        <div class="c-label">Модернизация</div>
+        <div class="c-val" style="font-size:14px"><strong>Оба компонента частично меняются</strong>. Возможна, если число новых условий меньше критического объёма. Используется при качественном изменении системы</div>
+      </div>
+    </div>
+
+    <h3 class="section-h">Совершенствование нормирования — приоритеты оптимизации</h3>
+    <blockquote class="bq">«Нацеленность производства на извлечение максимальной прибыли вместо оптимизации деятельности по главным функциям — стратегическая ошибка. Рациональным является ОПТИМИЗАЦИЯ: ни один из выходных параметров не достигает максимума, но совокупный результат — наилучший»<cite>— А.Е. Кашеварова, «Совершенствование нормирования ресурсов», ДР-2036, ЦНИИ «Румб», 1984</cite></blockquote>
+    <div class="hl-box">
+      <p>Ранговая функция: Р(А,Б,В,...,Я) → оптимизация взаимосвязанной совокупности целевых функций</p>
+      <p>Приоритетные коэффициенты — постоянные, периодически или вариантно изменяемые</p>
+      <p>Р — ранг достижений — эквивалент потребительной стоимости достижения данного вида</p>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('city',12)">← Николаев</button>
+    <button class="nav-btn" onclick="go('laws',14)">Законы диалектики →</button>
+  </div>
+</section>
+
+<!-- 14 ЗАКОНЫ ДИАЛЕКТИКИ -->
+<section id="s-laws" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Философские основания · 21.06.2017</div>
+    <h1 class="page-title">Законы диалектики · Геометрическая модель</h1>
+    <p class="page-sub">Природные законы и их взаимодействие</p>
+
+    <div class="demo-box">
+      <div class="demo-tag">Интерактив — Три закона диалектики (геом. модель Кашеваровой)</div>
+      <canvas id="laws-canvas" width="700" height="320" style="max-width:100%;display:block;"></canvas>
+      <div class="demo-btns">
+        <button class="demo-btn active" onclick="lawsMode('three')" id="btn-three">Три закона</button>
+        <button class="demo-btn" onclick="lawsMode('unity')" id="btn-unity">Единство противоположностей</button>
+        <button class="demo-btn" onclick="lawsMode('negation')" id="btn-neg">Отрицание отрицания</button>
+        <button class="demo-btn" onclick="lawsMode('quantity')" id="btn-qty">Переход количества в качество</button>
+      </div>
+    </div>
+
+    <h3 class="section-h">Три закона диалектики и их применение в ФДЛ</h3>
+    <table class="data-table">
+      <thead><tr><th>Закон</th><th>Содержание</th><th>Применение в ФДЛ</th></tr></thead>
+      <tbody>
+        <tr><td class="accent">Единство и борьба противоположностей</td><td>Движущая сила развития: противоречие внутри системы. Противоречие — результат одномерного восприятия</td><td>Разрывы в контурах символа. Признание противоречий неустранимыми на низшем уровне</td></tr>
+        <tr><td class="accent">Отрицание отрицания</td><td>Развитие по спирали: тезис → антитезис → синтез. Возврат к прежнему на новом уровне</td><td>Цикл ТАС. Алгоритм последовательных отдалений и уточнений</td></tr>
+        <tr><td class="accent">Переход количества в качество</td><td>Накопление малых изменений до критической точки → скачок к новому качеству</td><td>Граница количественно-качественного перехода на схеме секторов</td></tr>
+      </tbody>
+    </table>
+
+    <blockquote class="bq">«При использовании диалектической логики предмет мышления препарируется с помощью представлений о переходе количества в качество, об отрицании отрицания и о единстве противоположностей»<cite>— А.Е. Кашеварова, «Основные представления формальной диалогики»</cite></blockquote>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('change-types',13)">← Виды изменений</button>
+    <button class="nav-btn" onclick="go('kdtp',15)">КДТП →</button>
+  </div>
+</section>
+
+<!-- 15 КДТП -->
+<section id="s-kdtp" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Социальная теория · КДТП</div>
+    <h1 class="page-title">Книжка добровольца труда и пожертвований</h1>
+    <p class="page-sub">Учёт умственного труда · Измерение качества деятельности</p>
+
+    <p class="lead-quote">«Человечество ещё не научилось достоверно оценивать не только качество, но даже количество труда — причём не только умственного, но даже физического. Мысли по этим вопросам прозябают в примитиве»</p>
+
+    <h3 class="section-h">Три этапа освоения новых идей</h3>
+    <div class="card-grid">
+      <div class="card"><div class="c-label" style="color:var(--red)">Этап 1</div><div class="c-val">«Этого не может быть!»</div></div>
+      <div class="card gold"><div class="c-label">Этап 2</div><div class="c-val">«В этом что-то есть...»</div></div>
+      <div class="card teal"><div class="c-label">Этап 3</div><div class="c-val">«Так кто же этого не знает!»</div></div>
+    </div>
+
+    <h3 class="section-h">Проблема оценки умственного труда</h3>
+    <p class="prose">В 1984 г. А.Е. Кашеварова депонировала статью «Совершенствование нормирования расхода ресурсов методом системного подхода» (ДР-2036, ЦНИИ «Румб», Ленинград). Основная идея: оценивать труд нужно через <strong>шкалы ОТНОСИТЕЛЬНЫХ</strong>, а не абсолютных соответствий.</p>
+
+    <div class="formula-box">
+      <div class="f-label">Форма 2 — Учёт благ (принцип)</div>
+      Показатель = относительная величина по сравнению со «средним»<br>
+      Допустимое отклонение = ±Δ (договорённость сторон)<br>
+      Ограниченная экспертиза = интервал допустимой ошибки оценщика<br><br>
+      Ранговая функция Р(А,Б,...,Я) = оптимизация совокупности<br>
+      → Р = эквивалент потребительной стоимости достижения
+    </div>
+
+    <blockquote class="bq">«Только недальновидные, невнимательные люди не замечают: нужно создавать такие структуры управления, чтобы лидерам было <em>выгодно</em> становиться честными»<cite>— А.Е. Кашеварова, «О том, почему нужна КДТП»</cite></blockquote>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('laws',14)">← Законы диалектики</button>
+    <button class="nav-btn" onclick="go('epilogue',16)">Эпилог →</button>
+  </div>
+</section>
+
+<!-- 16 ЭПИЛОГ -->
+<section id="s-epilogue" class="screen">
+  <div class="page-wrap">
+    <div class="page-eyebrow">Заключение · 1994–2019</div>
+    <h1 class="page-title">Итог полувека работы</h1>
+    <p class="page-sub">Формальная диалогика — первая формализация диалектической логики</p>
+
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-y">1974</div><div class="tl-t">Статья «О парадоксах системного мышления» — начало формализации. Борьба с В.Н.Садовским за публикацию</div></div>
+      <div class="tl-item"><div class="tl-y">1979</div><div class="tl-t">Публикация в «Системных исследованиях» — с искажениями и изъятием ключевого фрагмента</div></div>
+      <div class="tl-item"><div class="tl-y">1984</div><div class="tl-t">Депонирование статьи ДР-2036 о нормировании ресурсов методом СП. Первая попытка создать шкалы относительных оценок умственного труда</div></div>
+      <div class="tl-item"><div class="tl-y">1994</div><div class="tl-t">Первое применение к реальной задаче: концепция развития г. Николаева. Книжный вариант «Формальная диалогика в конкретном примере»</div></div>
+      <div class="tl-item"><div class="tl-y">2004</div><div class="tl-t">Государственная регистрация авторских прав. Практическое применение в городских общинах. Объединение в Оболочку СВЕТ</div></div>
+      <div class="tl-item"><div class="tl-y">2009</div><div class="tl-t">Свидетельство об авторском праве № 28036 на «Формальную диалогику в конкретном примере»</div></div>
+      <div class="tl-item"><div class="tl-y">2017–2019</div><div class="tl-t">Геометрическая модель взаимодействия природных законов диалектики. Окончательное издание «Теоретических основ Оболочки СВЕТ»</div></div>
+    </div>
+
+    <div class="hl-box">
+      <p>Формальная диалогика — первая в мире формализация диалектической логики</p>
+      <p>Система универсальна: одни и те же матрицы применимы к задачам любого содержания</p>
+      <p>Ключевая идея: противоречиями не борются — меняют условия, их порождающие</p>
+      <p>Сложность метода решения должна соответствовать сложности задачи</p>
+    </div>
+
+    <blockquote class="bq">«Мы стоим у истоков разработки теории СВЕТ — теории о творческом мышлении. Начала этой теории суть её элементарный, простейший свод таблиц, инструкций, алгоритмов формальной диалогики»<cite>— А.Е. Кашеварова, Введение в «Формальную диалогику», 1994</cite></blockquote>
+  </div>
+  <div class="page-nav">
+    <button class="nav-btn" onclick="go('kdtp',15)">← КДТП</button>
+    <button class="nav-btn" onclick="go('cover',0)">↺ На обложку</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════
+//  НАВИГАЦИЯ
+// ═══════════════════════════════════════
+const SCREENS = ['cover','intro','axioms','systems','systematic','task-types','blocks','elements','matrices','dominance','algorithm','task-lab','city','change-types','laws','kdtp','epilogue'];
+let curIdx = 0;
+
+function go(id, idx) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('s-' + id);
+  if (el) { el.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  const si = [...document.querySelectorAll('.sb-item')].find(i => i.getAttribute('onclick')?.includes("'"+id+"'"));
+  if (si) si.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+  curIdx = idx || 0;
+  document.getElementById('progress-fill').style.width = ((curIdx / (SCREENS.length-1)) * 100) + '%';
+  // Lazy inits
+  const inits = {
+    systems: () => sysMode('para'),
+    blocks: () => blocksMode('schema'),
+    matrices: () => showMatrix('03'),
+    algorithm: () => algoStep(-1),
+    city: () => { cityMode('ring'); buildCityTable(); },
+    laws: () => lawsMode('three'),
+  };
+  if (inits[id]) inits[id]();
+}
+
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100;
+  document.getElementById('progress-fill').style.width = Math.max(curIdx / (SCREENS.length-1) * 100, pct) + '%';
+});
+
+// ═══════════════════════════════════════
+//  ACCORDION БЛОКОВ
+// ═══════════════════════════════════════
+function toggleBlock(id) {
+  const body = document.getElementById('body-' + id);
+  const arr = document.getElementById('arr-' + id);
+  body.classList.toggle('open');
+  arr.textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+// ═══════════════════════════════════════
+//  ТРИ ТИПА СИСТЕМ
+// ═══════════════════════════════════════
+const SYS_DESC = {
+  para: '◉ Параметрическая система (классификация): элементы упорядочены по измеримым параметрам. Нет связей между элементами — только принадлежность к классам. Аналог: таблица Менделеева, каталог библиотеки.',
+  formal: '◉ Формально-логическая система (структурированная): изучает «что связано». Связи между элементами зафиксированы. Работает для статичных условий. Слабость: не описывает качество связей.',
+  dialec: '◉ Диалектико-логическая система: изучает «как связано» + качественные характеристики связей. Учитывает противоречия, переходные процессы, разноуровневые отношения. Инструмент ФДЛ.'
+};
+
+function sysMode(m) {
+  ['para','formal','dialec'].forEach(x => document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+m)?.classList.add('active');
+  document.getElementById('sys-desc').textContent = SYS_DESC[m];
+  const c = document.getElementById('sys-canvas'); if (!c) return;
+  const ctx = c.getContext('2d'); const W = c.width, H = c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = 'rgba(10,12,20,.9)'; ctx.fillRect(0,0,W,H);
+  const teal='#2ec4b6', gold='#c8a84b', violet='#8b5cf6', sand='#e8e0d0';
+
+  if (m === 'para') {
+    // Grid of items
+    const cols=6, rows=4, pw=80, ph=42, gap=10;
+    const ox=(W-cols*(pw+gap))/2, oy=30;
+    const cats=['А1','А2','Б1','Б2','В1','В2','Г1','Г2','Д1','Д2','Е1','Е2','Ж1','Ж2','З1','З2','И1','И2','К1','К2','Л1','Л2','М1','М2'];
+    for(let i=0;i<24;i++){
+      const r=Math.floor(i/cols), co=i%cols;
+      const x=ox+co*(pw+gap), y=oy+r*(ph+gap);
+      ctx.fillStyle='rgba(200,168,75,.1)';
+      ctx.strokeStyle='rgba(200,168,75,.3)';ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.roundRect(x,y,pw,ph,3);ctx.fill();ctx.stroke();
+      ctx.fillStyle=gold;ctx.font='500 11px IBM Plex Mono,monospace';
+      ctx.textAlign='center';ctx.fillText(cats[i],x+pw/2,y+ph/2+4);
+    }
+    ctx.fillStyle=sand;ctx.font='500 12px IBM Plex Sans,sans-serif';ctx.textAlign='left';
+    ctx.fillText('Параметрическая: элементы упорядочены, связей нет',16,H-12);
+  } else if (m === 'formal') {
+    const nodes=[[120,80],[300,60],[480,100],[140,180],[340,200],[500,160],[200,260],[420,270]];
+    const edges=[[0,1],[1,2],[0,3],[1,4],[2,5],[3,6],[4,6],[4,7],[5,7]];
+    ctx.strokeStyle='rgba(139,92,246,.35)';ctx.lineWidth=1;
+    edges.forEach(([a,b])=>{
+      ctx.beginPath();ctx.moveTo(nodes[a][0],nodes[a][1]);ctx.lineTo(nodes[b][0],nodes[b][1]);ctx.stroke();
+    });
+    nodes.forEach(([x,y],i)=>{
+      ctx.fillStyle=i===0?violet+'55':'rgba(139,92,246,.2)';
+      ctx.strokeStyle=violet;ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle=sand;ctx.font='500 10px IBM Plex Mono,monospace';
+      ctx.textAlign='center';ctx.fillText('Э'+(i+1),x,y+4);
+    });
+    ctx.fillStyle=sand;ctx.font='500 12px IBM Plex Sans,sans-serif';ctx.textAlign='left';
+    ctx.fillText('Формально-логическая: изучает «что связано»',16,H-12);
+  } else {
+    const cx=W/2, cy=H/2-10, R=100;
+    // layers
+    [R*1.4,R,R*.6].forEach((r,i)=>{
+      ctx.strokeStyle=i===1?teal:gold;ctx.lineWidth=i===1?1.2:.6;
+      ctx.globalAlpha=.25;
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+    });
+    // arrows (quality changes)
+    const pts=[[cx,cy-R],[cx+R*.86,cy+R*.5],[cx-R*.86,cy+R*.5]];
+    pts.forEach((p,i)=>{
+      const np=pts[(i+1)%3];
+      ctx.strokeStyle=i===0?teal:gold;ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(np[0],np[1]);ctx.stroke();
+      ctx.fillStyle=i===0?teal:gold;
+      ctx.beginPath();ctx.arc(p[0],p[1],6,0,Math.PI*2);ctx.fill();
+    });
+    ctx.fillStyle=teal;ctx.font='500 10px IBM Plex Mono';ctx.textAlign='center';
+    ctx.fillText('Ц',pts[0][0],pts[0][1]+4);
+    ctx.fillText('П',pts[1][0],pts[1][1]+4);
+    ctx.fillText('Ср',pts[2][0],pts[2][1]+4);
+    ctx.fillStyle=sand;ctx.font='500 12px IBM Plex Sans';ctx.textAlign='left';
+    ctx.fillText('Диалектико-логическая: качество связей + противоречия',16,H-12);
+  }
+}
+
+// ═══════════════════════════════════════
+//  5 БЛОКОВ
+// ═══════════════════════════════════════
+function blocksMode(m) {
+  ['schema','flows','planes'].forEach(x => document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+m)?.classList.add('active');
+  const c = document.getElementById('blocks-canvas'); if (!c) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='rgba(10,12,20,.9)';ctx.fillRect(0,0,W,H);
+  const teal='#2ec4b6',gold='#c8a84b',violet='#8b5cf6',sand='#e8e0d0',stone='#8a8278';
+
+  const BLOCKS=[
+    {id:'БМ',name:'Мотивации',x:60,y:120,w:110,h:52,col:teal},
+    {id:'БТ',name:'Требования',x:210,y:80,w:110,h:52,col:gold},
+    {id:'БИ',name:'Идеи',x:360,y:120,w:110,h:52,col:violet},
+    {id:'БЦ',name:'Целесообразность',x:210,y:180,w:110,h:52,col:'#e05252'},
+    {id:'БВ',name:'Возможности',x:510,y:120,w:110,h:52,col:'#4ade80'},
+  ];
+  const EDGES=[['БМ','БТ'],['БМ','БЦ'],['БТ','БИ'],['БИ','БЦ'],['БИ','БВ'],['БЦ','БВ']];
+
+  const bmap = Object.fromEntries(BLOCKS.map(b => [b.id, b]));
+
+  if (m === 'schema' || m === 'flows') {
+    EDGES.forEach(([a,bb]) => {
+      const ba=bmap[a], bn=bmap[bb];
+      const x1=ba.x+ba.w, y1=ba.y+ba.h/2;
+      const x2=bn.x, y2=bn.y+bn.h/2;
+      ctx.strokeStyle=m==='flows'?teal:'rgba(255,255,255,.12)';
+      ctx.lineWidth=m==='flows'?1.5:.8;
+      if(m==='flows'){ctx.shadowColor=teal;ctx.shadowBlur=6;}
+      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+      ctx.shadowBlur=0;
+    });
+  }
+
+  BLOCKS.forEach(b => {
+    ctx.fillStyle=b.col+'22';
+    ctx.strokeStyle=b.col; ctx.lineWidth=.9;
+    ctx.beginPath(); ctx.roundRect(b.x,b.y,b.w,b.h,5); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=b.col; ctx.font='600 14px IBM Plex Mono,monospace';
+    ctx.textAlign='center'; ctx.fillText(b.id,b.x+b.w/2,b.y+22);
+    ctx.fillStyle=sand; ctx.font='10px IBM Plex Sans,sans-serif';
+    ctx.fillText(b.name,b.x+b.w/2,b.y+38);
+  });
+
+  if (m === 'planes') {
+    // Плоскости В, Т, ЦС
+    const planes=[{name:'Плоскость В (возможностей)',x:16,y:6,w:340,h:80,col:teal},{name:'Плоскость Т (требований)',x:16,y:56,w:560,h:80,col:gold},{name:'Плоскость ЦС (целесообразности)',x:16,y:108,w:450,h:80,col:violet}];
+    planes.forEach(p=>{
+      ctx.strokeStyle=p.col;ctx.lineWidth=.6;ctx.globalAlpha=.18;
+      ctx.strokeRect(p.x,p.y,p.w,p.h);ctx.globalAlpha=1;
+      ctx.fillStyle=p.col;ctx.font='8px IBM Plex Sans';ctx.textAlign='left';
+      ctx.fillText(p.name,p.x+4,p.y+10);
+    });
+    BLOCKS.forEach(b=>{
+      ctx.fillStyle=b.col+'33';ctx.strokeStyle=b.col;ctx.lineWidth=.9;
+      ctx.beginPath();ctx.roundRect(b.x,b.y,b.w,b.h,5);ctx.fill();ctx.stroke();
+      ctx.fillStyle=b.col;ctx.font='600 14px IBM Plex Mono';ctx.textAlign='center';
+      ctx.fillText(b.id,b.x+b.w/2,b.y+22);
+    });
+  }
+
+  ctx.fillStyle=sand; ctx.font='500 12px IBM Plex Sans'; ctx.textAlign='left';
+  ctx.fillText({schema:'Архитектура: 5 блоков саморегулирующейся системы',flows:'Потоки: направления передачи данных между блоками',planes:'Плоскости: В (возможностей) · Т (требований) · ЦС (целесообразности)'}[m], 16, H-12);
+}
+
+// ═══════════════════════════════════════
+//  МАТРИЦЫ 03/04/05
+// ═══════════════════════════════════════
+const MATRIX_HTML = {
+  '03': `<p style="font-size:13px;color:var(--stone);margin-bottom:12px;">Таблица 03 — 1-й уровень деления элузов блока мотиваций. Используется для всех трёх маркиров: У, Ц, П</p>
+<div class="matrix-wrap"><table class="matrix-table">
+<thead><tr><th>Маркир уровня</th><th>№</th><th>Направления уровней деления</th><th>Приоритет</th></tr></thead>
+<tbody>
+${[['!','1','Сохранение'],['!','2','Ослабление'],['!','3','Устранение'],['','4','Создание'],['','5','Обеспечение восприятия и реализации изменений'],['','6','Обеспечение устранения недостатков'],['','7','Обеспечение управления процессами'],['','8','Сферы, в которых усиливается влияние'],['','9','Прогноз последствий и тенденций']].map(([m,n,d])=>`<tr><td class="marker">${m||'&nbsp;'}</td><td class="accent">${n}</td><td class="row-h">${d}</td><td><input type="text" style="background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--sand);font-size:12px;width:40px;outline:none;" placeholder="—"></td></tr>`).join('')}
+</tbody></table></div>
+<p style="font-size:12px;color:var(--stone);margin-top:10px;">Для заполнения: в графе «Маркир» проставьте У, Ц или П. Конкретизируйте абстрактные формулировки в 3-й графе.</p>`,
+
+  '04': `<p style="font-size:13px;color:var(--stone);margin-bottom:12px;">Таблица А.04 — 2-й уровень деления содержания. Однонаправленный — по зонам интересов. Применяется для компонентов (У/Ц/П) в режиме ИЗМЕНЕНИЯ. Метки: Д — «до», П — «после»</p>
+<div class="matrix-wrap"><table class="matrix-table">
+<thead><tr><th>Зона интересов</th><th>Маркир / приоритет</th><th colspan="9">Код 2-го уровня деления (1–9)</th></tr></thead>
+<tbody>
+${[['Всеобщие'],['Общие'],['Групповые'],['Частные (локальные)']].map(([z])=>`
+<tr><td class="row-h" rowspan="2" style="min-width:110px">${z}</td><td class="marker"><input type="text" style="background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--teal);font-size:11px;width:60px;outline:none;" placeholder="У/Ц/П · 1"></td>${Array(9).fill(0).map((_,i)=>`<td><input type="text" style="background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--sand);font-size:11px;width:30px;outline:none;text-align:center;" placeholder="${i+1}"></td>`).join('')}</tr>
+<tr><td class="marker"><input type="text" style="background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--gold);font-size:11px;width:60px;outline:none;" placeholder="У/Ц/П · 2"></td>${Array(9).fill(0).map(()=>`<td><input type="text" style="background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--sand);font-size:11px;width:30px;outline:none;text-align:center;"></td>`).join('')}</tr>`).join('')}
+</tbody></table></div>`,
+
+  '05': `<p style="font-size:13px;color:var(--stone);margin-bottom:12px;">Таблица А.05 — 2-й уровень деления, когда Ц или П принимаются как АРГУМЕНТЫ. Двунаправленное деление: по абсциссе — зоны (Всеобщая / Общие / Групповые / Частные), по ординате — 24 сектора структуры</p>
+<div class="matrix-wrap"><table class="matrix-table" style="min-width:700px">
+<thead><tr><th>Структуры</th><th>Всеобщая</th><th>M</th><th>Общие</th><th>M</th><th>Групповые</th><th>M</th><th>Частные</th><th>M</th></tr></thead>
+<tbody>
+${Array(8).fill(0).map((_,i)=>`<tr><td class="row-h">${i+1}.</td>${Array(4).fill(0).map(()=>`<td><input type="text" style="background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--sand);font-size:11px;width:80px;outline:none;" placeholder="…"></td><td class="marker"><input type="text" style="background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--teal);font-size:10px;width:36px;outline:none;" placeholder="М"></td>`).join('')}</tr>`).join('')}
+<tr><td class="row-h" style="color:var(--stone);font-size:11px;">... до 24</td>${Array(8).fill(0).map(()=>`<td></td>`).join('')}</tr>
+</tbody></table></div>`
+};
+
+function showMatrix(id) {
+  ['03','04','05'].forEach(x => document.getElementById('btn-m'+x)?.classList.remove('active'));
+  document.getElementById('btn-m'+id)?.classList.add('active');
+  const cont = document.getElementById('matrix-content');
+  if (cont) cont.innerHTML = MATRIX_HTML[id] || '';
+}
+
+// ═══════════════════════════════════════
+//  ДОМИНАНТА
+// ═══════════════════════════════════════
+function calcDominance() {
+  const t = document.getElementById('dom-type').value;
+  const s = document.getElementById('dom-state').value;
+  if (!t || !s) { alert('Выберите оба параметра'); return; }
+  const domMap = { politics:'ЦЕЛЬ', science:'ЦЕЛЬ', ethics:'ЦЕЛЬ', management:'ПОТРЕБНОСТЬ', economy:'ПОТРЕБНОСТЬ', org:'ПОТРЕБНОСТЬ' };
+  const dom = domMap[t];
+  const tabMap = { target: { stable:'табл.04 (компонент · без меток Д/П)', transition:'табл.04 (метки Д и П)' }, need: { stable:'табл.05 (аргумент · серийные данные)', transition:'табл.05 (метки Д и П на каждой зоне)' } };
+  const domKey = dom === 'ЦЕЛЬ' ? 'target' : 'need';
+  const tab = tabMap[domKey][s];
+  const res = document.getElementById('dom-result');
+  res.innerHTML = `<strong style="color:var(--teal)">Конфигурация определена:</strong><br><br>
+Доминанта: <strong style="color:var(--gold)">${dom}</strong><br>
+Режим: <strong>${s === 'stable' ? 'Устойчивый (серийные данные)' : 'Переходный (реформирование)'}</strong><br>
+Основная матрица для блока мотиваций: <strong style="color:var(--teal)">${tab}</strong><br>
+Начать с: <strong>Табл.03</strong> (1-й уровень деления) → затем ${tab}<br><br>
+<span style="font-size:13px;color:var(--stone)">Маркир доминанты: ${dom === 'ЦЕЛЬ' ? '«Ц»' : '«П»'} — используется в наименованиях файлов банков данных</span>`;
+  res.classList.add('show');
+}
+
+// ═══════════════════════════════════════
+//  АЛГОРИТМ
+// ═══════════════════════════════════════
+const ALGO_LABELS=['Изречь замысел','8 секторов среды','24 направления','Выбор доминанты','Блок БМ','Блок БТ','Блок БИ','Блоки БЦ+БВ','Условия Уп'];
+function algoStep(step) {
+  document.getElementById('btn-algo-all').classList.toggle('active', step===-1);
+  const c=document.getElementById('algo-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='rgba(10,12,20,.9)';ctx.fillRect(0,0,W,H);
+  const teal='#2ec4b6',gold='#c8a84b',sand='#e8e0d0';
+  const n=ALGO_LABELS.length, bw=64, gap=6, oy=H/2-22;
+  const total=n*(bw+gap)-gap, ox=(W-total)/2;
+  ALGO_LABELS.forEach((lbl,i)=>{
+    const x=ox+i*(bw+gap);
+    const active=step===-1||step===i;
+    const col=active?(i<4?teal:i<7?gold:'#4ade80'):'rgba(255,255,255,.1)';
+    ctx.fillStyle=active?col+'22':'rgba(255,255,255,.03)';
+    ctx.strokeStyle=active?col:'rgba(255,255,255,.1)';ctx.lineWidth=.8;
+    ctx.beginPath();ctx.roundRect(x,oy,bw,48,3);ctx.fill();ctx.stroke();
+    ctx.fillStyle=active?col:'rgba(255,255,255,.3)';
+    ctx.font='500 8.5px IBM Plex Mono,monospace';ctx.textAlign='center';
+    ctx.fillText((i+1)+'.',x+bw/2,oy+14);
+    ctx.fillStyle=active?sand:'rgba(255,255,255,.3)';
+    ctx.font='7.5px IBM Plex Sans,sans-serif';
+    const words=lbl.split(' ');let ly=oy+26,line='';
+    words.forEach(w=>{
+      const t=line+w+' ';
+      if(ctx.measureText(t).width>58&&line!=''){ctx.fillText(line.trim(),x+bw/2,ly);ly+=10;line=w+' ';}else line=t;
+    });
+    if(line.trim())ctx.fillText(line.trim(),x+bw/2,ly);
+    if(i<n-1){
+      ctx.strokeStyle=active?col:'rgba(255,255,255,.1)';ctx.lineWidth=.7;
+      ctx.beginPath();ctx.moveTo(x+bw,oy+24);ctx.lineTo(x+bw+gap,oy+24);ctx.stroke();
+    }
+  });
+  ctx.fillStyle=sand;ctx.font='500 11px IBM Plex Sans';ctx.textAlign='left';
+  ctx.fillText(step===-1?'Полный алгоритм решения задачи':'Шаг '+(step+1)+': '+ALGO_LABELS[step],16,H-12);
+}
+
+// ═══════════════════════════════════════
+//  ЛАБОРАТОРИЯ
+// ═══════════════════════════════════════
+function runLab() {
+  const task = document.getElementById('lab-task').value.trim();
+  const dom = document.getElementById('lab-dom').value;
+  const state = document.getElementById('lab-state').value;
+  const sraw = document.getElementById('lab-sectors').value.trim();
+  if (!task) { alert('Введите формулировку задачи'); return; }
+  const sectors = sraw ? sraw.split(',').map(s=>s.trim()).slice(0,8) : [];
+  const domLabel = dom === 'target' ? 'ЦЕЛЬ (Ц)' : 'ПОТРЕБНОСТЬ (П)';
+  const stateLabel = state === 'stable' ? 'Устойчивый режим' : 'Переходный процесс (реформирование)';
+  const matrixTab = dom === 'target' ? 'Табл.А.05 (цели как аргумент)' : 'Табл.А.04 (потребности как компонент)';
+  let sectorsHtml = '';
+  if (sectors.length > 0) {
+    sectorsHtml = '<br><strong>Структура секторов:</strong><br>' + sectors.map((s,i)=>`${i+1}. ${s}`).join('<br>');
+    sectorsHtml += `<br><br><strong>24 направления развития</strong> (3 НР на каждый сектор, ${sectors.length} секторов × 3 = ${sectors.length*3} НР):`;
+    sectors.forEach((s,i) => {
+      sectorsHtml += `<br>&nbsp;&nbsp;<span style="color:var(--teal)">${i+1}.a</span> Сохранение в «${s}» | <span style="color:var(--teal)">${i+1}.б</span> Развитие | <span style="color:var(--teal)">${i+1}.в</span> Устранение недостатков`;
+    });
+  }
+  const res = document.getElementById('lab-result');
+  res.innerHTML = `<strong style="color:var(--teal2)">Структура задачи ФДЛ</strong><br><br>
+<strong>Неизречённое → Изречённое:</strong> <em>${task}</em><br>
+<strong>Доминанта:</strong> ${domLabel}<br>
+<strong>Состояние:</strong> ${stateLabel}<br>
+<strong>Матрица блока мотиваций:</strong> Табл.03 → ${matrixTab}<br>
+${sectorsHtml}<br><br>
+<strong>Следующий шаг:</strong> скопировать Табл.03 в каталог проекта, конкретизировать 9 направлений деления, присвоить приоритеты от 1 до 6.`;
+  res.classList.add('show');
+}
+
+// ═══════════════════════════════════════
+//  НИКОЛАЕВ
+// ═══════════════════════════════════════
+const CITY_DATA = [
+  {sector:'I. Местная власть',nrs:['24. Управление психическим равновесием граждан','1. Управление исполнением законов','2. Управление бюджетом']},
+  {sector:'II. Финансы',nrs:['3. Налоговая служба','4. Государственное финансирование','5. Коммерческое финансирование']},
+  {sector:'III. Торговля',nrs:['6. Государственная торговля','7. Льготная (социальная защита)','8. Частная торговля']},
+  {sector:'IV. Предпринимательство',nrs:['9. Промышленные изделия','10. Продукты питания','11. ЖКХ, транспорт']},
+  {sector:'V. Государственная промышленность',nrs:['12. ЖКХ, транспорт','13. Продукты питания','14. Промышленные изделия']},
+  {sector:'VI. Наука',nrs:['15. Подготовка кадров','16. Прикладные разработки','17. Теоретические исследования']},
+  {sector:'VII. Экология',nrs:['18. Здравоохранение','19. Охрана генофонда','20. Охрана природной среды']},
+  {sector:'VIII. Воспитание',nrs:['21. Образование','22. Культура','23. Правопорядок']},
+];
+const SR_DATA = ['Ср1 Средства производства, их рента','Ср2 Орудия труда, технический уровень','Ср3 Финансы, их индексация','Ср4 Ресурсы','Ср5 Информационные средства','Ср6 Социальные процессы','Ср7 Потенциал образования','Ср8 Потенциал творчества','Ср9 Потенциал здоровья'];
+
+function buildCityTable() {
+  const tb = document.getElementById('city-table');
+  if (!tb || tb.children.length) return;
+  CITY_DATA.forEach(s => {
+    s.nrs.forEach((nr,i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `${i===0?`<td rowspan="3" style="color:var(--teal);font-size:12px;font-weight:500;border-right:1px solid var(--border)">${s.sector}</td>`:''}
+      <td class="accent">${nr.split('.')[0]}</td><td>${nr.split('. ').slice(1).join('. ')}</td>`;
+      tb.appendChild(tr);
+    });
+  });
+}
+
+let cityCurrentMode = 'ring';
+function cityMode(m) {
+  cityCurrentMode = m;
+  ['ring','list','sr'].forEach(x => document.getElementById('btn-'+x)?.classList.remove('active'));
+  document.getElementById('btn-'+m)?.classList.add('active');
+  const c=document.getElementById('city-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='rgba(10,12,20,.9)';ctx.fillRect(0,0,W,H);
+  const teal='#2ec4b6',gold='#c8a84b',sand='#e8e0d0',stone='#8a8278';
+  const cols=['#2ec4b6','#c8a84b','#8b5cf6','#e05252','#4ade80','#e8a020','#38bdf8','#f472b6'];
+
+  if (m === 'ring') {
+    const cx=W/2,cy=H/2,R1=120,R2=175;
+    CITY_DATA.forEach((s,si)=>{
+      const a0=si/8*Math.PI*2-Math.PI/2;
+      const a1=(si+1)/8*Math.PI*2-Math.PI/2;
+      const mid=(a0+a1)/2;
+      // outer ring (24 NR)
+      s.nrs.forEach((_,ni)=>{
+        const aa=a0+ni/3*(a1-a0);const ab=a0+(ni+1)/3*(a1-a0);
+        ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R2,aa,ab);ctx.closePath();
+        ctx.fillStyle=cols[si]+'18';ctx.strokeStyle=cols[si]+'55';ctx.lineWidth=0.8;
+        ctx.fill();ctx.stroke();
+      });
+      // inner ring (8 sectors)
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R1,a0,a1);ctx.closePath();
+      ctx.fillStyle=cols[si]+'30';ctx.strokeStyle=cols[si];ctx.lineWidth=1;
+      ctx.fill();ctx.stroke();
+      // label
+      const lx=cx+Math.cos(mid)*(R1*.65),ly=cy+Math.sin(mid)*(R1*.65);
+      ctx.fillStyle=cols[si];ctx.font='500 10px IBM Plex Sans,sans-serif';ctx.textAlign='center';
+      const rm=s.sector.replace(/^[IVX]+\. /,'');
+      ctx.fillText(rm.length>10?rm.slice(0,9)+'…':rm,lx,ly+3);
+    });
+    // center
+    ctx.beginPath();ctx.arc(cx,cy,36,0,Math.PI*2);
+    ctx.fillStyle='rgba(10,12,20,.9)';ctx.fill();
+    ctx.strokeStyle=teal;ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle=teal;ctx.font='600 11px IBM Plex Mono';ctx.textAlign='center';
+    ctx.fillText('г.',cx,cy-4);ctx.fillText('Николаев',cx,cy+9);
+    ctx.fillStyle=sand;ctx.font='500 11px IBM Plex Sans';ctx.textAlign='left';
+    ctx.fillText('8 секторов (внутри) × 3 направления развития = 24 НР (снаружи)',16,H-12);
+  } else if (m === 'list') {
+    const col=18;CITY_DATA.forEach((s,si)=>{
+      const y=30+si*40;
+      ctx.fillStyle=cols[si];ctx.font='500 12px IBM Plex Mono';ctx.textAlign='left';
+      ctx.fillText(s.sector.replace(/^[IVX]+\. /,''),col,y);
+      s.nrs.forEach((nr,ni)=>{
+        ctx.fillStyle=cols[si]+'99';ctx.font='10px IBM Plex Sans';
+        ctx.fillText(nr,col+20+ni*220,y+16);
+      });
+    });
+  } else {
+    // Средства Ср1-9
+    const col=16;SR_DATA.forEach((s,i)=>{
+      const y=30+i*32;
+      const c2=cols[i%cols.length];
+      ctx.fillStyle=c2+'33';ctx.strokeStyle=c2;ctx.lineWidth=0.7;
+      ctx.beginPath();ctx.roundRect(col,y-16,W-32,26,3);ctx.fill();ctx.stroke();
+      ctx.fillStyle=c2;ctx.font='600 12px IBM Plex Mono';ctx.textAlign='left';
+      ctx.fillText('Ср'+(i+1),col+8,y);
+      ctx.fillStyle=sand;ctx.font='12px IBM Plex Sans';
+      ctx.fillText(s.split(' ').slice(1).join(' '),col+44,y);
+    });
+  }
+}
+
+// ═══════════════════════════════════════
+//  ЗАКОНЫ ДИАЛЕКТИКИ
+// ═══════════════════════════════════════
+function lawsMode(m) {
+  ['three','unity','negation','quantity'].forEach(x => {
+    const btn = document.getElementById('btn-'+(x==='negation'?'neg':x==='quantity'?'qty':x));
+    btn?.classList.remove('active');
+  });
+  const activeId = {three:'three',unity:'unity',negation:'neg',quantity:'qty'}[m];
+  document.getElementById('btn-'+activeId)?.classList.add('active');
+
+  const c=document.getElementById('laws-canvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='rgba(10,12,20,.9)';ctx.fillRect(0,0,W,H);
+  const teal='#2ec4b6',gold='#c8a84b',violet='#8b5cf6',sand='#e8e0d0',green='#4ade80';
+
+  if (m === 'three') {
+    const laws=[{name:'Единство\nпротивоположностей',x:130,y:100,col:teal},{name:'Отрицание\nотрицания',x:350,y:80,col:gold},{name:'Переход количества\nв качество',x:570,y:110,col:violet}];
+    laws.forEach(l=>{
+      ctx.fillStyle=l.col+'22';ctx.strokeStyle=l.col;ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(l.x,l.y,70,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle=l.col;ctx.font='500 11px IBM Plex Sans,sans-serif';ctx.textAlign='center';
+      l.name.split('\n').forEach((ln,i)=>ctx.fillText(ln,l.x,l.y-6+i*16));
+    });
+    // connections
+    [[0,1],[1,2],[0,2]].forEach(([a,b])=>{
+      const la=laws[a],lb=laws[b];
+      ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=0.7;
+      ctx.beginPath();ctx.moveTo(la.x,la.y);ctx.lineTo(lb.x,lb.y);ctx.stroke();
+    });
+    ctx.fillStyle=sand;ctx.font='500 11px IBM Plex Sans';ctx.textAlign='left';
+    ctx.fillText('Три природных закона диалектики — фундамент ФДЛ',16,H-12);
+  } else if (m === 'unity') {
+    const cx=W/2,cy=H/2-10,R=100;
+    ctx.strokeStyle=teal;ctx.lineWidth=1.2;
+    ctx.beginPath();ctx.arc(cx-40,cy,R,0,Math.PI*2);ctx.strokeStyle=teal;ctx.globalAlpha=.4;ctx.stroke();
+    ctx.beginPath();ctx.arc(cx+40,cy,R,0,Math.PI*2);ctx.strokeStyle=gold;ctx.globalAlpha=.4;ctx.stroke();
+    ctx.globalAlpha=1;
+    ctx.fillStyle=teal;ctx.font='500 13px IBM Plex Sans';ctx.textAlign='center';ctx.fillText('Тезис',cx-60,cy+4);
+    ctx.fillStyle=gold;ctx.fillText('Антитезис',cx+60,cy+4);
+    ctx.fillStyle=violet;ctx.font='600 12px IBM Plex Mono';ctx.fillText('СИНТЕЗ',cx,cy+4);
+    ctx.fillStyle=sand;ctx.font='11px IBM Plex Sans';ctx.textAlign='left';
+    ctx.fillText('Единство — не сумма, а новое качество из взаимодействия противоположностей',16,H-12);
+  } else if (m === 'negation') {
+    // Spiral
+    ctx.strokeStyle=gold;ctx.lineWidth=1.5;ctx.beginPath();
+    for(let t=0;t<6*Math.PI;t+=0.02){
+      const r=18+t*9;const x=W/2+r*Math.cos(t),y=H/2+r*Math.sin(t);
+      if(r>W/2)break;t<0.02?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    ['Тезис','Антитезис','Синтез I','Синтез II'].forEach((lbl,i)=>{
+      const t=i*2*Math.PI*1.5;const r=18+t*9;
+      const x=W/2+r*Math.cos(t),y=H/2+r*Math.sin(t);
+      ctx.fillStyle=gold;ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=sand;ctx.font='11px IBM Plex Sans';ctx.textAlign='left';ctx.fillText(lbl,x+7,y+4);
+    });
+    ctx.fillStyle=sand;ctx.font='11px IBM Plex Sans';ctx.textAlign='left';
+    ctx.fillText('Спираль развития: тезис → антитезис → синтез → новый тезис',16,H-12);
+  } else {
+    // Quantity → Quality
+    const ox=60,oy=H/2+30,ew=W-120,eh=90;
+    // Quantity bar
+    ctx.fillStyle=teal+'22';ctx.strokeStyle=teal;ctx.lineWidth=0.8;
+    ctx.beginPath();ctx.roundRect(ox,oy-eh,ew,eh,3);ctx.fill();ctx.stroke();
+    // Quality jump
+    const kx=ox+ew*0.65;
+    ctx.strokeStyle=gold;ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(kx,oy);ctx.lineTo(kx,oy-eh-40);ctx.stroke();
+    ctx.fillStyle=gold;ctx.font='500 11px IBM Plex Sans';ctx.textAlign='center';
+    ctx.fillText('↑ критическая точка',kx,oy-eh-45);
+    // Labels
+    ctx.fillStyle=teal;ctx.font='12px IBM Plex Sans';ctx.textAlign='left';
+    ctx.fillText('Накопление количественных изменений',ox+8,oy-eh/2+4);
+    ctx.fillStyle=sand;ctx.fillText('→ скачок к новому КАЧЕСТВУ',kx+8,oy-eh/2+4);
+    ctx.fillStyle=sand;ctx.font='11px IBM Plex Sans';ctx.textAlign='left';
+    ctx.fillText('Граница количественно-качественного перехода — ключевой элемент схемы ФДЛ',16,H-12);
+  }
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  // Initial state
+  sysMode('para');
+});
+</script>
+</body>
+</html>
